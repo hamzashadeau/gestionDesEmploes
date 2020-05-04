@@ -1,5 +1,6 @@
 package com.example.stock.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +68,11 @@ public List<PermanenceAdministrative> findByemployeDoti(Integer doti) {
 @Override
 public List<PermanenceAdministrative> findByPeriode(Integer periode) {
 	return permanenceAdministrativeDao.findByPeriode(periode);
+}
+
+@Override
+public PermanenceAdministrative findByDate(Date date) {
+	return permanenceAdministrativeDao.findByDate(date);
 }
 
 

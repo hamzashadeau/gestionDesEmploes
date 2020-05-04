@@ -6,12 +6,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Entity
 public class Departement {
 @Id
 @GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
 private String nom;
+@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne
 private Employe chef;
 public Long getId() {

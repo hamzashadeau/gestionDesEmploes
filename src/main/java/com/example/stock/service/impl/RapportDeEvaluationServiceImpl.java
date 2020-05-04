@@ -1,11 +1,13 @@
 package com.example.stock.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.RapportDeEvaluationDao;
+import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.RapportDeEvaluationService;
 
@@ -52,10 +54,6 @@ public List<RapportDeEvaluation> findByEmployeEmail(String email) {
 	return rapportDeEvaluationDao.findByEmployeEmail(email);
 }
 
-@Override
-public List<RapportDeEvaluation> findByDernierGradeLibelle(String libelle) {
-	return rapportDeEvaluationDao.findByDernierGradeLibelle(libelle);
-}
 
 @Override
 public List<RapportDeEvaluation> findByEmployeDoti(Integer doti) {
@@ -66,6 +64,12 @@ public List<RapportDeEvaluation> findByEmployeDoti(Integer doti) {
 public List<RapportDeEvaluation> findByEmployeId(Long id) {
 	return rapportDeEvaluationDao.findByEmployeId(id);
 }
+
+@Override
+public List<RapportDeEvaluation> findByNouveauGradeId(Long id) {
+	return rapportDeEvaluationDao.findByNouveauGradeId(id);
+}
+
 
 
 

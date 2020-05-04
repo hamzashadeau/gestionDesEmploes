@@ -1,8 +1,10 @@
 package com.example.stock.ws.rest;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,11 @@ import com.example.stock.service.facade.PermanenceAdministrativeService;
 public class PermanenceAdministrativeRest {
 @Autowired
 private PermanenceAdministrativeService permanenceAdministrativeService;
+
+@GetMapping("findByDate/date/{date}")
+public PermanenceAdministrative findByDate(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
+	return permanenceAdministrativeService.findByDate(date);
+}
 
 @GetMapping("findByEmployeId/id/{id}")
 public List<PermanenceAdministrative> findByEmployeId(@PathVariable Long id) {

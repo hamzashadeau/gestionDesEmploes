@@ -38,4 +38,9 @@ public Grade(String libelle, Integer nombreDePosteNonOccupé) {
 public String toString() {
 	return "Grade [id=" + id + ", libelle=" + libelle + ", nombreDePosteNonOccupé=" + nombreDePosteNonOccupé + "]";
 }
+public Grade() {
+	super();
+	// TODO Auto-generated constructor stub
+}
+
 }

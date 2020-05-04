@@ -1,6 +1,7 @@
 package com.example.stock.Dao;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public interface PermanenceAdministrativeDao extends JpaRepository<PermanenceAdm
 	List<PermanenceAdministrative> findByEmployeEmail(String email);
 	List<PermanenceAdministrative> findByemployeDoti(Integer doti);
 	List<PermanenceAdministrative> findByPeriode(Integer periode);
+	PermanenceAdministrative findByDate(Date date);
 
 	
 }

@@ -1,10 +1,14 @@
 package com.example.stock.bean;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class PermanenceAdministrative {
@@ -16,6 +20,8 @@ private Boolean recuperation;
 private Integer periodeDeRecuperation;
 @ManyToOne()
 private Employe employe;
+@Temporal(TemporalType.DATE)
+private Date date;
 public Integer getPeriode() {
 	return periode;
 }

@@ -7,6 +7,7 @@ import com.example.stock.bean.Note;
 public interface NoteService {
 	List<Note> findByMention(Double metion);
 
+	List<Note> findByLibelle(String libelle);
 
 	List<Note> findAll();
 
