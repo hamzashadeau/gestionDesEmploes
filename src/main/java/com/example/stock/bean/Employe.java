@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Entity
 public class Employe {
 	@Id
@@ -31,14 +34,18 @@ private Integer tel;
 @ManyToOne
 private Employe sup;
 @ManyToOne
+private Fonction fonction;
+@ManyToOne
 private Departement dep;
 @Temporal(TemporalType.DATE)
 private Date dateEntree;
 @Temporal(TemporalType.DATE)
 private Date dateSortie;
+@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne()
 private GradeEmploye dernierGrade;
 private Integer compteBancaireRib;
+@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne
 private NoteGeneralDeAnnee dernierNote;
 @Temporal(TemporalType.DATE)
@@ -202,12 +209,20 @@ public GradeEmploye getDernierGrade() {
 public void setDernierGrade(GradeEmploye dernierGrade) {
 	this.dernierGrade = dernierGrade;
 }
-public Employe(String fullName, String email, String gender, Integer cin, Integer doti, Integer enfants, String adresse,
-		String pays, String situationFamiliale, Date dateDeNaissance, String lieuDeNaissance, Integer tel, Employe sup,
-		Departement dep, Date dateEntree, Date dateSortie, GradeEmploye dernierGrade, Integer compteBancaireRib,
-		NoteGeneralDeAnnee dernierNote, Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
+public Fonction getFonction() {
+	return fonction;
+}
+public void setFonction(Fonction fonction) {
+	this.fonction = fonction;
+}
+public Employe(Long id, String fullName, String email, String gender, Integer cin, Integer doti, Integer enfants,
+		String adresse, String pays, String situationFamiliale, Date dateDeNaissance, String lieuDeNaissance,
+		Integer tel, Employe sup, Fonction fonction, Departement dep, Date dateEntree, Date dateSortie,
+		GradeEmploye dernierGrade, Integer compteBancaireRib, NoteGeneralDeAnnee dernierNote,
+		Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
 		Integer soldeRestantesCongéExceptionnel) {
 	super();
+	this.id = id;
 	this.fullName = fullName;
 	this.email = email;
 	this.gender = gender;
@@ -221,6 +236,7 @@ public Employe(String fullName, String email, String gender, Integer cin, Intege
 	this.lieuDeNaissance = lieuDeNaissance;
 	this.tel = tel;
 	this.sup = sup;
+	this.fonction = fonction;
 	this.dep = dep;
 	this.dateEntree = dateEntree;
 	this.dateSortie = dateSortie;
@@ -237,12 +253,14 @@ public String toString() {
 	return "Employe [id=" + id + ", fullName=" + fullName + ", email=" + email + ", gender=" + gender + ", cin=" + cin
 			+ ", doti=" + doti + ", enfants=" + enfants + ", adresse=" + adresse + ", pays=" + pays
 			+ ", situationFamiliale=" + situationFamiliale + ", dateDeNaissance=" + dateDeNaissance
-			+ ", lieuDeNaissance=" + lieuDeNaissance + ", tel=" + tel + ", sup=" + sup + ", dep=" + dep
-			+ ", dateEntree=" + dateEntree + ", dateSortie=" + dateSortie + ", dernierGrade=" + dernierGrade
-			+ ", compteBancaireRib=" + compteBancaireRib + ", dernierNote=" + dernierNote + ", dateProchainEvaluation="
-			+ dateProchainEvaluation + ", dateDeProchainNote=" + dateDeProchainNote + ", dateAvancementPrevue="
-			+ dateAvancementPrevue + ", soldeRestantesCongéExceptionnel=" + soldeRestantesCongéExceptionnel + "]";
+			+ ", lieuDeNaissance=" + lieuDeNaissance + ", tel=" + tel + ", sup=" + sup + ", fonction=" + fonction
+			+ ", dep=" + dep + ", dateEntree=" + dateEntree + ", dateSortie=" + dateSortie + ", dernierGrade="
+			+ dernierGrade + ", compteBancaireRib=" + compteBancaireRib + ", dernierNote=" + dernierNote
+			+ ", dateProchainEvaluation=" + dateProchainEvaluation + ", dateDeProchainNote=" + dateDeProchainNote
+			+ ", dateAvancementPrevue=" + dateAvancementPrevue + ", soldeRestantesCongéExceptionnel="
+			+ soldeRestantesCongéExceptionnel + "]";
 }
+
 
 
 

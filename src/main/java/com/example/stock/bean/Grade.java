@@ -42,5 +42,11 @@ public Grade() {
 	super();
 	// TODO Auto-generated constructor stub
 }
+public Grade(Long id, String libelle, Integer nombreDePosteNonOccupé) {
+	super();
+	this.id = id;
+	this.libelle = libelle;
+	this.nombreDePosteNonOccupé = nombreDePosteNonOccupé;
+}
 
 }

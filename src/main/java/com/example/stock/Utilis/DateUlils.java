@@ -177,6 +177,10 @@ public class DateUlils {
 		}
 		return getDateEvaluation(grade.getDateDeAffectation(), nombreAnnee);
 	}
+	public static Date getDateDeNote(Date date1) {
+		long milliSeconde1 = date1.getTime() + 365*1000*60*60*24 ;
+		return new Date(milliSeconde1);
+	}
 
 	public static boolean VerifieDate(Date date1) {
 		Date date2 = new Date();
@@ -195,5 +199,11 @@ if(moyen<10) {
 	resultat = "rapide";
 }
 return resultat;
+	}
+public static boolean debloquer(Date date) {
+	Date date1 = new Date();
+	long milliSeconde1 = date.getTime();
+	long milliSeconde2 = date1.getTime();
+	return milliSeconde2 - milliSeconde1 > 15* 60*1000 ? true: false;
 	}
 }

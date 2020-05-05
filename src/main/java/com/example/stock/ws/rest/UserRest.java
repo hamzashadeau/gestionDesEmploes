@@ -1,8 +1,10 @@
 package com.example.stock.ws.rest;
 
+import java.security.MessageDigest;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,10 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.stock.bean.User;
 import com.example.stock.service.facade.UserService;
 @RestController
+@CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/User/")
 public class UserRest {
 @Autowired
 private UserService userService;
+
+@GetMapping("seConnecter")
+public int seConnecter(@RequestBody User user) throws Exception {
+	return userService.seConnecter(user);
+}
 
 @GetMapping("findByLogin/login/{login}")
 public User findByLogin(@PathVariable String login) {
@@ -29,6 +37,20 @@ public User findByid(@PathVariable Long id) {
 	return userService.findByid(id);
 }
 
+@GetMapping("hash/mdp/{mdp}")
+public static String hash(@PathVariable String mdp) throws Exception {
+	MessageDigest md = MessageDigest.getInstance("SHA-256");
+	md.update(mdp.getBytes());
+	byte byteData[] = md.digest();
+StringBuffer hexString = new StringBuffer();
+for (int i = 0; i < byteData.length; i++) {
+String hex = Integer.toHexString(0xff & byteData[i]);
+if(hex.length()==1) hexString.append('0');
+hexString.append(hex);
+}
+System.out.println("En format hexa:" + hexString.toString());
+return hexString.toString();
+}
 
 @GetMapping("findAll")
 public List<User> findAll() {

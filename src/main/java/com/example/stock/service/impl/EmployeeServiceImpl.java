@@ -8,13 +8,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.EmployeDao;
+import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Utilis.DateUlils;
+import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
+import com.example.stock.bean.Fonction;
+import com.example.stock.bean.Grade;
+import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.Notification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.FonctionService;
 import com.example.stock.service.facade.GradeEmployeService;
+import com.example.stock.service.facade.GradeService;
 import com.example.stock.service.facade.NotificationEmployeService;
 import com.example.stock.service.facade.SalaireEmployeService;
 
@@ -28,8 +36,14 @@ private SalaireEmployeService salaireEmployeService;
 private GradeEmployeService gradeEmployeService;
 @Autowired
 private NotificationEmployeService notificationEmployeService;
-
-
+@Autowired
+private DepartementService departementService;
+@Autowired
+private GradeService gradeService;
+@Autowired
+private GradeEmployeDao gradeEmployeDao;
+@Autowired
+private FonctionService fonctionService;
 @Override
 public List<Employe> findAll() {
 	return employeDao.findAll();
@@ -37,9 +51,9 @@ public List<Employe> findAll() {
 
 @Override
 public int save(Employe employe) {
-	if(findByid(employe.getId())!= null) {
-return -1;
-}else {
+//	if(findByid(employe.getId())!= null) {
+//return -1;
+//}else {
 	/* khas ikon date de sortie =null
 	khas ikon date entrée ! = null
 			khas ikon ga3 les champs 3amrin le nom et email ghadi iverifia forme dialhoom
@@ -51,10 +65,35 @@ return -1;
 	// ghadi nzido les salaire akherin
 	// ghadi ncriw solde congé 
    // ghadi ndiro date de prochaine evalution , note,
-		employeDao.save(employe);
+	Departement dep  = departementService.findByNom(employe.getDep().getNom());
+	employe.setDep(dep);
+	Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
+	employe.setFonction(fct);
+	employe.setSoldeRestantesCongéExceptionnel(10);
+	employe.setDateDeProchainNote(DateUlils.getDateDeNote(employe.getDernierGrade().getDateDeAffectation()));
+	Date date = employe.getDernierGrade().getDateDeAffectation();
+	employe.setDateAvancementPrevue(null);
+	employe.setSup(dep.getChef());
+	System.out.println( employe.getDernierGrade());
+	System.out.println(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
+	employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
+	Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
+	employe.setDernierGrade(null);;
+	employe.setDernierNote(null);;
+	employeDao.save(employe);
+	GradeEmploye gradeEmploye = new GradeEmploye();
+	gradeEmploye.setEmploye(employe);
+	gradeEmploye.setDateDeAffectation(date);
+	gradeEmploye.setGrade(grade);
+	employe.setDernierGrade(gradeEmploye);
+	gradeEmployeDao.save(gradeEmploye);
+
+//	GradeEmploye gradeEmploye  = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
+	employeDao.save(employe);
+
 		return 1;
 }
-	}
+//	}
 
 @Override
 public Employe findByid(Long id) {

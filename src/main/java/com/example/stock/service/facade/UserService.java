@@ -10,5 +10,5 @@ public interface UserService {
 	List<User> findAll();
 	int save(User prix);
 	int deleteById(Long id);
-
+    int seConnecter(User user) throws Exception;
 }
