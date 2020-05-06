@@ -9,11 +9,15 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 @Entity
 public class GradeEmploye {
 	@Id
 	@GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
+@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne()
 private Employe employe;
 @ManyToOne()

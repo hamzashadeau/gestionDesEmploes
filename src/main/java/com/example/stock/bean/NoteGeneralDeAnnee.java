@@ -10,6 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 @Entity
 public class NoteGeneralDeAnnee {
 @Id
@@ -17,6 +20,7 @@ public class NoteGeneralDeAnnee {
 private Long id;
 private Double moyenGeneral;//a calculer
 private String mention;
+@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne
 private Employe employé;
 private Date date;

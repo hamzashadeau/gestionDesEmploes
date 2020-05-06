@@ -26,5 +26,5 @@ public interface EmployeService {
 	public List<Employe> findLesEmployeAyantAvancementAujourdHui();
 	public List<Employe> findLesEmployeAyantLaNoteGeneraleAujourdHui();
 	 List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel);
-
+	 public int update(Employe employe);
 }

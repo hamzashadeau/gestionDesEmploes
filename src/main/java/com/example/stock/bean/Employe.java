@@ -41,11 +41,9 @@ private Departement dep;
 private Date dateEntree;
 @Temporal(TemporalType.DATE)
 private Date dateSortie;
-@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne()
 private GradeEmploye dernierGrade;
 private Integer compteBancaireRib;
-@JsonProperty(access = Access.WRITE_ONLY)
 @ManyToOne
 private NoteGeneralDeAnnee dernierNote;
 @Temporal(TemporalType.DATE)

@@ -23,6 +23,10 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+@PostMapping("update")
+public int update(@RequestBody Employe employe) {
+	return employeService.update(employe);
+}
 @GetMapping("findLesEmployeAyantEvaluationAujourdHui")
 public List<Employe> findLesEmployeAyantEvaluationAujourdHui() {
 	return employeService.findLesEmployeAyantEvaluationAujourdHui();

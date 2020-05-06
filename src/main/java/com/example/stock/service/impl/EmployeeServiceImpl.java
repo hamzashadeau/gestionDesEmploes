@@ -50,6 +50,49 @@ public List<Employe> findAll() {
 }
 
 @Override
+public int update(Employe employe) {
+//	if(findByid(employe.getId())!= null) {
+//return -1;
+//}else {
+	/* khas ikon date de sortie =null
+	khas ikon date entrée ! = null
+			khas ikon ga3 les champs 3amrin le nom et email ghadi iverifia forme dialhoom
+			khas ikon cin ma kayenex 3and chi wajed akher
+			khas ikon doti ma kayenex 3and chi wahed akher
+			khas ikon age <30*/
+	//ghadi ncree grade dil dak employe ou ndiro dik grade hi dernier grade
+	//ghadi ncree solde employe net en fonction de  grade khasna ncriw fonction returni salaire net en fonction de grade
+	// ghadi nzido les salaire akherin
+	// ghadi ncriw solde congé 
+   // ghadi ndiro date de prochaine evalution , note,
+	Departement dep  = departementService.findByNom(employe.getDep().getNom());
+	employe.setDep(dep);
+	Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
+	employe.setFonction(fct);
+	employe.setSoldeRestantesCongéExceptionnel(10);
+	employe.setDateDeProchainNote(DateUlils.getDateDeNote(employe.getDernierGrade().getDateDeAffectation()));
+	Date date = employe.getDernierGrade().getDateDeAffectation();
+	employe.setDateAvancementPrevue(null);
+	employe.setSup(dep.getChef());
+	System.out.println( employe.getDernierGrade());
+	System.out.println(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
+	employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
+	Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
+	employe.setDernierGrade(null);;
+	employe.setDernierNote(null);;
+	employeDao.save(employe);
+	GradeEmploye gradeEmploye = new GradeEmploye();
+	gradeEmploye.setEmploye(employe);
+	gradeEmploye.setDateDeAffectation(date);
+	gradeEmploye.setGrade(grade);
+	employe.setDernierGrade(gradeEmploye);
+	gradeEmployeDao.save(gradeEmploye);
+
+//	GradeEmploye gradeEmploye  = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
+	employeDao.save(employe);
+		return 1;
+}
+@Override
 public int save(Employe employe) {
 //	if(findByid(employe.getId())!= null) {
 //return -1;
@@ -90,7 +133,6 @@ public int save(Employe employe) {
 
 //	GradeEmploye gradeEmploye  = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
 	employeDao.save(employe);
-
 		return 1;
 }
 //	}
@@ -105,11 +147,20 @@ public Employe findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+Employe employe = findByid(id);
+if(employe.getSup()== null) {
+	return -2;
+}else {
+	List<GradeEmploye> gradeEmployes = gradeEmployeService.findByEmployeid(id);
+gradeEmployes.forEach( grade -> {
+gradeEmployeService.deleteById(grade.getId());
+});
 	employeDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;
 	} else
 		return -1;
+}
 }
 
 @Override
