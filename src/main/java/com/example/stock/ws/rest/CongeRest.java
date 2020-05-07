@@ -20,6 +20,15 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+@GetMapping("findAll")
+public List<Congé> findAll() {
+	return congeService.findAll();
+}
+@GetMapping("deleteById/id/{id}")
+public int deleteById(@PathVariable Long id) {
+	return congeService.deleteById(id);
+}
+
 @GetMapping("findByCongeeLibelle/libelle/{libelle}")
 public List<Congé> findByCongeeLibelle(@PathVariable String libelle) {
 	return congeService.findByCongeeLibelle(libelle);

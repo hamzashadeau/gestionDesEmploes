@@ -7,20 +7,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.PermanenceAdministrativeDao;
+import com.example.stock.bean.Employe;
 import com.example.stock.bean.PermanenceAdministrative;
+import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.PermanenceAdministrativeService;
 
 @Service
 public class PermanenceAdministrativeServiceImpl implements PermanenceAdministrativeService {
 @Autowired
 private PermanenceAdministrativeDao permanenceAdministrativeDao;
+@Autowired
+private EmployeService employeService;
 
 
 @Override
 public int save(PermanenceAdministrative permanenceAdministrative) {
-	if(findByid(permanenceAdministrative.getId())!= null) {
+	Employe employe = employeService.findByDoti(permanenceAdministrative.getEmploye().getDoti());
+	if(employe == null) {
+		return -2;
+	}else 	if(findByid(permanenceAdministrative.getId())!= null) {
 return -1;
 }else {
+	permanenceAdministrative.setEmploye(employe);
 	permanenceAdministrativeDao.save(permanenceAdministrative);
 		return 1;
 }

@@ -100,8 +100,8 @@ public String sendmail() throws AddressException, MessagingException, IOExceptio
 	   msg.setFrom(new InternetAddress("etablissementfstg@gmail.com", false));
 
 	   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("abiabiya10042003@gmail.com"));
-	   msg.setSubject("Tutorials point email");
-	   msg.setContent("Tutorials point email", "text/html");
+	   msg.setSubject("votre est grade est passée par succes\", \"text/html");
+	   msg.setContent("votre est grade est passée par succes", "text/html");
 	   msg.setSentDate(new Date());
 
 	   MimeBodyPart messageBodyPart = new MimeBodyPart();

@@ -7,19 +7,36 @@ import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.CongeDao;
 import com.example.stock.bean.Congé;
+import com.example.stock.bean.Employe;
+import com.example.stock.bean.TypeCongee;
 import com.example.stock.service.facade.CongeService;
+import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.TypeCongeeService;
 
 @Service
 public class CongeServiceImpl implements CongeService {
 @Autowired
 private CongeDao congeDao;
+@Autowired
+private EmployeService employeService;
+@Autowired
+private TypeCongeeService typeCongeeService;
 
 
 @Override
 public int save(Congé congé) {
+	Employe employe = employeService.findByDoti(congé.getEmploye().getDoti());
+	TypeCongee congé2 = typeCongeeService.findByLibelle(congé.getCongee().getLibelle());
+	if(employe == null) {
+		return -2;
+	}else if(congé2 == null) {
+		return -3;
+	}else 
 	if(findByid(congé.getId())!= null) {
 return -1;
 }else {
+	congé.setCongee(congé2);
+	congé.setEmploye(employe);
 	congeDao.save(congé);
 		return 1;
 }

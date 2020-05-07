@@ -35,6 +35,12 @@ public Long getId() {
 public void setId(Long id) {
 	this.id = id;
 }
+public String getLibelle() {
+	return libelle;
+}
+public void setLibelle(String libelle) {
+	this.libelle = libelle;
+}
 
 
 

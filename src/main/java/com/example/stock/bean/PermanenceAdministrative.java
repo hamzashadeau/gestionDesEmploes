@@ -56,17 +56,28 @@ public Employe getEmploye() {
 public void setEmploye(Employe employe) {
 	this.employe = employe;
 }
-public PermanenceAdministrative(Integer periode, Boolean recuperation, Integer periodeDeRecuperation, Employe employe) {
+
+public Date getDate() {
+	return date;
+}
+public void setDate(Date date) {
+	this.date = date;
+}
+public PermanenceAdministrative(Long id, Integer periode, Boolean recuperation, Integer periodeDeRecuperation,
+		Employe employe, Date date) {
 	super();
+	this.id = id;
 	this.periode = periode;
 	this.recuperation = recuperation;
 	this.periodeDeRecuperation = periodeDeRecuperation;
 	this.employe = employe;
+	this.date = date;
 }
 @Override
 public String toString() {
 	return "PermanenceAdministrative [id=" + id + ", periode=" + periode + ", recuperation=" + recuperation
-			+ ", periodeDeRecuperation=" + periodeDeRecuperation + ", employe=" + employe + "]";
+			+ ", periodeDeRecuperation=" + periodeDeRecuperation + ", employe=" + employe + ", date=" + date + "]";
 }
+
 
 }
