@@ -49,23 +49,23 @@ public List<GradeEmploye> findAll() {
 	return gradeDao.findAll();
 }
 
-@Override
-public List<GradeEmploye> findByEmployeid(Long id) {
-	return gradeDao.findByEmployeId(id);
-}
 
 @Override
-public List<GradeEmploye> findByEmployeEmail(String email) {
-	return gradeDao.findByEmployeEmail(email);
-}
-
-@Override
-public List<GradeEmploye> findByEmployeDoti(Integer doti) {
-	return gradeDao.findByEmployeDoti(doti);
+public List<GradeEmploye> findByDoti(Integer doti) {
+	return gradeDao.findByDoti(doti);
 }
 
 @Override
 public List<GradeEmploye> findByDateDeAffectation(Date dateAfectation) {
 	return gradeDao.findByDateDeAffectation(dateAfectation);
+}
+
+@Override
+public List<GradeEmploye> findByEtat(String etat) {
+	return gradeDao.findByEtat(etat);
+}
+@Override
+public List<GradeEmploye> findGradeNonTraite() {
+	return gradeDao.findByEtat("en traitement");
 }
 }

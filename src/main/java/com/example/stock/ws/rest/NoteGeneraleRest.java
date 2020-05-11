@@ -1,5 +1,6 @@
 package com.example.stock.ws.rest;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.stock.bean.Employe;
 import com.example.stock.bean.NoteGeneralDeAnnee;
 import com.example.stock.service.facade.NoteGeneraleService;
 @RestController
@@ -23,26 +25,26 @@ public class NoteGeneraleRest {
 @Autowired
 private NoteGeneraleService noteGeneralDeAnneeService;
 
-@GetMapping("findByEmployéId/id/{id}")
-public List<NoteGeneralDeAnnee> findByEmployéId(@PathVariable Long id) {
-	return noteGeneralDeAnneeService.findByEmployéId(id);
+@GetMapping("findByDateAndEmployeDoti/date/{date}/doti/{doti}")
+public NoteGeneralDeAnnee findByDateAndEmployeDoti(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date,@PathVariable Integer doti) {
+	return noteGeneralDeAnneeService.findByDateAndEmployeDoti(date, doti);
 }
 
-@GetMapping("findByEmployéEmail/email/{email}")
-public List<NoteGeneralDeAnnee> findByEmployéEmail(@PathVariable String email) {
-	return noteGeneralDeAnneeService.findByEmployéEmail(email);
+
+@GetMapping("findByEmployeId/id/{id}")
+public List<NoteGeneralDeAnnee> findByEmployeId(@PathVariable Long id) {
+	return noteGeneralDeAnneeService.findByEmployeId(id);
 }
 
-@GetMapping("findByEmployéDoti/doti/{doti}")
-public List<NoteGeneralDeAnnee> findByEmployéDoti(@PathVariable Integer doti) {
-	return noteGeneralDeAnneeService.findByEmployéDoti(doti);
+@GetMapping("findByEmployeEmail/email/{email}")
+public List<NoteGeneralDeAnnee> findByEmployeEmail(@PathVariable String email) {
+	return noteGeneralDeAnneeService.findByEmployeEmail(email);
 }
 
-@GetMapping("findByDate/date/{date}")
-public List<NoteGeneralDeAnnee> findByDate(@PathVariable  @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
-	return noteGeneralDeAnneeService.findByDate(date);
+@GetMapping("findByEmployeDoti/doti/{doti}")
+public List<NoteGeneralDeAnnee> findByEmployeDoti(@PathVariable Integer doti) {
+	return noteGeneralDeAnneeService.findByEmployeDoti(doti);
 }
-
 
 @GetMapping("findByid/id/{id}")
 public NoteGeneralDeAnnee findByid(@PathVariable Long id) {

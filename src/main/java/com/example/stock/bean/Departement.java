@@ -40,8 +40,10 @@ public Departement() {
 	super();
 	// TODO Auto-generated constructor stub
 }
-public Departement(String nom, Employe chef) {
+
+public Departement(Long id, String nom, Employe chef) {
 	super();
+	this.id = id;
 	this.nom = nom;
 	this.chef = chef;
 }

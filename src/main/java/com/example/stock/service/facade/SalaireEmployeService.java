@@ -6,9 +6,9 @@ import com.example.stock.bean.SalaireEmploye;
 
 public interface SalaireEmployeService {
 	SalaireEmploye findByid(Long id);
-	List<SalaireEmploye> findByEmployeId(Long id);
-	List<SalaireEmploye> findByEmployeEmail(String email);
-	List<SalaireEmploye> findByEmployeDoti(Integer doti);
+	SalaireEmploye findByEmployeId(Long id);
+	SalaireEmploye findByEmployeEmail(String email);
+	SalaireEmploye findByEmployeDoti(Integer doti);
 	List<SalaireEmploye> findBySalaireNet(Double montantDeBase);
 	List<SalaireEmploye> findByMonatntModifie(Double montantModifier);
 	List<SalaireEmploye> findAll();

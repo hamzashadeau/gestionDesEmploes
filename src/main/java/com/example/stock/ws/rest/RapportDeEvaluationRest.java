@@ -22,6 +22,11 @@ public class RapportDeEvaluationRest {
 @Autowired
 private RapportDeEvaluationService emoulumentsService;
 
+@GetMapping("findByNouveauGradeIdAndEmployeDoti/id/{id}/doti/{doti}")
+public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(@PathVariable Long id,@PathVariable Integer doti) {
+	return emoulumentsService.findByNouveauGradeIdAndEmployeDoti(id, doti);
+}
+
 @GetMapping("findByEmployeEmail/email/{email}")
 public List<RapportDeEvaluation> findByEmployeEmail(@PathVariable String email) {
 	return emoulumentsService.findByEmployeEmail(email);

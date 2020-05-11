@@ -23,6 +23,14 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+@GetMapping("findByDernierGradeGradeLibelle/libelle/{libelle}")
+public List<Employe> findByDernierGradeGradeLibelle(@PathVariable String libelle) {
+	return employeService.findByDernierGradeGradeLibelle(libelle);
+}
+@GetMapping("findByDepNom/nomDepartement/{nomDepartement}")
+public List<Employe> findByDepNom(@PathVariable String nomDepartement) {
+	return employeService.findByDepNom(nomDepartement);
+}
 @PostMapping("update")
 public int update(@RequestBody Employe employe) {
 	return employeService.update(employe);

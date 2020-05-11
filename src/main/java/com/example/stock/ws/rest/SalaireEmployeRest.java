@@ -22,7 +22,7 @@ public class SalaireEmployeRest {
 private SalaireEmployeService salaireEmployeService;
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<SalaireEmploye> findByEmployeDoti(@PathVariable Integer doti) {
+public SalaireEmploye findByEmployeDoti(@PathVariable Integer doti) {
 	return salaireEmployeService.findByEmployeDoti(doti);
 }
 @GetMapping("findBySalaireNet/montantDeBase/{montantDeBase}")
@@ -30,11 +30,11 @@ public List<SalaireEmploye> findBySalaireNet(@PathVariable Double montantDeBase)
 	return salaireEmployeService.findBySalaireNet(montantDeBase);
 }
 @GetMapping("findByEmployeId/id/{id}")
-public List<SalaireEmploye> findByEmployeId(@PathVariable Long id) {
+public SalaireEmploye findByEmployeId(@PathVariable Long id) {
 	return salaireEmployeService.findByEmployeId(id);
 }
 @GetMapping("findByEmployeEmail/email/{email}")
-public List<SalaireEmploye> findByEmployeEmail(@PathVariable String email) {
+public SalaireEmploye findByEmployeEmail(@PathVariable String email) {
 	return salaireEmployeService.findByEmployeEmail(email);
 }
 @GetMapping("findByid/id/{id}")

@@ -38,6 +38,12 @@ public Revenu(String libelle, Double montant) {
 public String toString() {
 	return "Revenu [id=" + id + ", libelle=" + libelle + ", montant=" + montant + "]";
 }
+public Double getMontant() {
+	return montant;
+}
+public void setMontant(Double montant) {
+	this.montant = montant;
+}
 
 
 

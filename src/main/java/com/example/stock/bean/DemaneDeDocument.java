@@ -20,13 +20,26 @@ private Long id;
 private Employe employe;
 @Temporal(TemporalType.DATE)
 private Date dateDemande;
-private String typeDeDocument;
+@ManyToOne
+private TypeDocument typeDeDocument;
 private String maniereDeRetrait;
 private String etat;
 public DemaneDeDocument() {
 	super();
 	// TODO Auto-generated constructor stub
 }
+
+
+public TypeDocument getTypeDeDocument() {
+	return typeDeDocument;
+}
+
+
+public void setTypeDeDocument(TypeDocument typeDeDocument) {
+	this.typeDeDocument = typeDeDocument;
+}
+
+
 public Long getId() {
 	return id;
 }
@@ -45,12 +58,6 @@ public Date getDateDemande() {
 public void setDateDemande(Date dateDemande) {
 	this.dateDemande = dateDemande;
 }
-public String getTypeDeDocument() {
-	return typeDeDocument;
-}
-public void setTypeDeDocument(String typeDeDocument) {
-	this.typeDeDocument = typeDeDocument;
-}
 public String getManiereDeRetrait() {
 	return maniereDeRetrait;
 }
@@ -63,19 +70,26 @@ public String getEtat() {
 public void setEtat(String etat) {
 	this.etat = etat;
 }
-public DemaneDeDocument(Employe employe, Date dateDemande, String typeDeDocument, String maniereDeRetrait,
-		String etat) {
+
+
+public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument typeDeDocument,
+		String maniereDeRetrait, String etat) {
 	super();
+	this.id = id;
 	this.employe = employe;
 	this.dateDemande = dateDemande;
 	this.typeDeDocument = typeDeDocument;
 	this.maniereDeRetrait = maniereDeRetrait;
 	this.etat = etat;
 }
+
+
 @Override
 public String toString() {
 	return "DemaneDeDocument [id=" + id + ", employe=" + employe + ", dateDemande=" + dateDemande + ", typeDeDocument="
 			+ typeDeDocument + ", maniereDeRetrait=" + maniereDeRetrait + ", etat=" + etat + "]";
 }
+
+
 
 }

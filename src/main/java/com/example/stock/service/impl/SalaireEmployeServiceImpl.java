@@ -48,12 +48,12 @@ public List<SalaireEmploye> findAll() {
 }
 
 @Override
-public List<SalaireEmploye> findByEmployeId(Long id) {
+public SalaireEmploye findByEmployeId(Long id) {
 	return salaireEmployeDao.findByEmployeId(id);
 }
 
 @Override
-public List<SalaireEmploye> findByEmployeEmail(String email) {
+public SalaireEmploye findByEmployeEmail(String email) {
 	return salaireEmployeDao.findByEmployeEmail(email);
 }
 
@@ -64,7 +64,7 @@ public List<SalaireEmploye> findByMonatntModifie(Double montantModifier) {
 }
 
 @Override
-public List<SalaireEmploye> findByEmployeDoti(Integer doti) {
+public SalaireEmploye findByEmployeDoti(Integer doti) {
 	return salaireEmployeDao.findByEmployeDoti(doti);
 }
 

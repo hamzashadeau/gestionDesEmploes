@@ -24,19 +24,21 @@ public class GradeEmployeRest {
 private GradeEmployeService gradeService;
 
 
-@GetMapping("findByEmployeid/id/{id}")
-public List<GradeEmploye> findByEmployeid(@PathVariable Long id) {
-	return gradeService.findByEmployeid(id);
+@GetMapping("findGradeNonTraite")
+public List<GradeEmploye> findGradeNonTraite() {
+	return gradeService.findGradeNonTraite();
 }
 
-@GetMapping("findByEmployeEmail/email/{email}")
-public List<GradeEmploye> findByEmployeEmail(@PathVariable String email) {
-	return gradeService.findByEmployeEmail(email);
+@GetMapping("findByEtat/etat/{etat}")
+public List<GradeEmploye> findByEtat(@PathVariable String etat) {
+	return gradeService.findByEtat(etat);
 }
 
-@GetMapping("findByEmployeDoti/doti/{doti}")
-public List<GradeEmploye> findByEmployeDoti(@PathVariable Integer doti) {
-	return gradeService.findByEmployeDoti(doti);
+
+
+@GetMapping("findByDoti/doti/{doti}")
+public List<GradeEmploye> findByDoti(@PathVariable Integer doti) {
+	return gradeService.findByDoti(doti);
 }
 
 @GetMapping("findByDateDeAffectation/dateAfectation/{dateAfectation}")

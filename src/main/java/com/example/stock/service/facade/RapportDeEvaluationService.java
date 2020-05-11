@@ -15,5 +15,6 @@ public interface RapportDeEvaluationService {
 	List<RapportDeEvaluation> findAll();
 	int save(RapportDeEvaluation rapportDeEvaluation);
 	int deleteById(Long id);
+	RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id,Integer doti);
 
 }

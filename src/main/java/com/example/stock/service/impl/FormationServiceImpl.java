@@ -53,22 +53,22 @@ public List<Formation> findAll() {
 }
 
 @Override
-public List<Formation> findByemployéId(Long id) {
-	return formationDao.findByEmployéId(id);
+public List<Formation> findByemployeId(Long id) {
+	return formationDao.findByEmployeId(id);
 }
 
 @Override
-public List<Formation> findByemployéEmail(String email) {
-	return formationDao.findByEmployéEmail(email);
+public List<Formation> findByemployeEmail(String email) {
+	return formationDao.findByEmployeEmail(email);
 }
 
 @Override
-public List<Formation> findByemployéDoti(Integer doti) {
-	return formationDao.findByEmployéDoti(doti);
+public List<Formation> findByemployeDoti(Integer doti) {
+	return formationDao.findByEmployeDoti(doti);
 }
 @Override
 public List<Formation> findFormationDeEmploye(Employe employe) {
-	List<Formation> punitionEmployes = findByemployéDoti(employe.getDoti());
+	List<Formation> punitionEmployes = findByemployeDoti(employe.getDoti());
 	List<Formation> resultat = new ArrayList<Formation>();
 	for (Formation punitionEmploye : punitionEmployes) {
 		if(DateUlils.VerifieDate(punitionEmploye.getAnnee()))

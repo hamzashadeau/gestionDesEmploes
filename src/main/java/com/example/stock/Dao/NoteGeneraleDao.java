@@ -1,6 +1,7 @@
 package com.example.stock.Dao;
 
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,8 @@ import com.example.stock.bean.NoteGeneralDeAnnee;
 
 @Repository
 public interface NoteGeneraleDao extends JpaRepository<NoteGeneralDeAnnee, Long> {
-List<NoteGeneralDeAnnee> findByEmployéId(Long id);
-List<NoteGeneralDeAnnee> findByEmployéEmail(String email);
-List<NoteGeneralDeAnnee> findByEmployéDoti(Integer doti);
-List<NoteGeneralDeAnnee> findByDate(Date date);
+List<NoteGeneralDeAnnee> findByEmployeId(Long id);
+List<NoteGeneralDeAnnee> findByEmployeEmail(String email);
+List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti);
+NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date,Integer doti);
 }

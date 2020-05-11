@@ -17,13 +17,13 @@ private GradeDao gradeDao;
 
 @Override
 public int save(Grade grade) {
-	if(findByid(grade.getId())!= null) {
-return -1;
-}else {
+//	if(findByid(grade.getId())!= null) {
+//return -1;
+//}else {
 	gradeDao.save(grade);
 		return 1;
 }
-	}
+//	}
 
 @Override
 public Grade findByid(Long id) {

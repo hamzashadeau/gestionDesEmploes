@@ -6,11 +6,9 @@ import java.util.List;
 import com.example.stock.bean.GradeEmploye;
 
 public interface GradeEmployeService {
-	List<GradeEmploye> findByEmployeid(Long id);
 
-	List<GradeEmploye> findByEmployeEmail(String email);
 
-	List<GradeEmploye> findByEmployeDoti(Integer doti);
+	List<GradeEmploye> findByDoti(Integer doti);
 
 	List<GradeEmploye> findByDateDeAffectation(Date dateAfectation);
 
@@ -21,5 +19,9 @@ public interface GradeEmployeService {
 	int deleteById(Long id);
 
 	public GradeEmploye findByid(Long id);
+	
+	List<GradeEmploye> findByEtat(String etat);
+
+	public List<GradeEmploye> findGradeNonTraite();
 
 }

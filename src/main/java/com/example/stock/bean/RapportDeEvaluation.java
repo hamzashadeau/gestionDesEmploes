@@ -22,9 +22,9 @@ private Double moyen;
 private String mention;
 private String remarques;
 @OneToMany
-private List<Prix> prix;
+private List<PrixEmploye> prix;
 @OneToMany
-private List<Punition> punition;
+private List<PunitionEmploye> punition;
 @OneToMany
 private List<Formation> formation;
 @OneToMany
@@ -75,19 +75,20 @@ public void setRemarques(String remarques) {
 	this.remarques = remarques;
 }
 
-public List<Prix> getPrix() {
+
+public List<PrixEmploye> getPrix() {
 	return prix;
 }
 
-public void setPrix(List<Prix> prix) {
+public void setPrix(List<PrixEmploye> prix) {
 	this.prix = prix;
 }
 
-public List<Punition> getPunition() {
+public List<PunitionEmploye> getPunition() {
 	return punition;
 }
 
-public void setPunition(List<Punition> punition) {
+public void setPunition(List<PunitionEmploye> punition) {
 	this.punition = punition;
 }
 
@@ -115,9 +116,11 @@ public void setNouveauGrade(GradeEmploye nouveauGrade) {
 	this.nouveauGrade = nouveauGrade;
 }
 
-public RapportDeEvaluation(Employe employe, GradeEmploye nouveauGrade, Double moyen, String mention, String remarques,
-		List<Prix> prix, List<Punition> punition, List<Formation> formation, List<NoteGeneralDeAnnee> noteGenerale) {
+public RapportDeEvaluation(Long id, Employe employe, GradeEmploye nouveauGrade, Double moyen, String mention,
+		String remarques, List<PrixEmploye> prix, List<PunitionEmploye> punition, List<Formation> formation,
+		List<NoteGeneralDeAnnee> noteGenerale) {
 	super();
+	this.id = id;
 	this.employe = employe;
 	this.nouveauGrade = nouveauGrade;
 	this.moyen = moyen;
@@ -135,11 +138,6 @@ public String toString() {
 			+ moyen + ", mention=" + mention + ", remarques=" + remarques + ", prix=" + prix + ", punition=" + punition
 			+ ", formation=" + formation + ", noteGenerale=" + noteGenerale + "]";
 }
-
-
-
-
-
 
 
 }

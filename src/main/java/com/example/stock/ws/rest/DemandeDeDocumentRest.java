@@ -1,5 +1,6 @@
 package com.example.stock.ws.rest;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +15,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.service.facade.DemandeDeDocumentService;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/demandeDeDocument/")
 public class DemandeDeDocumentRest {
 @Autowired
 private DemandeDeDocumentService demandeDeDocumentService;
+
+@GetMapping("findDemandeNonTraite")
+public List<DemaneDeDocument> findDemandeNonTraite() {
+	return findByEtat("non traité");
+}
+
+@GetMapping("hellowordl")
+public String hellowordl() throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.hellowordl();
+}
 
 @GetMapping("findByEmployeId/id/{id}")
 public List<DemaneDeDocument> findByEmployeId(@PathVariable Long id) {

@@ -7,23 +7,32 @@ import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.DepartementDao;
 import com.example.stock.bean.Departement;
+import com.example.stock.bean.Employe;
 import com.example.stock.service.facade.DepartementService;
+import com.example.stock.service.facade.EmployeService;
 
 @Service
 public class DepartementServiceImpl implements DepartementService {
 @Autowired
 private DepartementDao departementDao;
-
+@Autowired
+private EmployeService employeService;
 
 @Override
 public int save(Departement departement) {
-	if(findByid(departement.getId())!= null) {
-return -1;
-}else {
+	Employe employe = employeService.findByDoti(departement.getChef().getDoti());
+	if(employe == null) {
+		return -2;
+	}else {
+//	if(findByid(departement.getId())!= null) {
+//return -1;
+//}else {
+	departement.setChef(employe);
 	departementDao.save(departement);
 		return 1;
-}
+//}
 	}
+}
 
 @Override
 public Departement findByid(Long id) {

@@ -70,6 +70,11 @@ public List<RapportDeEvaluation> findByNouveauGradeId(Long id) {
 	return rapportDeEvaluationDao.findByNouveauGradeId(id);
 }
 
+@Override
+public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id, Integer doti) {
+	return rapportDeEvaluationDao.findByNouveauGradeIdAndEmployeDoti(id, doti);
+}
+
 
 
 

@@ -17,13 +17,13 @@ private NoteDao noteDao;
 
 @Override
 public int save(Note note) {
-	if(findByid(note.getId())!= null) {
-return -1;
-}else {
+//	if(findByid(note.getId())!= null) {
+//return -1;
+//}else {
 	noteDao.save(note);
 		return 1;
 }
-	}
+	//}
 
 @Override
 public Note findByid(Long id) {

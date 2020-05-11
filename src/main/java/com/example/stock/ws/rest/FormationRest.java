@@ -27,19 +27,19 @@ public List<Formation> findFormationDeEmploye(@RequestBody Employe employe) {
 	return formationService.findFormationDeEmploye(employe);
 }
 
-@GetMapping("findByemployéId/id/{id}")
-public List<Formation> findByemployéId(@PathVariable Long id) {
-	return formationService.findByemployéId(id);
+@GetMapping("findByemployeId/id/{id}")
+public List<Formation> findByemployeId(@PathVariable Long id) {
+	return formationService.findByemployeId(id);
 }
 
-@GetMapping("findByemployéEmail/email/{email}")
-public List<Formation> findByemployéEmail(@PathVariable String email) {
-	return formationService.findByemployéEmail(email);
+@GetMapping("findByemployeEmail/email/{email}")
+public List<Formation> findByemployeEmail(@PathVariable String email) {
+	return formationService.findByemployeEmail(email);
 }
 
-@GetMapping("findByemployéDoti/doti/{doti}")
-public List<Formation> findByemployéDoti(@PathVariable Integer doti) {
-	return formationService.findByemployéDoti(doti);
+@GetMapping("findByemployeDoti/doti/{doti}")
+public List<Formation> findByemployeDoti(@PathVariable Integer doti) {
+	return formationService.findByemployeDoti(doti);
 }
 
 

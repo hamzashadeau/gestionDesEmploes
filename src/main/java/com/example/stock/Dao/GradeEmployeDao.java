@@ -11,8 +11,8 @@ import com.example.stock.bean.GradeEmploye;
 
 @Repository
 public interface GradeEmployeDao extends JpaRepository<GradeEmploye, Long> {
-List<GradeEmploye> findByEmployeId(Long id);
-List<GradeEmploye> findByEmployeEmail(String email);
-List<GradeEmploye> findByEmployeDoti(Integer doti);
+List<GradeEmploye> findByDoti(Integer doti);
 List<GradeEmploye> findByDateDeAffectation(Date dateAfectation);
+List<GradeEmploye> findByEtat(String etat);
+
 }

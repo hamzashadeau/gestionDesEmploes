@@ -6,11 +6,11 @@ import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 
 public interface FormationService {
-	List<Formation> findByemployéId(Long id);
+	List<Formation> findByemployeId(Long id);
 
-	List<Formation> findByemployéEmail(String email);
+	List<Formation> findByemployeEmail(String email);
 
-	List<Formation> findByemployéDoti(Integer doti);
+	List<Formation> findByemployeDoti(Integer doti);
 
 	List<Formation> findAll();
 

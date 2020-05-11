@@ -13,9 +13,9 @@ import com.example.stock.bean.SalaireEmploye;
 
 @Repository
 public interface SalaireEmployeDao extends JpaRepository<SalaireEmploye, Long> {
-	List<SalaireEmploye> findByEmployeId(Long id);
-	List<SalaireEmploye> findByEmployeEmail(String email);
-	List<SalaireEmploye> findByEmployeDoti(Integer doti);
+	SalaireEmploye findByEmployeId(Long id);
+	SalaireEmploye findByEmployeEmail(String email);
+	SalaireEmploye findByEmployeDoti(Integer doti);
 	List<SalaireEmploye> findBySalaireNet(Double montantDeBase);
 	List<SalaireEmploye> findByMonatntModifie(Double montantModifier);
 	

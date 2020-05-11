@@ -10,7 +10,7 @@ public class Grade {
 	@GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
 private String libelle;
-private Integer nombreDePosteNonOccupé;
+private Integer nombreDePosteNonOccupe;
 public Long getId() {
 	return id;
 }
@@ -23,30 +23,25 @@ public String getLibelle() {
 public void setLibelle(String libelle) {
 	this.libelle = libelle;
 }
-public Integer getNombreDePosteNonOccupé() {
-	return nombreDePosteNonOccupé;
+public Integer getNombreDePosteNonOccupe() {
+	return nombreDePosteNonOccupe;
 }
-public void setNombreDePosteNonOccupé(Integer nombreDePosteNonOccupé) {
-	this.nombreDePosteNonOccupé = nombreDePosteNonOccupé;
-}
-public Grade(String libelle, Integer nombreDePosteNonOccupé) {
-	super();
-	this.libelle = libelle;
-	this.nombreDePosteNonOccupé = nombreDePosteNonOccupé;
+public void setNombreDePosteNonOccupe(Integer nombreDePosteNonOccupe) {
+	this.nombreDePosteNonOccupe = nombreDePosteNonOccupe;
 }
 @Override
 public String toString() {
-	return "Grade [id=" + id + ", libelle=" + libelle + ", nombreDePosteNonOccupé=" + nombreDePosteNonOccupé + "]";
+	return "Grade [id=" + id + ", libelle=" + libelle + ", nombreDePosteNonOccupe=" + nombreDePosteNonOccupe + "]";
 }
 public Grade() {
 	super();
 	// TODO Auto-generated constructor stub
 }
-public Grade(Long id, String libelle, Integer nombreDePosteNonOccupé) {
+public Grade(Long id, String libelle, Integer nombreDePosteNonOccupe) {
 	super();
 	this.id = id;
 	this.libelle = libelle;
-	this.nombreDePosteNonOccupé = nombreDePosteNonOccupé;
+	this.nombreDePosteNonOccupe = nombreDePosteNonOccupe;
 }
 
 }

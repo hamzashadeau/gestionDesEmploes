@@ -259,9 +259,4 @@ public String toString() {
 			+ soldeRestantesCongéExceptionnel + "]";
 }
 
-
-
-
-
-
 }

@@ -25,8 +25,8 @@ public int save(PermanenceAdministrative permanenceAdministrative) {
 	Employe employe = employeService.findByDoti(permanenceAdministrative.getEmploye().getDoti());
 	if(employe == null) {
 		return -2;
-	}else 	if(findByid(permanenceAdministrative.getId())!= null) {
-return -1;
+//	}else 	if(findByid(permanenceAdministrative.getId())!= null) {
+//return -1;
 }else {
 	permanenceAdministrative.setEmploye(employe);
 	permanenceAdministrativeDao.save(permanenceAdministrative);

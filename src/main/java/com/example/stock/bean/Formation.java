@@ -16,13 +16,13 @@ public class Formation {
 	private Long id;
 private String 	attestation ; 
 private String	domaine; 
-private String	établissement ;
+private String	etablissement ;
 private String	ville;
 @Temporal(TemporalType.DATE)
 private Date annee;
 private String mention;
 @ManyToOne()
-private Employe	employé;
+private Employe	employe;
 public Long getId() {
 	return id;
 }
@@ -41,12 +41,7 @@ public String getDomaine() {
 public void setDomaine(String domaine) {
 	this.domaine = domaine;
 }
-public String getÉtablissement() {
-	return établissement;
-}
-public void setÉtablissement(String établissement) {
-	this.établissement = établissement;
-}
+
 public String getVille() {
 	return ville;
 }
@@ -65,32 +60,41 @@ public String getMention() {
 public void setMention(String mention) {
 	this.mention = mention;
 }
-public Employe getEmployé() {
-	return employé;
+
+public Employe getEmploye() {
+	return employe;
 }
-public void setEmployé(Employe employé) {
-	this.employé = employé;
-}
-public Formation(String attestation, String domaine, String établissement, String ville, Date annee, String mention,
-		Employe employé) {
-	super();
-	this.attestation = attestation;
-	this.domaine = domaine;
-	this.établissement = établissement;
-	this.ville = ville;
-	this.annee = annee;
-	this.mention = mention;
-	this.employé = employé;
-}
-@Override
-public String toString() {
-	return "Formation [id=" + id + ", attestation=" + attestation + ", domaine=" + domaine + ", établissement="
-			+ établissement + ", ville=" + ville + ", annee=" + annee + ", mention=" + mention + ", employé=" + employé
-			+ "]";
+public void setEmploye(Employe employe) {
+	this.employe = employe;
 }
 public Formation() {
 	super();
 	// TODO Auto-generated constructor stub
 }
+public String getEtablissement() {
+	return etablissement;
+}
+public void setEtablissement(String etablissement) {
+	this.etablissement = etablissement;
+}
+public Formation(Long id, String attestation, String domaine, String etablissement, String ville, Date annee,
+		String mention, Employe employe) {
+	super();
+	this.id = id;
+	this.attestation = attestation;
+	this.domaine = domaine;
+	this.etablissement = etablissement;
+	this.ville = ville;
+	this.annee = annee;
+	this.mention = mention;
+	this.employe = employe;
+}
+@Override
+public String toString() {
+	return "Formation [id=" + id + ", attestation=" + attestation + ", domaine=" + domaine + ", etablissement="
+			+ etablissement + ", ville=" + ville + ", annee=" + annee + ", mention=" + mention + ", employe=" + employe
+			+ "]";
+}
+
 
 }

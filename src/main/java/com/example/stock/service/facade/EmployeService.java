@@ -12,7 +12,9 @@ public interface EmployeService {
 	List<Employe> findBySupId(Long id);
 	List<Employe> findByDateAvancementPrevue(Date dateAvancementPrevue);
 	List<Employe> findByDateDeProchainNote(Date dateDeProchainNote);
+	List<Employe> findByDernierGradeGradeLibelle(String libelle);
 	List<Employe> findByDateProchainEvaluation(Date dateProchainEvaluation);
+	List<Employe> findByDepNom(String nomDepartement);
 	List<Employe> findAll();
 	int save(Employe employe);
 	int deleteById(Long id);

@@ -13,8 +13,9 @@ import com.example.stock.bean.RapportDeEvaluation;
 @Repository
 public interface RapportDeEvaluationDao extends JpaRepository<RapportDeEvaluation, Long> {
 List<RapportDeEvaluation> findByEmployeEmail(String email);
-List<RapportDeEvaluation> findByNouveauGradeId(Long id);
+RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id,Integer doti);
 List<RapportDeEvaluation> findByEmployeDoti(Integer doti);
 List<RapportDeEvaluation> findByEmployeId(Long id);
+List<RapportDeEvaluation> findByNouveauGradeId(Long id);
 
 }

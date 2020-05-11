@@ -82,7 +82,7 @@ public int update(Employe employe) {
 	employe.setDernierNote(null);;
 	employeDao.save(employe);
 	GradeEmploye gradeEmploye = new GradeEmploye();
-	gradeEmploye.setEmploye(employe);
+	gradeEmploye.setDoti(employe.getDoti());
 	gradeEmploye.setDateDeAffectation(date);
 	gradeEmploye.setGrade(grade);
 	employe.setDernierGrade(gradeEmploye);
@@ -125,7 +125,7 @@ public int save(Employe employe) {
 	employe.setDernierNote(null);;
 	employeDao.save(employe);
 	GradeEmploye gradeEmploye = new GradeEmploye();
-	gradeEmploye.setEmploye(employe);
+	gradeEmploye.setDoti(employe.getDoti());
 	gradeEmploye.setDateDeAffectation(date);
 	gradeEmploye.setGrade(grade);
 	employe.setDernierGrade(gradeEmploye);
@@ -151,7 +151,7 @@ Employe employe = findByid(id);
 if(employe.getSup()== null) {
 	return -2;
 }else {
-	List<GradeEmploye> gradeEmployes = gradeEmployeService.findByEmployeid(id);
+	List<GradeEmploye> gradeEmployes = gradeEmployeService.findByDoti(employe.getDoti());
 gradeEmployes.forEach( grade -> {
 gradeEmployeService.deleteById(grade.getId());
 });
@@ -314,4 +314,16 @@ return resultat;
 public List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel) {
 	return employeDao.findBySoldeRestantesCongéExceptionnel(soldeRestantesCongéExceptionnel);
 }
+
+@Override
+public List<Employe> findByDepNom(String nomDepartement) {
+	return employeDao.findByDepNom(nomDepartement);
+}
+
+@Override
+public List<Employe> findByDernierGradeGradeLibelle(String libelle) {
+	return employeDao.findByDernierGradeGradeLibelle(libelle);
+}
+
+
 }
