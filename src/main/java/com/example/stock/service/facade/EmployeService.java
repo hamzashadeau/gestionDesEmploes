@@ -1,9 +1,11 @@
 package com.example.stock.service.facade;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
 import com.example.stock.bean.Employe;
+import com.itextpdf.text.DocumentException;
 
 public interface EmployeService {
 	Employe findByCin(Integer cin);
@@ -29,4 +31,5 @@ public interface EmployeService {
 	public List<Employe> findLesEmployeAyantLaNoteGeneraleAujourdHui();
 	 List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel);
 	 public int update(Employe employe);
+	 public int listeDesEmployePdf() throws DocumentException, FileNotFoundException;
 }

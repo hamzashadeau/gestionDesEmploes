@@ -1,5 +1,6 @@
 package com.example.stock.ws.rest;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.Congé;
 import com.example.stock.service.facade.CongeService;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/conge/")
@@ -20,6 +22,14 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+@PostMapping("update")
+public int update(@RequestBody Congé congé) {
+	return congeService.update(congé);
+}
+@PostMapping("listeDesCongéPdf")
+public int listeDesCongéPdf(@RequestBody List<Congé> conges) throws DocumentException, FileNotFoundException {
+	return congeService.listeDesCongéPdf(conges);
+}
 @GetMapping("findAll")
 public List<Congé> findAll() {
 	return congeService.findAll();
@@ -44,10 +54,6 @@ public List<Congé> findByEmployeDoti(@PathVariable Integer doti) {
 	return congeService.findByEmployeDoti(doti);
 }
 
-@GetMapping("findByEtat/etat/{etat}")
-public List<Congé> findByEtat(@PathVariable String etat) {
-	return congeService.findByEtat(etat);
-}
 
 @PostMapping("save")
 public int save(@RequestBody Congé conge) {

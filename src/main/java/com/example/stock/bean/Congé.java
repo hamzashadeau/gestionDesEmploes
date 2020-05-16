@@ -23,8 +23,6 @@ private Employe employe;
 @ManyToOne
 private TypeCongee congee;
 private Integer periode;
-private String raison;
-private String etat;
 public Long getId() {
 	return id;
 }
@@ -49,18 +47,7 @@ public Integer getPeriode() {
 public void setPeriode(Integer periode) {
 	this.periode = periode;
 }
-public String getRaison() {
-	return raison;
-}
-public void setRaison(String raison) {
-	this.raison = raison;
-}
-public String getEtat() {
-	return etat;
-}
-public void setEtat(String etat) {
-	this.etat = etat;
-}
+
 public Congé() {
 	super();
 	// TODO Auto-generated constructor stub
@@ -71,21 +58,19 @@ public TypeCongee getCongee() {
 public void setCongee(TypeCongee congee) {
 	this.congee = congee;
 }
-public Congé(Date dateDeDebut, Employe employe, TypeCongee congee, Integer periode, String raison, String etat) {
+public Congé(Long id, Date dateDeDebut, Employe employe, TypeCongee congee, Integer periode) {
 	super();
+	this.id = id;
 	this.dateDeDebut = dateDeDebut;
 	this.employe = employe;
 	this.congee = congee;
 	this.periode = periode;
-	this.raison = raison;
-	this.etat = etat;
 }
 @Override
 public String toString() {
 	return "Congé [id=" + id + ", dateDeDebut=" + dateDeDebut + ", employe=" + employe + ", congee=" + congee
-			+ ", periode=" + periode + ", raison=" + raison + ", etat=" + etat + "]";
+			+ ", periode=" + periode + "]";
 }
-
 
 
 }

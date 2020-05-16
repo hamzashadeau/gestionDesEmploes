@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 
 public class DateUlils {
@@ -66,6 +67,42 @@ public class DateUlils {
 			break;
 		}
 		return getDateEvaluation(grade.getDateDeAffectation(), nombreAnnee);
+	}
+	public static String getNouvauGrade(Grade grade) {
+		String nouveauGrade = null;
+		switch (grade.getLibelle()) {
+		case "grade1":
+			nouveauGrade = "grade2";
+			break;
+		case "grade2":
+			nouveauGrade = "grade3";
+			break;
+		case "grade3":
+			nouveauGrade = "grade4";
+			break;
+		case "grade4":
+			nouveauGrade = "grade5";
+			break;
+		case "grade5":
+			nouveauGrade = "grade6";
+			break;
+		case "grade6":
+			nouveauGrade = "grade7";
+			break;
+		case "grade7":
+			nouveauGrade = "grade8";
+			break;
+		case "grade8":
+			nouveauGrade = "grade9";
+			break;
+		case "grade9":
+			nouveauGrade = "grade10";
+			break;
+		case "grade10":
+			nouveauGrade = "hors echelle";
+			break;
+		}
+		return nouveauGrade;
 	}
 
 	public static Date getDateAvancementnDeGrade(GradeEmploye grade, String mention) {
@@ -186,7 +223,11 @@ public class DateUlils {
 		Date date2 = new Date();
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
-
+		return milliSeconde1 < milliSeconde2 ? true : false;
+	}
+	public static boolean verifierDateSup(Date date1,Date date2) {
+		long milliSeconde1 = date1.getTime();
+		long milliSeconde2 = date2.getTime();
 		return milliSeconde1 < milliSeconde2 ? true : false;
 	}
 	public static String GetMention(Double moyen) {

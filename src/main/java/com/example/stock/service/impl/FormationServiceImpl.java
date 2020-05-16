@@ -71,7 +71,7 @@ public List<Formation> findFormationDeEmploye(Employe employe) {
 	List<Formation> punitionEmployes = findByemployeDoti(employe.getDoti());
 	List<Formation> resultat = new ArrayList<Formation>();
 	for (Formation punitionEmploye : punitionEmployes) {
-		if(DateUlils.VerifieDate(punitionEmploye.getAnnee()))
+		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getAnnee()))
 			resultat.add(punitionEmploye);
 	}
 	return resultat;

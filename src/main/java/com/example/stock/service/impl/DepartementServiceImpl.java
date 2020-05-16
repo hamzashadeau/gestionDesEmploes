@@ -20,17 +20,15 @@ private EmployeService employeService;
 
 @Override
 public int save(Departement departement) {
-	Employe employe = employeService.findByDoti(departement.getChef().getDoti());
+	Employe employe = employeService.findByDoti(departement.getChefdoti());
 	if(employe == null) {
 		return -2;
-	}else {
-//	if(findByid(departement.getId())!= null) {
-//return -1;
-//}else {
-	departement.setChef(employe);
+	} else if (departement.getId() != null) {
+		return -3;
+	} else {
+	departement.setChefdoti(employe.getDoti());
 	departementDao.save(departement);
 		return 1;
-//}
 	}
 }
 
@@ -56,14 +54,10 @@ public Departement findByNom(String nom){
 	return departementDao.findByNom(nom);
 }
 
-@Override
-public Departement findByChefEmail(String email) {
-	return departementDao.findByChefEmail(email);
-}
 
 @Override
-public Departement findByChefDoti(Integer doti) {
-	return departementDao.findByChefDoti(doti);
+public Departement findByChefdoti(Integer doti) {
+	return departementDao.findByChefdoti(doti);
 }
 
 @Override

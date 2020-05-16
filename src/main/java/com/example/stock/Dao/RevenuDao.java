@@ -14,5 +14,5 @@ import com.example.stock.bean.Revenu;
 @Repository
 public interface RevenuDao extends JpaRepository<Revenu, Long> {
 List<Revenu> findByMontant(Double montant);
-List<Revenu> findByLibelle(String libelle);
+Revenu findByLibelle(String libelle);
 }

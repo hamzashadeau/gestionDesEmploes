@@ -1,5 +1,6 @@
 package com.example.stock.ws.rest;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.Employe;
 import com.example.stock.service.facade.EmployeService;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/Employee/")
@@ -23,6 +25,10 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+@GetMapping("listeDesEmployePdf")
+public int listeDesEmployePdf() throws DocumentException, FileNotFoundException {
+	return employeService.listeDesEmployePdf();
+}
 @GetMapping("findByDernierGradeGradeLibelle/libelle/{libelle}")
 public List<Employe> findByDernierGradeGradeLibelle(@PathVariable String libelle) {
 	return employeService.findByDernierGradeGradeLibelle(libelle);

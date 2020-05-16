@@ -27,9 +27,9 @@ public class NotificationEmployeRest {
 @Autowired
 private NotificationEmployeService notificationEmployeService;
 
-@PostMapping("sendmail")
-public String sendmail() throws AddressException, MessagingException, IOException {
-return	notificationEmployeService.sendmail();
+@GetMapping("sendmail/email/{email}/subject/{subject}/content/{content}")
+public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content) throws AddressException, MessagingException, IOException {
+return	notificationEmployeService.sendmail(email, subject, content);
 }
 
 @GetMapping("findByEmployeId/id/{id}")

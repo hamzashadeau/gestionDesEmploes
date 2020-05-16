@@ -15,9 +15,7 @@ public class Departement {
 @GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
 private String nom;
-@JsonProperty(access = Access.WRITE_ONLY)
-@ManyToOne
-private Employe chef;
+private Integer chefdoti;
 public Long getId() {
 	return id;
 }
@@ -30,27 +28,21 @@ public String getNom() {
 public void setNom(String nom) {
 	this.nom = nom;
 }
-public Employe getChef() {
-	return chef;
+public Integer getChefdoti() {
+	return chefdoti;
 }
-public void setChef(Employe chef) {
-	this.chef = chef;
+public void setChefdoti(Integer chefdoti) {
+	this.chefdoti = chefdoti;
+}
+public Departement(Long id, String nom, Integer chefdoti) {
+	super();
+	this.id = id;
+	this.nom = nom;
+	this.chefdoti = chefdoti;
 }
 public Departement() {
 	super();
 	// TODO Auto-generated constructor stub
 }
-
-public Departement(Long id, String nom, Employe chef) {
-	super();
-	this.id = id;
-	this.nom = nom;
-	this.chef = chef;
-}
-@Override
-public String toString() {
-	return "Departement [id=" + id + ", nom=" + nom + ", chef=" + chef + "]";
-}
-
 
 }

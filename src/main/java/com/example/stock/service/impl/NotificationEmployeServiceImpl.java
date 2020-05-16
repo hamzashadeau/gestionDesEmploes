@@ -84,7 +84,7 @@ public List<NotificationEmploye> findByDateDeNotification(Date dateDeObtenation)
 	return notificationEmployeDao.findByDateDeNotification(dateDeObtenation);
 }
 @Override
-public String sendmail() throws AddressException, MessagingException, IOException {
+public int sendmail(String email, String subject,String content) throws AddressException, MessagingException, IOException {
 	   Properties props = new Properties();
 	   props.put("mail.smtp.auth", "true");
 	   props.put("mail.smtp.starttls.enable", "true");
@@ -97,15 +97,15 @@ public String sendmail() throws AddressException, MessagingException, IOExceptio
 	      }
 	   });
 	   Message msg = new MimeMessage(session);
-	   msg.setFrom(new InternetAddress("etablissementfstg@gmail.com", false));
+	   msg.setFrom(new InternetAddress(email, false));
 
 	   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("abiabiya10042003@gmail.com"));
-	   msg.setSubject("votre est grade est passée par succes\", \"text/html");
-	   msg.setContent("votre est grade est passée par succes", "text/html");
+	   msg.setSubject(subject);
+	   msg.setContent(content, "text/html");
 	   msg.setSentDate(new Date());
 
 	   MimeBodyPart messageBodyPart = new MimeBodyPart();
-	   messageBodyPart.setContent("Tutorials point email", "text/html");
+	   messageBodyPart.setContent(content, "text/html");
 
 	   Multipart multipart = new MimeMultipart();
 	   multipart.addBodyPart(messageBodyPart);
@@ -115,6 +115,6 @@ public String sendmail() throws AddressException, MessagingException, IOExceptio
 
 	 //  attachPart.attachFile("/var/tmp/image19.png");
 	   Transport.send(msg);  
-	   return "email is send succefully";
+	   return 1;
 	}
 }

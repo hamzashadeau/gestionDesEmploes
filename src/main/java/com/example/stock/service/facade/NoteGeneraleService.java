@@ -1,6 +1,5 @@
 package com.example.stock.service.facade;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,5 +15,7 @@ public interface NoteGeneraleService {
 	List<NoteGeneralDeAnnee> findAll();
 	int save(NoteGeneralDeAnnee noteGeneralDeAnnee);
 	int deleteById(Long id);
-	public List<NoteGeneralDeAnnee> findPunitionDeEmploye(Employe employe);
+	public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe);
+	List<NoteGeneralDeAnnee> findByEtat(String etat);
+
 }

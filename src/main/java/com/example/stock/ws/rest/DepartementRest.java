@@ -37,14 +37,9 @@ public Departement findByNom(@PathVariable String nom) {
 
 }
 
-@GetMapping("findBySupEmail/email/{email}")
-public Departement findByChefEmail(@PathVariable String email) {
-	return departementService.findByChefEmail(email);
-}
-
 @GetMapping("findBySupMatricule/doti/{matricule}")
 public Departement findByChefMatricule(@PathVariable Integer matricule) {
-	return departementService.findByChefDoti(matricule);
+	return departementService.findByChefdoti(matricule);
 }
 
 @GetMapping("findAll")

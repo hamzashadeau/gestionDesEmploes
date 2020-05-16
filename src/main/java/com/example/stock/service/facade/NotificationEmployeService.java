@@ -22,5 +22,5 @@ public interface NotificationEmployeService {
 	int deleteById(Long id);
 
 	public NotificationEmploye findByid(Long id);
-	String sendmail() throws AddressException, MessagingException, IOException;
-}
+	public int sendmail(String email, String subject,String content) throws AddressException, MessagingException, IOException;
+	}

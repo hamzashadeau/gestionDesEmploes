@@ -17,7 +17,7 @@ private EmolumentsDao emolumentsDao;
 
 @Override
 public int save(Emoluments emoluments) {
-	if(findByid(emoluments.getId())!= null) {
+	if(emoluments.getId() != null) {
 return -1;
 }else {
 	emolumentsDao.save(emoluments);
@@ -48,7 +48,7 @@ public List<Emoluments> findAll() {
 }
 
 @Override
-public List<Emoluments> findByLibelle(String libelle) {
+public Emoluments findByLibelle(String libelle) {
 	return emolumentsDao.findByLibelle(libelle);
 }
 

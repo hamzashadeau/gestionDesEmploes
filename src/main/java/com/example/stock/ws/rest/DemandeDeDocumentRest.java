@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.DemaneDeDocument;
+import com.example.stock.bean.Employe;
+import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.DemandeDeDocumentService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -24,14 +26,34 @@ public class DemandeDeDocumentRest {
 @Autowired
 private DemandeDeDocumentService demandeDeDocumentService;
 
+@PostMapping("update")
+public int update(@RequestBody DemaneDeDocument demaneDeDocument) {
+	return demandeDeDocumentService.update(demaneDeDocument);
+}
+@PostMapping("listeDesDemandePdf")
+public int listeDesDemandePdf(@RequestBody List<DemaneDeDocument> demandes) throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.listeDesDemandePdf(demandes);
+}
+@PostMapping("infoEmployePdf")
+public int infoEmployePdf(@RequestBody Employe employe) throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.infoEmployePdf(employe);
+}
+@PostMapping("attestationDeSalaire")
+public int attestationDeSalaire(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.attestationDeSalaire(demaneDeDocument);
+}
+@PostMapping("rapportPdf")
+public int rapportPdf(@RequestBody RapportDeEvaluation rapportDeEvaluation) throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.rapportPdf(rapportDeEvaluation);
+}
 @GetMapping("findDemandeNonTraite")
 public List<DemaneDeDocument> findDemandeNonTraite() {
 	return findByEtat("non traité");
 }
 
-@GetMapping("hellowordl")
-public String hellowordl() throws DocumentException, FileNotFoundException {
-	return demandeDeDocumentService.hellowordl();
+@PostMapping("attestationDeTravail")
+public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+	return demandeDeDocumentService.attestationDeTravail(demaneDeDocument);
 }
 
 @GetMapping("findByEmployeId/id/{id}")

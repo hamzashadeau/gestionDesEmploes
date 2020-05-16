@@ -81,7 +81,7 @@ public List<PunitionEmploye> findPunitionDeEmploye(Employe employe) {
 	List<PunitionEmploye> punitionEmployes = findByEmployeDoti(employe.getDoti());
 	List<PunitionEmploye> resultat = new ArrayList<PunitionEmploye>();
 	for (PunitionEmploye punitionEmploye : punitionEmployes) {
-		if(DateUlils.VerifieDate(punitionEmploye.getDateObtenation()))
+		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getDateObtenation()))
 			resultat.add(punitionEmploye);
 	}
 	return resultat;

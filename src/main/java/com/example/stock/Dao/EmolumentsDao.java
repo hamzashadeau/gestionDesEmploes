@@ -13,5 +13,5 @@ import com.example.stock.bean.Emoluments;
 @Repository
 public interface EmolumentsDao extends JpaRepository<Emoluments, Long> {
 List<Emoluments> findByMontant(Double montant);
-List<Emoluments> findByLibelle(String libelle);
+Emoluments findByLibelle(String libelle);
 }

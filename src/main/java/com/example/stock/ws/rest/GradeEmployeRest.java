@@ -23,6 +23,10 @@ public class GradeEmployeRest {
 @Autowired
 private GradeEmployeService gradeService;
 
+@PostMapping("accepterUnGrade")
+public int accepterUnGrade(@RequestBody GradeEmploye gradeEmploye) {
+	return gradeService.accepterUnGrade(gradeEmploye);
+}
 
 @GetMapping("findGradeNonTraite")
 public List<GradeEmploye> findGradeNonTraite() {

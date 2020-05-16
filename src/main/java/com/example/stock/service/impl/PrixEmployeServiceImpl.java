@@ -65,7 +65,7 @@ public List<PrixEmploye> findPrixDeEmploye(Employe employe) {
 	List<PrixEmploye> punitionEmployes = findByEmployeEmail(employe.getEmail());
 	List<PrixEmploye> resultat = new ArrayList<PrixEmploye>();
 	for (PrixEmploye punitionEmploye : punitionEmployes) {
-		if(DateUlils.VerifieDate(punitionEmploye.getDateDeObtenation()))
+		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getDateDeObtenation()))
 			resultat.add(punitionEmploye);
 	}
 	return resultat;

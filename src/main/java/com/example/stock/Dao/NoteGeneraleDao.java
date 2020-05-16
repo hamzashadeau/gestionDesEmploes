@@ -1,7 +1,6 @@
 package com.example.stock.Dao;
 
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,4 +15,5 @@ List<NoteGeneralDeAnnee> findByEmployeId(Long id);
 List<NoteGeneralDeAnnee> findByEmployeEmail(String email);
 List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti);
 NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date,Integer doti);
+List<NoteGeneralDeAnnee> findByEtat(String etat);
 }

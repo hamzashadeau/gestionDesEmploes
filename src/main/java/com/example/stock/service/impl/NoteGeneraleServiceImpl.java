@@ -84,11 +84,11 @@ public List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti) {
 }
 
 @Override
-public List<NoteGeneralDeAnnee> findPunitionDeEmploye(Employe employe) {
+public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe) {
 	List<NoteGeneralDeAnnee> punitionEmployes = findByEmployeDoti(employe.getDoti());
 	List<NoteGeneralDeAnnee> resultat = new ArrayList<NoteGeneralDeAnnee>();
 	for (NoteGeneralDeAnnee punitionEmploye : punitionEmployes) {
-		if(DateUlils.VerifieDate(punitionEmploye.getDate()))
+		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getDate()))
 			resultat.add(punitionEmploye);
 	}
 	return resultat;
@@ -101,5 +101,10 @@ public NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date, Integer doti) {
 //Date date1 = formatter.parse(strDate1);
 	//System.out.println(date1);
 	return noteGeneraleDao.findByDateAndEmployeDoti(date, doti);
+}
+
+@Override
+public List<NoteGeneralDeAnnee> findByEtat(String etat) {
+	return noteGeneraleDao.findByEtat(etat);
 }
 }

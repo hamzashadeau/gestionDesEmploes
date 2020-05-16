@@ -23,5 +23,7 @@ public interface GradeEmployeService {
 	List<GradeEmploye> findByEtat(String etat);
 
 	public List<GradeEmploye> findGradeNonTraite();
+	
+	public int accepterUnGrade(GradeEmploye gradeEmploye);
 
 }

@@ -37,6 +37,7 @@ private Note noteDeCompotement;
 private Note noteDeRechercheEtDeInnovation;
 @Temporal(TemporalType.DATE)
 private Date date;
+private String etat;
 public NoteGeneralDeAnnee() {
 	super();
 	// TODO Auto-generated constructor stub
@@ -103,9 +104,15 @@ public Note getNoteDeRechercheEtDeInnovation() {
 public void setNoteDeRechercheEtDeInnovation(Note noteDeRechercheEtDeInnovation) {
 	this.noteDeRechercheEtDeInnovation = noteDeRechercheEtDeInnovation;
 }
+public String getEtat() {
+	return etat;
+}
+public void setEtat(String etat) {
+	this.etat = etat;
+}
 public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Employe employe,
 		Note noteDeAffectationDesTachesLieeAuTravail, Note noteDeRentabilite, Note noteDeCapaciteDeOrganisation,
-		Note noteDeCompotement, Note noteDeRechercheEtDeInnovation, Date date) {
+		Note noteDeCompotement, Note noteDeRechercheEtDeInnovation, Date date, String etat) {
 	super();
 	this.id = id;
 	this.moyenGeneral = moyenGeneral;
@@ -117,6 +124,7 @@ public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Employe 
 	this.noteDeCompotement = noteDeCompotement;
 	this.noteDeRechercheEtDeInnovation = noteDeRechercheEtDeInnovation;
 	this.date = date;
+	this.etat = etat;
 }
 @Override
 public String toString() {
@@ -124,8 +132,10 @@ public String toString() {
 			+ employe + ", noteDeAffectationDesTachesLieeAuTravail=" + noteDeAffectationDesTachesLieeAuTravail
 			+ ", noteDeRentabilite=" + noteDeRentabilite + ", noteDeCapaciteDeOrganisation="
 			+ noteDeCapaciteDeOrganisation + ", noteDeCompotement=" + noteDeCompotement
-			+ ", noteDeRechercheEtDeInnovation=" + noteDeRechercheEtDeInnovation + ", date=" + date + "]";
+			+ ", noteDeRechercheEtDeInnovation=" + noteDeRechercheEtDeInnovation + ", date=" + date + ", etat=" + etat
+			+ "]";
 }
+
 
 
 }

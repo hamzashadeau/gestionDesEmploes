@@ -28,7 +28,7 @@ public List<Revenu> findByMontant(@PathVariable Double montant) {
 }
 
 @GetMapping("findByLibelle/libelle/{libelle}")
-public List<Revenu> findByLibelle(@PathVariable String libelle) {
+public Revenu findByLibelle(@PathVariable String libelle) {
 	return emoulumentsService.findByLibelle(libelle);
 }
 

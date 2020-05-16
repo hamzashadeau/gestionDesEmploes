@@ -25,6 +25,19 @@ public class NoteGeneraleRest {
 @Autowired
 private NoteGeneraleService noteGeneralDeAnneeService;
 
+
+@GetMapping("findNoteDeEmploye")
+public List<NoteGeneralDeAnnee> findNoteDeEmploye(@RequestBody Employe employe) {
+	return noteGeneralDeAnneeService.findNoteDeEmploye(employe);
+}
+
+
+@GetMapping("findByEtat/etat/{etat}")
+public List<NoteGeneralDeAnnee> findByEtat(@PathVariable String etat) {
+	return noteGeneralDeAnneeService.findByEtat(etat);
+}
+
+
 @GetMapping("findByDateAndEmployeDoti/date/{date}/doti/{doti}")
 public NoteGeneralDeAnnee findByDateAndEmployeDoti(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date,@PathVariable Integer doti) {
 	return noteGeneralDeAnneeService.findByDateAndEmployeDoti(date, doti);
