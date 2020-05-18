@@ -1,9 +1,12 @@
 package com.example.stock.service.facade;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
+import com.itextpdf.text.DocumentException;
 
 public interface FormationService {
 	List<Formation> findByemployeId(Long id);
@@ -20,5 +23,5 @@ public interface FormationService {
 
 	public Formation findByid(Long id);
 	public List<Formation> findFormationDeEmploye(Employe employe);
-
+	public int listeDesFormationsPdf(ArrayList<Formation> formations) throws DocumentException, FileNotFoundException ;
 }

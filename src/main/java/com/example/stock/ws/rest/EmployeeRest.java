@@ -1,6 +1,7 @@
 package com.example.stock.ws.rest;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,16 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+
+@PostMapping("listeDesEmployeDeDepartementPdf")
+public int listeDesEmployeDeDepartementPdf(@RequestBody ArrayList<Employe> employes)	throws DocumentException, FileNotFoundException {
+	return employeService.listeDesEmployeDeDepartementPdf(employes);
+}
+
+@PostMapping("listeDesEmployeDeGradePdf")
+public int listeDesEmployeDeGradePdf(@RequestBody ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
+	return employeService.listeDesEmployeDeGradePdf(employes);
+}
 @GetMapping("listeDesEmployePdf")
 public int listeDesEmployePdf() throws DocumentException, FileNotFoundException {
 	return employeService.listeDesEmployePdf();

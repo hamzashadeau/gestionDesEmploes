@@ -17,7 +17,7 @@ private FonctionDao fonctionDao;
 
 @Override
 public int save(Fonction fonction) {
-	if(findByid(fonction.getId())!= null) {
+	if(fonction.getId()!= null) {
 return -1;
 }else {
 		fonctionDao.save(fonction);

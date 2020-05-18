@@ -1,5 +1,7 @@
 package com.example.stock.ws.rest;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.service.facade.FormationService;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/Formation/")
 public class FormationRest {
 @Autowired
 private FormationService formationService;
+
+@PostMapping("listeDesFormationsPdf")
+public int listeDesFormationsPdf(@RequestBody ArrayList<Formation> formations) throws DocumentException, FileNotFoundException {
+	return formationService.listeDesFormationsPdf(formations);
+}
 
 @GetMapping("findFormationDeEmploye")
 public List<Formation> findFormationDeEmploye(@RequestBody Employe employe) {

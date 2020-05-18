@@ -456,6 +456,181 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		return salaire;
 	}
 	
+	//liste Des Employe De grade Pdf
+		public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
+			String grade= null;
+			for (Employe employe : employes) {
+				grade = employe.getDernierGrade().getGrade().getLibelle();
+			}
+				Document document = new Document();
+			PdfWriter.getInstance(document, new FileOutputStream(grade + "listeEmployes.pdf")); 
+			
+			document.open();
+			Image img,img1;
+			try {
+				img = Image.getInstance("fstgIcone.png");
+				img.setAlignment(Element.ALIGN_TOP);
+				img.setAlignment(Element.ALIGN_LEFT);
+				document.add(img);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+			Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + grade + " \n\r\n", font);
+			p1.setAlignment(Element.ALIGN_CENTER);
+			document.add(p1);
+
+		    
+		    PdfPTable table = new PdfPTable(9); // 3 columns.
+
+		    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
+		    PdfPCell cell2 = new PdfPCell(new Paragraph("cin"));
+		    PdfPCell cell3 = new PdfPCell(new Paragraph("doti"));
+		    PdfPCell cell4 = new PdfPCell(new Paragraph("email"));
+		    PdfPCell cell5 = new PdfPCell(new Paragraph("adress"));
+		    PdfPCell cell6 = new PdfPCell(new Paragraph("tel"));
+		    PdfPCell cell7 = new PdfPCell(new Paragraph("departement"));
+		    PdfPCell cell8 = new PdfPCell(new Paragraph("fonction"));
+		    PdfPCell cell9 = new PdfPCell(new Paragraph("grade"));
+		    table.addCell(cell1);
+		    table.addCell(cell2);
+		    table.addCell(cell3);
+		    table.addCell(cell4);
+		    table.addCell(cell5);
+		    table.addCell(cell6);
+		    table.addCell(cell7);
+		    table.addCell(cell8);
+		    table.addCell(cell9);
+		    for (Employe employe : employes) {
+			    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFullName()));
+			    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+			    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+			    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
+			    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getAdresse()));
+			    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getTel().toString()));
+			    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getDep().getNom()));
+			    PdfPCell cell17 = new PdfPCell(new Paragraph(employe.getFonction().getLibelle()));
+			    PdfPCell cell18 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));		
+			    table.addCell(cell10);
+			    table.addCell(cell11);
+			    table.addCell(cell12);
+			    table.addCell(cell13);
+			    table.addCell(cell14);
+			    table.addCell(cell15);
+			    table.addCell(cell16);
+			    table.addCell(cell17);
+			    table.addCell(cell18);
+			}
+
+		  document.add(table);
+		   
+		   Font f = new Font();
+		   f.setStyle(Font.BOLD);
+		   f.setSize(8);
+		   
+		   Paragraph p4 = new Paragraph( "\n \r\r\r\r signer :",f);
+		   p4.setAlignment(Element.ALIGN_RIGHT);
+		   document.add(p4);
+
+		   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
+		   p20.setAlignment(Element.ALIGN_LEFT);
+		   document.add(p20);
+		    document.close();
+			return 1;
+		}	
+
+	
+	
+	
+	
+	//liste Des Employe De Departement Pdf
+	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
+		String depatrement= null;
+		for (Employe employe : employes) {
+			depatrement = employe.getDep().getNom();
+		}
+			Document document = new Document();
+		PdfWriter.getInstance(document, new FileOutputStream(depatrement + "listeEmployes.pdf")); 
+		
+		document.open();
+		Image img,img1;
+		try {
+			img = Image.getInstance("fstgIcone.png");
+			img.setAlignment(Element.ALIGN_TOP);
+			img.setAlignment(Element.ALIGN_LEFT);
+			document.add(img);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+		Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + depatrement + " \n\r\n", font);
+		p1.setAlignment(Element.ALIGN_CENTER);
+		document.add(p1);
+
+	    
+	    PdfPTable table = new PdfPTable(9); // 3 columns.
+
+	    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
+	    PdfPCell cell2 = new PdfPCell(new Paragraph("cin"));
+	    PdfPCell cell3 = new PdfPCell(new Paragraph("doti"));
+	    PdfPCell cell4 = new PdfPCell(new Paragraph("email"));
+	    PdfPCell cell5 = new PdfPCell(new Paragraph("adress"));
+	    PdfPCell cell6 = new PdfPCell(new Paragraph("tel"));
+	    PdfPCell cell7 = new PdfPCell(new Paragraph("departement"));
+	    PdfPCell cell8 = new PdfPCell(new Paragraph("fonction"));
+	    PdfPCell cell9 = new PdfPCell(new Paragraph("grade"));
+	    table.addCell(cell1);
+	    table.addCell(cell2);
+	    table.addCell(cell3);
+	    table.addCell(cell4);
+	    table.addCell(cell5);
+	    table.addCell(cell6);
+	    table.addCell(cell7);
+	    table.addCell(cell8);
+	    table.addCell(cell9);
+	    for (Employe employe : employes) {
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFullName()));
+		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+		    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
+		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getAdresse()));
+		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getTel().toString()));
+		    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getDep().getNom()));
+		    PdfPCell cell17 = new PdfPCell(new Paragraph(employe.getFonction().getLibelle()));
+		    PdfPCell cell18 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));		
+		    table.addCell(cell10);
+		    table.addCell(cell11);
+		    table.addCell(cell12);
+		    table.addCell(cell13);
+		    table.addCell(cell14);
+		    table.addCell(cell15);
+		    table.addCell(cell16);
+		    table.addCell(cell17);
+		    table.addCell(cell18);
+		}
+
+	  document.add(table);
+	   
+	   Font f = new Font();
+	   f.setStyle(Font.BOLD);
+	   f.setSize(8);
+	   
+	   Paragraph p4 = new Paragraph( "\n \r\r\r\r signer :",f);
+	   p4.setAlignment(Element.ALIGN_RIGHT);
+	   document.add(p4);
+
+	   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
+	   p20.setAlignment(Element.ALIGN_LEFT);
+	   document.add(p20);
+	    document.close();
+		return 1;
+	}	
 	//liste des employes
 	public int listeDesEmployePdf() throws DocumentException, FileNotFoundException {
 		List<Employe> employes = findAll();

@@ -1,8 +1,10 @@
 package com.example.stock.service.facade;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import com.example.stock.bean.Departement;
+import com.itextpdf.text.DocumentException;
 
 public interface DepartementService {
 	Departement findByid(Long id);
@@ -12,4 +14,5 @@ public interface DepartementService {
 	int save(Departement departement);
 	int deleteById(Long id);
 	int nombreDesDepartements();
+	public int listedepartementPdf() throws DocumentException, FileNotFoundException;
 }

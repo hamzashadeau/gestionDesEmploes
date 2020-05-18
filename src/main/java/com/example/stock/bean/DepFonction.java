@@ -31,12 +31,14 @@ public Fonction getFonction() {
 public void setFonction(Fonction fonction) {
 	this.fonction = fonction;
 }
+
 @Override
 public String toString() {
 	return "DepFonction [id=" + id + ", departemant=" + departemant + ", fonction=" + fonction + "]";
 }
-public DepFonction(Departement departemant, Fonction fonction) {
+public DepFonction(Long id, Departement departemant, Fonction fonction) {
 	super();
+	this.id = id;
 	this.departemant = departemant;
 	this.fonction = fonction;
 }

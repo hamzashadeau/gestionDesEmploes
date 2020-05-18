@@ -1,6 +1,7 @@
 package com.example.stock.service.facade;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,4 +33,6 @@ public interface EmployeService {
 	 List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel);
 	 public int update(Employe employe);
 	 public int listeDesEmployePdf() throws DocumentException, FileNotFoundException;
+		public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
+		public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
 }

@@ -9,6 +9,7 @@ import com.example.stock.Dao.DepFonctionDao;
 import com.example.stock.Dao.DepartementDao;
 import com.example.stock.bean.DepFonction;
 import com.example.stock.bean.Departement;
+import com.example.stock.bean.Fonction;
 import com.example.stock.service.facade.DepFonctionService;
 import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.FonctionService;
@@ -24,12 +25,16 @@ private FonctionService fonctionService;
 
 @Override
 public int save(DepFonction depFonction) {
-	Departement departement = departementService.findByNom(depFonction.getDepartemant().getNom());
-	depFonction.setDepartemant(departement);
-	fonctionService.save(depFonction.getFonction());
 	if(depFonction.getId() != null) {
 return -1;
 }else {
+	Departement departement = departementService.findByNom(depFonction.getDepartemant().getNom());
+	Fonction fonction = fonctionService.findByLibelle(depFonction.getFonction().getLibelle());
+	depFonction.setDepartemant(departement);
+	if(fonction == null) {
+		fonctionService.save(depFonction.getFonction());
+	}
+	depFonction.setFonction(fonction);
 	depFonctionDao.save(depFonction);
 		return 1;
 }

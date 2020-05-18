@@ -1,5 +1,6 @@
 package com.example.stock.ws.rest;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -16,12 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.service.facade.GradeEmployeService;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/GradeEmploye/")
 public class GradeEmployeRest {
 @Autowired
 private GradeEmployeService gradeService;
+
+
+@PostMapping("listeDeGradeDeEmployePdf")
+public int listeDeGradeDeEmployePdf(@RequestBody List<GradeEmploye> grades) throws DocumentException, FileNotFoundException {
+	return gradeService.listeDeGradeDeEmployePdf(grades);
+}
+
+@PostMapping("update")
+public int update(@RequestBody GradeEmploye grade) {
+	return gradeService.update(grade);
+}
 
 @PostMapping("accepterUnGrade")
 public int accepterUnGrade(@RequestBody GradeEmploye gradeEmploye) {

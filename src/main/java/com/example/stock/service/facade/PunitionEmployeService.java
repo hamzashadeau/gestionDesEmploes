@@ -1,9 +1,12 @@
 package com.example.stock.service.facade;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.PunitionEmploye;
+import com.itextpdf.text.DocumentException;
 
 public interface PunitionEmployeService {
 	PunitionEmploye findByid(Long id);
@@ -16,5 +19,5 @@ public interface PunitionEmployeService {
 	int save(PunitionEmploye punitionEmploye);
 	int deleteById(Long id);
 	public List<PunitionEmploye> findPunitionDeEmploye(Employe employe);
-
+	public int listeDespunitionsPdf(ArrayList<PunitionEmploye> punitionEmployes) throws DocumentException, FileNotFoundException;
 }

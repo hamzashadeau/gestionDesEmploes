@@ -22,9 +22,8 @@ public class NoteGeneralDeAnnee {
 private Long id;
 private Double moyenGeneral;//a calculer
 private String mention;
-@JsonProperty(access = Access.WRITE_ONLY)
-@ManyToOne
-private Employe employe;
+private Integer employeDoti;
+private String fuulName;
 @ManyToOne
 private Note noteDeAffectationDesTachesLieeAuTravail;
 @ManyToOne
@@ -67,12 +66,7 @@ public String getMention() {
 public void setMention(String mention) {
 	this.mention = mention;
 }
-public Employe getEmploye() {
-	return employe;
-}
-public void setEmploye(Employe employe) {
-	this.employe = employe;
-}
+
 public Date getDate() {
 	return date;
 }
@@ -110,14 +104,27 @@ public String getEtat() {
 public void setEtat(String etat) {
 	this.etat = etat;
 }
-public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Employe employe,
+public Integer getEmployeDoti() {
+	return employeDoti;
+}
+public void setEmployeDoti(Integer employeDoti) {
+	this.employeDoti = employeDoti;
+}
+public String getFuulName() {
+	return fuulName;
+}
+public void setFuulName(String fuulName) {
+	this.fuulName = fuulName;
+}
+public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Integer employeDoti, String fuulName,
 		Note noteDeAffectationDesTachesLieeAuTravail, Note noteDeRentabilite, Note noteDeCapaciteDeOrganisation,
 		Note noteDeCompotement, Note noteDeRechercheEtDeInnovation, Date date, String etat) {
 	super();
 	this.id = id;
 	this.moyenGeneral = moyenGeneral;
 	this.mention = mention;
-	this.employe = employe;
+	this.employeDoti = employeDoti;
+	this.fuulName = fuulName;
 	this.noteDeAffectationDesTachesLieeAuTravail = noteDeAffectationDesTachesLieeAuTravail;
 	this.noteDeRentabilite = noteDeRentabilite;
 	this.noteDeCapaciteDeOrganisation = noteDeCapaciteDeOrganisation;
@@ -128,13 +135,14 @@ public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Employe 
 }
 @Override
 public String toString() {
-	return "NoteGeneralDeAnnee [id=" + id + ", moyenGeneral=" + moyenGeneral + ", mention=" + mention + ", employe="
-			+ employe + ", noteDeAffectationDesTachesLieeAuTravail=" + noteDeAffectationDesTachesLieeAuTravail
-			+ ", noteDeRentabilite=" + noteDeRentabilite + ", noteDeCapaciteDeOrganisation="
-			+ noteDeCapaciteDeOrganisation + ", noteDeCompotement=" + noteDeCompotement
-			+ ", noteDeRechercheEtDeInnovation=" + noteDeRechercheEtDeInnovation + ", date=" + date + ", etat=" + etat
-			+ "]";
+	return "NoteGeneralDeAnnee [id=" + id + ", moyenGeneral=" + moyenGeneral + ", mention=" + mention + ", employeDoti="
+			+ employeDoti + ", fuulName=" + fuulName + ", noteDeAffectationDesTachesLieeAuTravail="
+			+ noteDeAffectationDesTachesLieeAuTravail + ", noteDeRentabilite=" + noteDeRentabilite
+			+ ", noteDeCapaciteDeOrganisation=" + noteDeCapaciteDeOrganisation + ", noteDeCompotement="
+			+ noteDeCompotement + ", noteDeRechercheEtDeInnovation=" + noteDeRechercheEtDeInnovation + ", date=" + date
+			+ ", etat=" + etat + "]";
 }
+
 
 
 

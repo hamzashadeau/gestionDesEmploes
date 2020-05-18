@@ -1,6 +1,6 @@
 package com.example.stock.ws.rest;
 
-import java.text.ParseException;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,12 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.NoteGeneralDeAnnee;
 import com.example.stock.service.facade.NoteGeneraleService;
+import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
 @RequestMapping("/gestionDesEmployee-Api/NoteGeneralDeAnnee/")
 public class NoteGeneraleRest {
 @Autowired
 private NoteGeneraleService noteGeneralDeAnneeService;
+
+@PostMapping("RapportDesNoteePdf")
+public int RapportDesNoteePdf(@RequestBody NoteGeneralDeAnnee note) throws DocumentException, FileNotFoundException {
+	return noteGeneralDeAnneeService.RapportDesNoteePdf(note);
+}
+
+
+@GetMapping("findNoteNonTraite")
+public List<NoteGeneralDeAnnee> findNoteNonTraite(String etat) {
+	return noteGeneralDeAnneeService.findNoteNonTraite(etat);
+}
 
 
 @GetMapping("findNoteDeEmploye")
@@ -43,16 +55,6 @@ public NoteGeneralDeAnnee findByDateAndEmployeDoti(@PathVariable @DateTimeFormat
 	return noteGeneralDeAnneeService.findByDateAndEmployeDoti(date, doti);
 }
 
-
-@GetMapping("findByEmployeId/id/{id}")
-public List<NoteGeneralDeAnnee> findByEmployeId(@PathVariable Long id) {
-	return noteGeneralDeAnneeService.findByEmployeId(id);
-}
-
-@GetMapping("findByEmployeEmail/email/{email}")
-public List<NoteGeneralDeAnnee> findByEmployeEmail(@PathVariable String email) {
-	return noteGeneralDeAnneeService.findByEmployeEmail(email);
-}
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
 public List<NoteGeneralDeAnnee> findByEmployeDoti(@PathVariable Integer doti) {

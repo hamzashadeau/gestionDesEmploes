@@ -1,9 +1,11 @@
 package com.example.stock.service.facade;
 
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 
 import com.example.stock.bean.GradeEmploye;
+import com.itextpdf.text.DocumentException;
 
 public interface GradeEmployeService {
 
@@ -25,5 +27,6 @@ public interface GradeEmployeService {
 	public List<GradeEmploye> findGradeNonTraite();
 	
 	public int accepterUnGrade(GradeEmploye gradeEmploye);
-
+	public int update(GradeEmploye grade);
+	public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentException, FileNotFoundException;
 }
