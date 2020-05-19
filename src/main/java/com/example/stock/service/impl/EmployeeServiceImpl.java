@@ -109,6 +109,7 @@ public class EmployeeServiceImpl implements EmployeService {
 		// departement de employe
 		Departement dep = departementService.findByNom(employe.getDep().getNom());
 		employe.setDep(dep);
+		employe.setDoti(99 + employe.getCin());
 		// donction de employe
 		Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
 		employe.setFonction(fct);
@@ -117,20 +118,22 @@ public class EmployeeServiceImpl implements EmployeService {
 		//Dernier note
 		employe.setDateDeProchainNote(DateUlils.getDateDeNote(employe.getDernierGrade().getDateDeAffectation()));
 		employe.setDernierNote(null);
+		employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
 		//dernier grade
 		Date date = employe.getDernierGrade().getDateDeAffectation();
+		GradeEmploye gradeEmploye = new GradeEmploye();
+		gradeEmploye.setDoti(employe.getDoti());
 		employe.setDateAvancementPrevue(null);
 		//sup employe
 		employe.setSup(findByDoti(dep.getChefdoti()));
+		Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
+
 		//date prochaine evaluation
-		employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
 		employe.setDernierGrade(null);
 		// save emploe
 		employeDao.save(employe);
 		//grade employe
-		Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
-		GradeEmploye gradeEmploye = new GradeEmploye();
-		gradeEmploye.setDoti(employe.getDoti());
+
 		gradeEmploye.setDateDeAffectation(date);
 		gradeEmploye.setGrade(grade);
 		employe.setDernierGrade(gradeEmploye);

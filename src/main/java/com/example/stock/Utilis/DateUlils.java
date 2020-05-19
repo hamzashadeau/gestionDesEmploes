@@ -1,5 +1,6 @@
 package com.example.stock.Utilis;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -20,11 +21,14 @@ public class DateUlils {
 		return (milliSeconde1 - milliSeconde2);
 	}
 
-	public static Date getDateEvaluation(Date date1, long nombre) {
+	public static Date getDateEvaluation(Date date1, BigDecimal nombre) {
+		long milliSeconde1 = date1.getTime() + nombre.longValue();
+		return new Date(milliSeconde1);
+	}
+	public static Date getDateEvaluation(Date date1, Long nombre) {
 		long milliSeconde1 = date1.getTime() + nombre;
 		return new Date(milliSeconde1);
 	}
-
 	public static Long getDateDiffEnjour(Date date1, Date date2) {
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
@@ -34,40 +38,42 @@ public class DateUlils {
 	public static Date getDateEvaluationDeGrade(GradeEmploye grade) {
 		String libelleGrade = grade.getGrade().getLibelle();
 		Long nombreAnnee = null;
+		BigDecimal big = new BigDecimal("31557600000");
 		switch (libelleGrade) {
-		case "grade1":
-			nombreAnnee = (long) (1 * (1000 * 60 * 60 * 24 * 365));
-			break;
-		case "grade2":
-			nombreAnnee = (long) 1 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade3":
-			nombreAnnee = (long) 2 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade4":
-			nombreAnnee = (long) 2 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade5":
-			nombreAnnee = (long) 2 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade6":
-			nombreAnnee = (long) 3 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade7":
-			nombreAnnee = (long) 3 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade8":
-			nombreAnnee = (long) 3 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade9":
-			nombreAnnee = (long) 4 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		case "grade10":
-			nombreAnnee = (long) 2 * (1000 * 60 * 60 * 24 * 365);
-			break;
-		}
-		return getDateEvaluation(grade.getDateDeAffectation(), nombreAnnee);
-	}
+			case "grade1":
+				nombreAnnee = 1 * big.longValue() ;
+				break;
+			case "grade2":
+				nombreAnnee =  1 * big.longValue();
+				break;
+			case "grade3":
+				nombreAnnee =  2 * big.longValue();
+				break;
+			case "grade4":
+				nombreAnnee =   2 * big.longValue();
+				break;
+			case "grade5":
+				nombreAnnee =   2 * big.longValue();
+				break;
+			case "grade6":
+				nombreAnnee =   3 * big.longValue();
+				break;
+			case "grade7":
+				nombreAnnee =   3 * big.longValue();
+				break;
+			case "grade8":
+				nombreAnnee =   3 * big.longValue();
+				break;
+			case "grade9":
+				nombreAnnee =   3 * big.longValue();
+				break;
+			case "grade10":
+				nombreAnnee =   2 * big.longValue();
+				break;
+			}
+			return DateUlils.getDateEvaluation(new Date(), nombreAnnee);
+		}	
+		
 	public static String getNouvauGrade(Grade grade) {
 		String nouveauGrade = null;
 		switch (grade.getLibelle()) {
@@ -108,114 +114,116 @@ public class DateUlils {
 	public static Date getDateAvancementnDeGrade(GradeEmploye grade, String mention) {
 		String libelleGrade = grade.getGrade().getLibelle();
 		Long nombreAnnee = null;
+		BigDecimal big = new BigDecimal("31557600000");
 		switch (libelleGrade) {
 		case "grade1":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (1 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  1* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) (1 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  1* big.longValue();
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) (1 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  1* big.longValue();
 				break;
 			}
 		case "grade2":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (1 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  1* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((1.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (1.5* big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) (2 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  2* big.longValue();
 				break;
 			}
 		case "grade3":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (2 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  2 * big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((2.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (2.5 * big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) (3 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  3* big.longValue();
 				break;
 			}
 		case "grade4":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (2 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  2* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((2.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (2.5 * big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((3.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (3.5 * big.longValue());
 				break;
 			}
 		case "grade5":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (2 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  2* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((2.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (2.5 * big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((3.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (3.5* big.longValue());
 				break;
 			}
 		case "grade6":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (3 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  3* big.longValue();		
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((3.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (3.5* big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((4) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  4* big.longValue();
 				break;
 			}
 		case "grade7":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (3 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  3* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((3.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (3.5* big.longValue());
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((4) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  4* big.longValue();
 				break;
 			}
 		case "grade8":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (3 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  3* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((4) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  4* big.longValue();
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((4.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (4.5 * big.longValue());
 				break;
 			}
 		case "grade9":
 			if (mention.equals("rapide")) {
-				nombreAnnee = (long) (4 * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  4* big.longValue();
 				break;
 			} else if (mention.equals("moyen")) {
-				nombreAnnee = (long) ((5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  5 * big.longValue();
 				break;
 			} else if (mention.equals("lent")) {
-				nombreAnnee = (long) ((5.5) * (1000 * 60 * 60 * 24 * 365));
+				nombreAnnee =  (long) (5.5* big.longValue());
 				break;
 			}
 		case "grade10":
-			nombreAnnee = (long) 2 * (1000 * 60 * 60 * 24 * 365);
+			nombreAnnee =  2* big.longValue();
 			break;
 		}
 		return getDateEvaluation(grade.getDateDeAffectation(), nombreAnnee);
 	}
 	public static Date getDateDeNote(Date date1) {
-		long milliSeconde1 = date1.getTime() + 365*1000*60*60*24 ;
+		BigDecimal big = new BigDecimal("31557600000"); 
+		long milliSeconde1 = date1.getTime() +big.longValue();
 		return new Date(milliSeconde1);
 	}
 

@@ -1,5 +1,6 @@
 package com.example.stock.service.impl;
 
+import java.io.Console;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,7 @@ public List<User> findAll() {
 @Override
 public int seConnecter(User user) throws Exception {
     User loadedUser = findByLogin(user.getLogin());
+    System.out.println("ha loaded user:   " + loadedUser.isBloqued());
     if(loadedUser.isBloqued() == true) {
     if(DateUlils.debloquer(loadedUser.getDateBloquage())) {
     	loadedUser.setBloqued(false);

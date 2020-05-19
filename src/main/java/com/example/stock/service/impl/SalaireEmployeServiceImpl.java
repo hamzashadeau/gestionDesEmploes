@@ -17,7 +17,7 @@ private SalaireEmployeDao salaireEmployeDao;
 
 @Override
 public int save(SalaireEmploye salaireEmploye) {
-	if(findByid(salaireEmploye.getId())!= null) {
+	if(salaireEmploye.getId()!= null) {
 return -1;
 }else {
 	salaireEmployeDao.save(salaireEmploye);

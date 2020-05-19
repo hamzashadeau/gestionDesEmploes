@@ -91,19 +91,27 @@ public class User implements Serializable {
         return true;
     }
 
-	@Override
-	public String toString() {
-		return "User [login=" + login + ", pwd=" + pwd + ", bloqued=" + bloqued + ", nbrTentatifRestant="
-				+ nbrTentatifRestant + ", dateBloquage=" + dateBloquage + "]";
-	}
-
-	public User(String login, String pwd, boolean bloqued, int nbrTentatifRestant, Date dateBloquage) {
+	public User(Long id, String login, String pwd, boolean bloqued, int nbrTentatifRestant, Date dateBloquage) {
 		super();
+		this.id = id;
 		this.login = login;
 		this.pwd = pwd;
 		this.bloqued = bloqued;
 		this.nbrTentatifRestant = nbrTentatifRestant;
 		this.dateBloquage = dateBloquage;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+
+
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", login=" + login + ", pwd=" + pwd + ", bloqued=" + bloqued + ", nbrTentatifRestant="
+				+ nbrTentatifRestant + ", dateBloquage=" + dateBloquage + "]";
 	}
 
 	public User() {
