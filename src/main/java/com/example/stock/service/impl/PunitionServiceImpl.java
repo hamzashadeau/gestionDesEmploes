@@ -48,7 +48,7 @@ public List<Punition> findAll() {
 }
 
 @Override
-public List<Punition> findByLibelle(String libelle) {
+public Punition findByLibelle(String libelle) {
 	return punitionDao.findByLibelle(libelle);
 }
 

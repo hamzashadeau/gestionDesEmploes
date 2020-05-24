@@ -17,9 +17,16 @@ import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
+import com.example.stock.bean.NoteGeneralDeAnnee;
+import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.FormationService;
 import com.example.stock.service.facade.GradeEmployeService;
 import com.example.stock.service.facade.GradeService;
+import com.example.stock.service.facade.NoteGeneraleService;
+import com.example.stock.service.facade.PrixEmployeService;
+import com.example.stock.service.facade.PunitionEmployeService;
+import com.example.stock.service.facade.RapportDeEvaluationService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -42,18 +49,62 @@ private EmployeService employeService;
 private EmployeDao employeDao;
 @Autowired
 private GradeService gradeService;
+@Autowired
+private NoteGeneraleService noteGeneraleService;
+@Autowired
+private FormationService formationService;
+@Autowired
+private PunitionEmployeService punitionEmployeService;
+@Autowired
+private PrixEmployeService prixEmployeService;
+@Autowired
+private RapportDeEvaluationService rapportDeEvaluationService;
 
 @Override
-public int save(GradeEmploye grade) {
-	if(grade.getId() !=  null) {
+public int save(GradeEmploye gradeEmploye) {
+	Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
+	Grade grade = gradeService.findByLibelle(gradeEmploye.getGrade().getLibelle());
+	System.out.println(gradeEmploye.getGrade().getLibelle());
+	if(gradeEmploye.getId() !=  null) {
 return -1;
+}else if (employe == null) {
+	return -2;
+} else if (grade == null) {
+	return -3;
 }else {
-	grade.setGrade(gradeService.findByLibelle(grade.getGrade().getLibelle()));
-	// ncriw rapport evaluation
-	gradeDao.save(grade);
+	gradeEmploye.setDoti(employe.getDoti());
+	gradeEmploye.setGrade(grade);
+	gradeEmploye.setEtat("en traitement");
+	gradeDao.save(gradeEmploye);
+	//rapport evaluation
+	RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
+	rapportDeEvaluation.setEmploye(employe);
+	rapportDeEvaluation.setNouveauGrade(gradeEmploye);
+				// notes 
+rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+				//formation
+rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));
+				//Punition
+rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));
+				//prix
+rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));
+				//moyen
+rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+//moyen
+rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+rapportDeEvaluationService.save(rapportDeEvaluation);
 		return 1;
 }
 	}
+//getMoyenNote
+public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
+Double somme = 0.0;
+for (NoteGeneralDeAnnee noteGeneralDeAnnee : notes) {
+	System.out.println("ha note" + noteGeneralDeAnnee.getMoyenGeneral());
+	somme += noteGeneralDeAnnee.getMoyenGeneral();
+}
+return somme/notes.size();
+}
 
 @Override
 public GradeEmploye findByid(Long id) {

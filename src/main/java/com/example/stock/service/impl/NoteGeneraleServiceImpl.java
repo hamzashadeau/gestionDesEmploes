@@ -44,14 +44,22 @@ public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
 //	if(findByid(noteGeneralDeAnnee.getId())!= null) {
 //return -1;
 //}else {
+	Double somme = 0.0;
 	Employe employe = employeService.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
 	noteGeneralDeAnnee.setFuulName(employe.getFullName());
 	//noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().setLibelle("NoteDeAffectationDesTachesLieeAuTravail"+ employe.getDoti() + noteGeneralDeAnnee.getDate().toString() );	
 	noteService.save(noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail());
+	somme += noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().getMention();
 	noteService.save(noteGeneralDeAnnee.getNoteDeCapaciteDeOrganisation());
+	somme += noteGeneralDeAnnee.getNoteDeCapaciteDeOrganisation().getMention();
 	noteService.save(noteGeneralDeAnnee.getNoteDeCompotement());
+	somme += noteGeneralDeAnnee.getNoteDeCompotement().getMention();
 	noteService.save(noteGeneralDeAnnee.getNoteDeRechercheEtDeInnovation());
+	somme += noteGeneralDeAnnee.getNoteDeRechercheEtDeInnovation().getMention();
 	noteService.save(noteGeneralDeAnnee.getNoteDeRentabilite());
+	somme += noteGeneralDeAnnee.getNoteDeRentabilite().getMention();
+	
+	noteGeneralDeAnnee.setMoyenGeneral(somme/5);
 	//calucler la mention et la moyen
 	noteGeneraleDao.save(noteGeneralDeAnnee);
 		return 1;
@@ -88,9 +96,11 @@ public List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti) {
 
 @Override
 public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe) {
+	Employe employe2 = employeService.findByDoti(employe.getDoti());
 	List<NoteGeneralDeAnnee> punitionEmployes = findByEmployeDoti(employe.getDoti());
 	List<NoteGeneralDeAnnee> resultat = new ArrayList<NoteGeneralDeAnnee>();
 	for (NoteGeneralDeAnnee punitionEmploye : punitionEmployes) {
+		System.out.println("ha date hna" +  punitionEmploye.getDate());
 		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getDate()))
 			resultat.add(punitionEmploye);
 	}

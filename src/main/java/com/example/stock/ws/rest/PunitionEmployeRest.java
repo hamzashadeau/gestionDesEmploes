@@ -25,6 +25,10 @@ public class PunitionEmployeRest {
 @Autowired
 private PunitionEmployeService punitionEmployeService;
 
+@PostMapping("update")
+public int update(@RequestBody PunitionEmploye punitionEmploye) {
+	return punitionEmployeService.update(punitionEmploye);
+}
 
 @PostMapping("listeDespunitionsPdf")
 public int listeDespunitionsPdf(@RequestBody ArrayList<PunitionEmploye> punitionEmployes)	throws DocumentException, FileNotFoundException {

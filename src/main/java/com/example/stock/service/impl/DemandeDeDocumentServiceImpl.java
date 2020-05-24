@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.DemaneDeDocumentDao;
+import com.example.stock.Dao.EmployeDao;
+import com.example.stock.Dao.TypeDocumentDao;
 import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
@@ -20,6 +22,7 @@ import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.bean.TypeDocument;
 import com.example.stock.service.facade.DemandeDeDocumentService;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.RapportDeEvaluationService;
@@ -45,14 +48,27 @@ private RapportDeEvaluationService rapportDeEvaluationService;
 @Autowired
 private EmployeService employeService;
 @Autowired
+private EmployeDao employeDao;
+@Autowired
+private TypeDocumentDao typeDocumentDao;
+@Autowired
 private SalaireEmployeService salaireEmployeService;
 
 @Override
 public int save(DemaneDeDocument demaneDeDocument) {
 	Employe employe = employeService.findByDoti(demaneDeDocument.getEmploye().getDoti());
+	TypeDocument typeDocument = typeDocumentDao.findByLibelle(demaneDeDocument.getTypeDeDocument().getLibelle());
 	if(demaneDeDocument.getId()!= null) {
 return -1;
-}else {
+}else if(employe == null) {
+	return -2;
+} else if(typeDocument == null) {
+	return -3;
+} else {
+	demaneDeDocument.setTypeDeDocument(typeDocument);
+	demaneDeDocument.setEmploye(employe);
+	demaneDeDocument.setDateDemande(new Date());
+	demaneDeDocument.setEtat("non traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
 		return 1;
 }
@@ -60,8 +76,20 @@ return -1;
 @Override
 public int update(DemaneDeDocument demaneDeDocument) {
 	Employe employe = employeService.findByDoti(demaneDeDocument.getEmploye().getDoti());
-	demaneDeDocumentDao.save(demaneDeDocument);
-		return 1;
+	TypeDocument typeDocument = typeDocumentDao.findByLibelle(demaneDeDocument.getTypeDeDocument().getLibelle());
+	if(employe == null) {
+		return -2;
+	} else if(typeDocument == null) {
+		return -3;
+	} else {
+		demaneDeDocument.setTypeDeDocument(typeDocument);
+		employeDao.save(employe);
+		demaneDeDocument.setEmploye(employe);
+		demaneDeDocument.setDateDemande(new Date());
+		demaneDeDocument.setEtat("non traité");
+		demaneDeDocumentDao.save(demaneDeDocument);
+			return 1;
+	}
 	}
 //infoEmployePdf
 public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoundException {

@@ -32,8 +32,8 @@ public int listeDeGradeDeEmployePdf(@RequestBody List<GradeEmploye> grades) thro
 }
 
 @PostMapping("update")
-public int update(@RequestBody GradeEmploye grade) {
-	return gradeService.update(grade);
+public int update(@RequestBody GradeEmploye gradeEmploye) {
+	return gradeService.update(gradeEmploye);
 }
 
 @PostMapping("accepterUnGrade")

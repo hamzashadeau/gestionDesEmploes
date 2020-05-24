@@ -48,7 +48,7 @@ public List<Prix> findAll() {
 }
 
 @Override
-public List<Prix> findByLibelle(String libelle) {
+public Prix findByLibelle(String libelle) {
 	return prixDao.findByLibelle(libelle);
 }
 

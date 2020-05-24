@@ -38,7 +38,7 @@ public List<NoteGeneralDeAnnee> findNoteNonTraite(String etat) {
 }
 
 
-@GetMapping("findNoteDeEmploye")
+@PostMapping("findNoteDeEmploye")
 public List<NoteGeneralDeAnnee> findNoteDeEmploye(@RequestBody Employe employe) {
 	return noteGeneralDeAnneeService.findNoteDeEmploye(employe);
 }

@@ -37,6 +37,7 @@ import com.example.stock.service.facade.NoteGeneraleService;
 import com.example.stock.service.facade.NotificationEmployeService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PunitionEmployeService;
+import com.example.stock.service.facade.RapportDeEvaluationService;
 import com.example.stock.service.facade.RevenuService;
 import com.example.stock.service.facade.SalaireEmployeService;
 import com.itextpdf.text.BaseColor;
@@ -83,7 +84,8 @@ public class EmployeeServiceImpl implements EmployeService {
 	private PunitionEmployeService punitionEmployeService;
 	@Autowired
 	private PrixEmployeService prixEmployeService;
-
+	@Autowired
+	private RapportDeEvaluationService rapportDeEvaluationService;
 	@Override
 	public List<Employe> findAll() {
 		return employeDao.findAll();
@@ -133,7 +135,6 @@ public class EmployeeServiceImpl implements EmployeService {
 		// save emploe
 		employeDao.save(employe);
 		//grade employe
-
 		gradeEmploye.setDateDeAffectation(date);
 		gradeEmploye.setGrade(grade);
 		employe.setDernierGrade(gradeEmploye);
@@ -374,6 +375,7 @@ public class EmployeeServiceImpl implements EmployeService {
 			rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
 			//moyen
 			rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+			rapportDeEvaluationService.save(rapportDeEvaluation);
 			// date prochaine evaluation
 			employe.setDateProchainEvaluation(null);
 			}

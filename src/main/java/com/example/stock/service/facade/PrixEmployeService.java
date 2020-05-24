@@ -10,11 +10,20 @@ import com.itextpdf.text.DocumentException;
 
 public interface PrixEmployeService {
 	PrixEmploye findByid(Long id);
+
 	List<PrixEmploye> findByEmployeDoti(Integer doti);
+
 	List<PrixEmploye> findByPrixLibelle(String libelle);
+
 	List<PrixEmploye> findAll();
+
 	int save(PrixEmploye prixEmploye);
+
+	int update(PrixEmploye prixEmploye);
+
 	int deleteById(Long id);
+
 	public List<PrixEmploye> findPrixDeEmploye(Employe employe);
+
 	public int listeDesPrixPdf(ArrayList<PrixEmploye> prixEmployes) throws DocumentException, FileNotFoundException;
 }

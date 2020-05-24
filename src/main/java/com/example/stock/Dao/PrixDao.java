@@ -11,6 +11,6 @@ import com.example.stock.bean.Prix;
 
 @Repository
 public interface PrixDao extends JpaRepository<Prix, Long> {
-List<Prix> findByLibelle(String libelle);
+Prix findByLibelle(String libelle);
 
 }

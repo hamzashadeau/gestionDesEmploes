@@ -22,6 +22,13 @@ public class RapportDeEvaluationRest {
 @Autowired
 private RapportDeEvaluationService emoulumentsService;
 
+
+
+@PostMapping("update")
+public int update(@RequestBody RapportDeEvaluation rapportDeEvaluation) {
+	return emoulumentsService.update(rapportDeEvaluation);
+}
+
 @GetMapping("findByNouveauGradeIdAndEmployeDoti/id/{id}/doti/{doti}")
 public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(@PathVariable Long id,@PathVariable Integer doti) {
 	return emoulumentsService.findByNouveauGradeIdAndEmployeDoti(id, doti);

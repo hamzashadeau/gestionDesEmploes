@@ -16,6 +16,7 @@ import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.bean.PunitionEmploye;
+import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -33,13 +34,32 @@ import com.itextpdf.text.pdf.PdfWriter;
 public class FormationServiceImpl implements FormationService {
 @Autowired
 private FormationDao formationDao;
+@Autowired
+private EmployeService employeService;
 
 
 @Override
 public int save(Formation formation) {
-	if(findByid(formation.getId())!= null) {
+	Employe employe = employeService.findByDoti(formation.getEmploye().getDoti());
+	if(formation.getId()!= null) {
 return -1;
-}else {
+}else if (employe == null) {
+	return -2;
+}{
+	formation.setEmploye(employe);
+	formationDao.save(formation);
+		return 1;
+}
+	}
+@Override
+public int update(Formation formation) {
+	Employe employe = employeService.findByDoti(formation.getEmploye().getDoti());
+	if(formation.getId()== null) {
+return -1;
+}else if (employe == null) {
+	return -2;
+}{
+	formation.setEmploye(employe);
 	formationDao.save(formation);
 		return 1;
 }

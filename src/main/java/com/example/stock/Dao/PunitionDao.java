@@ -11,6 +11,6 @@ import com.example.stock.bean.Punition;
 @Repository
 public interface PunitionDao extends JpaRepository<Punition, Long> {
 List<Punition> findByType(String type);
-List<Punition> findByLibelle(String libelle);
+Punition findByLibelle(String libelle);
 
 }

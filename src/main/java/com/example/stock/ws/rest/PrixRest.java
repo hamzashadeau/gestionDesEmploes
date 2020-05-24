@@ -22,7 +22,7 @@ public class PrixRest {
 private PrixService prixService;
 
 @GetMapping("findByLibelle/libelle/{libelle}")
-public List<Prix> findByLibelle(@PathVariable String libelle) {
+public Prix findByLibelle(@PathVariable String libelle) {
 	return prixService.findByLibelle(libelle);
 }
 

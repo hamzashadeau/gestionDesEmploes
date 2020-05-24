@@ -25,6 +25,11 @@ public class FormationRest {
 @Autowired
 private FormationService formationService;
 
+@PostMapping("update")
+public int update(@RequestBody Formation formation) {
+	return formationService.update(formation);
+}
+
 @PostMapping("listeDesFormationsPdf")
 public int listeDesFormationsPdf(@RequestBody ArrayList<Formation> formations) throws DocumentException, FileNotFoundException {
 	return formationService.listeDesFormationsPdf(formations);

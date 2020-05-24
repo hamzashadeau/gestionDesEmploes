@@ -27,6 +27,6 @@ public interface GradeEmployeService {
 	public List<GradeEmploye> findGradeNonTraite();
 	
 	public int accepterUnGrade(GradeEmploye gradeEmploye);
-	public int update(GradeEmploye grade);
+	public int update(GradeEmploye gradeEmploye);
 	public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentException, FileNotFoundException;
 }

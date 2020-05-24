@@ -27,7 +27,7 @@ public List<Punition> findByType(@PathVariable String type) {
 }
 
 @GetMapping("findByLibelle/libelle/{libelle}")
-public List<Punition> findByLibelle(@PathVariable String libelle) {
+public Punition findByLibelle(@PathVariable String libelle) {
 	return punitionService.findByLibelle(libelle);
 }
 

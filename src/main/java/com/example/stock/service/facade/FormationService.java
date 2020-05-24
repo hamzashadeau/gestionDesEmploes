@@ -22,6 +22,10 @@ public interface FormationService {
 	int deleteById(Long id);
 
 	public Formation findByid(Long id);
+
 	public List<Formation> findFormationDeEmploye(Employe employe);
-	public int listeDesFormationsPdf(ArrayList<Formation> formations) throws DocumentException, FileNotFoundException ;
+
+	public int listeDesFormationsPdf(ArrayList<Formation> formations) throws DocumentException, FileNotFoundException;
+
+	public int update(Formation formation);
 }

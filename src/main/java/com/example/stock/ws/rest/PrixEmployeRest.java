@@ -26,6 +26,11 @@ public class PrixEmployeRest {
 private PrixEmployeService prixEmployeService;
 
 
+@PostMapping("update")
+public int update(@RequestBody PrixEmploye prixEmploye) {
+	return prixEmployeService.update(prixEmploye);
+}
+
 @PostMapping("listeDesPrixPdf")
 public int listeDesPrixPdf(@RequestBody ArrayList<PrixEmploye> prixEmployes) throws DocumentException, FileNotFoundException {
 	return prixEmployeService.listeDesPrixPdf(prixEmployes);

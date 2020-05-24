@@ -234,6 +234,8 @@ public class DateUlils {
 		return milliSeconde1 < milliSeconde2 ? true : false;
 	}
 	public static boolean verifierDateSup(Date date1,Date date2) {
+		System.out.println("ha date1" + date1);
+		System.out.println("ha date2" + date2);
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
 		return milliSeconde1 < milliSeconde2 ? true : false;

@@ -16,5 +16,5 @@ public interface RapportDeEvaluationService {
 	int save(RapportDeEvaluation rapportDeEvaluation);
 	int deleteById(Long id);
 	RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id,Integer doti);
-
+	public int update(RapportDeEvaluation rapportDeEvaluation);
 }
