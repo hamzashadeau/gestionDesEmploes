@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
+import com.example.stock.Dao.RapportDeEvaluationDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
@@ -59,6 +60,8 @@ private PunitionEmployeService punitionEmployeService;
 private PrixEmployeService prixEmployeService;
 @Autowired
 private RapportDeEvaluationService rapportDeEvaluationService;
+@Autowired
+private RapportDeEvaluationDao rapportDeEvaluationDao;
 
 @Override
 public int save(GradeEmploye gradeEmploye) {
@@ -96,6 +99,38 @@ rapportDeEvaluationService.save(rapportDeEvaluation);
 		return 1;
 }
 	}
+public int  creeUnGradeNonTraite(Integer doti) {
+GradeEmploye gradeEmploye = new GradeEmploye();
+Employe employe = employeService.findByDoti(doti);
+	gradeEmploye.setDoti(employe.getDoti());
+	gradeEmploye.setGrade(gradeService.findByLibelle(DateUlils.getNouvauGrade(employe.getDernierGrade().getGrade())));
+	gradeEmploye.setEtat("en traitement");
+	gradeDao.save(gradeEmploye);
+	//rapport evaluation
+	RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
+	rapportDeEvaluation.setEmploye(employe);
+	rapportDeEvaluation.setNouveauGrade(gradeEmploye);
+	if(noteGeneraleService.findNoteDeEmploye(employe)!= null) {
+		//note
+		rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+		//moyen
+rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+//moyen
+rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+
+	} if(formationService.findFormationDeEmploye(employe)!= null) {
+		//formation
+		rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));
+	}	if(punitionEmployeService.findPunitionDeEmploye(employe)!= null) {
+		//punition
+		rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));
+	}	if(prixEmployeService.findPrixDeEmploye(employe)!= null) {
+		//prix
+		rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));
+	}
+rapportDeEvaluationDao.save(rapportDeEvaluation);
+	return 1;
+}
 //getMoyenNote
 public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 Double somme = 0.0;

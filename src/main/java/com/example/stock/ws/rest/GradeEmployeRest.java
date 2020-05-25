@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.stock.bean.Employe;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.service.facade.GradeEmployeService;
 import com.itextpdf.text.DocumentException;
@@ -25,6 +26,10 @@ public class GradeEmployeRest {
 @Autowired
 private GradeEmployeService gradeService;
 
+@GetMapping("creeUnGradeNonTraite/doti/{doti}")
+public int creeUnGradeNonTraite(@PathVariable Integer doti) {
+	return gradeService.creeUnGradeNonTraite(doti);
+}
 
 @PostMapping("listeDeGradeDeEmployePdf")
 public int listeDeGradeDeEmployePdf(@RequestBody List<GradeEmploye> grades) throws DocumentException, FileNotFoundException {
