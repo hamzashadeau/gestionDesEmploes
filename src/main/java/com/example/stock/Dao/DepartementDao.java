@@ -9,5 +9,5 @@ import com.example.stock.bean.Departement;
 @Repository
 public interface DepartementDao extends JpaRepository<Departement, Long> {
 Departement findByNom(String nom);
-Departement findByChefdoti(Integer matricule);
+Departement findByChefdoti(String matricule);
 }

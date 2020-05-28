@@ -51,7 +51,7 @@ public List<Formation> findByemployeEmail(@PathVariable String email) {
 }
 
 @GetMapping("findByemployeDoti/doti/{doti}")
-public List<Formation> findByemployeDoti(@PathVariable Integer doti) {
+public List<Formation> findByemployeDoti(@PathVariable String doti) {
 	return formationService.findByemployeDoti(doti);
 }
 

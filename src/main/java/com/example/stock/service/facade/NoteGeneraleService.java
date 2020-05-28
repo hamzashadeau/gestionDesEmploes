@@ -10,8 +10,8 @@ import com.itextpdf.text.DocumentException;
 
 public interface NoteGeneraleService {
 	NoteGeneralDeAnnee findByid(Long id);
-	List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti);
-	public NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date, Integer doti);
+	List<NoteGeneralDeAnnee> findByEmployeDoti(String doti);
+	public NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date, String doti);
 	List<NoteGeneralDeAnnee> findAll();
 	int save(NoteGeneralDeAnnee noteGeneralDeAnnee);
 	int deleteById(Long id);

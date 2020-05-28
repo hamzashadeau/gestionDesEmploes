@@ -43,7 +43,7 @@ public List<NotificationEmploye> findByEmployeEmail(@PathVariable String email) 
 }
 
 @GetMapping("findByemployeDoti/doti/{doti}")
-public List<NotificationEmploye> findByemployeDoti(@PathVariable Integer doti) {
+public List<NotificationEmploye> findByemployeDoti(@PathVariable String doti) {
 	return notificationEmployeService.findByemployeDoti(doti);
 }
 

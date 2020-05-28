@@ -16,16 +16,21 @@ import org.springframework.stereotype.Service;
 import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Utilis.DateUlils;
+import com.example.stock.bean.Congé;
 import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Fonction;
+import com.example.stock.bean.Formation;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.NoteGeneralDeAnnee;
 import com.example.stock.bean.Notification;
 import com.example.stock.bean.NotificationEmploye;
+import com.example.stock.bean.PrixEmploye;
+import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.service.facade.CongeService;
 import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.EmolumentsService;
 import com.example.stock.service.facade.EmployeService;
@@ -86,6 +91,8 @@ public class EmployeeServiceImpl implements EmployeService {
 	private PrixEmployeService prixEmployeService;
 	@Autowired
 	private RapportDeEvaluationService rapportDeEvaluationService;
+	@Autowired
+	private CongeService congeService;
 	@Override
 	public List<Employe> findAll() {
 		return employeDao.findAll();
@@ -103,7 +110,7 @@ public class EmployeeServiceImpl implements EmployeService {
 
 	@Override
 	public int save(Employe employe) {
-		if (!validate(employe.getFullName(), "[a-zA-Z]+")){
+		if (!validate(employe.getFullName(), "[a-zA-Z ]*")){
 			return -1;
 		} else if(!validate(employe.getEmail(),"[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+")) {
 			return -2;
@@ -111,12 +118,12 @@ public class EmployeeServiceImpl implements EmployeService {
 		// departement de employe
 		Departement dep = departementService.findByNom(employe.getDep().getNom());
 		employe.setDep(dep);
-		employe.setDoti(99 + employe.getCin());
+		employe.setDoti("fstg" + employe.getCin());
 		// donction de employe
 		Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
 		employe.setFonction(fct);
 		//Solde Restantes Congé Exceptionnel
-		employe.setSoldeRestantesCongéExceptionnel(10);
+		employe.setSoldeRestantesCongeExceptionnel(10);
 		//Dernier note
 		employe.setDateDeProchainNote(DateUlils.getDateDeNote(employe.getDernierGrade().getDateDeAffectation()));
 		employe.setDernierNote(null);
@@ -148,7 +155,7 @@ public class EmployeeServiceImpl implements EmployeService {
 		salaireEmploye.setAllocationDeEncadrement(emolumentsService.findByLibelle("allocationDeEncadrement"));
 		salaireEmploye.setAllocationDeEnseignement(emolumentsService.findByLibelle("allocationDeEnseignement"));
 		salaireEmploye.setIdemDeLaResidence(emolumentsService.findByLibelle("idemDeLaResidence"));
-		salaireEmploye.setIdemDeLaResidence(emolumentsService.findByLibelle("idemFamialieleMarocaine"));
+		salaireEmploye.setIdemFamialieleMarocaine(emolumentsService.findByLibelle("idemFamialieleMarocaine"));
 					//revenu
 		salaireEmploye.setAssuranceMaladieObligatoire(revenuService.findByLibelle("assuranceMaladieObligatoire"));
 		salaireEmploye.setImpotSurLeRevenu(revenuService.findByLibelle("impotSurLeRevenu"));
@@ -165,12 +172,7 @@ public class EmployeeServiceImpl implements EmployeService {
 	@Override
 	public int update(Employe employe) {
 		Employe loadedemploye = findByid(employe.getId());
-		employe.setDoti(employe.getCin() + 19);
-		if (employeDao.findByCin(employe.getCin()) != null) {
-			return -1;
-		} else if (employeDao.findByDoti(employe.getDoti()) != null) {
-			return -2;
-		} else {
+		//employe.setDoti(employe.getCin() + 19);
 			// departement de employe
 			Departement dep = departementService.findByNom(employe.getDep().getNom());
 			employe.setDep(dep);
@@ -203,7 +205,6 @@ public class EmployeeServiceImpl implements EmployeService {
 			employeDao.save(employe);
 			return 1;
 		}
-	}
 
 	@Override
 	public Employe findByid(Long id) {
@@ -222,7 +223,29 @@ public class EmployeeServiceImpl implements EmployeService {
 			List<GradeEmploye> gradeEmployes = gradeEmployeService.findByDoti(employe.getDoti());
 			gradeEmployes.forEach(grade -> {
 				gradeEmployeService.deleteById(grade.getId());
+//				rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(grade.getId(), employe.getDoti()).getId());
 			});
+			salaireEmployeService.deleteById(salaireEmployeService.findByEmployeDoti(employe.getDoti()).getId());
+			List<PrixEmploye> prixEmployes = prixEmployeService.findByEmployeDoti(employe.getDoti());
+			for (PrixEmploye prixEmploye : prixEmployes) {
+				prixEmployeService.deleteById(prixEmploye.getId());
+			}
+			List<Formation> formations = formationService.findByemployeDoti(employe.getDoti());
+			for (Formation formation : formations) {
+				formationService.deleteById(formation.getId());
+			}
+			List<PunitionEmploye> punitionEmployes = punitionEmployeService.findByEmployeDoti(employe.getDoti());
+			for (PunitionEmploye punitionEmploye : punitionEmployes) {
+				punitionEmployeService.deleteById(punitionEmploye.getId());
+			}
+			List<NoteGeneralDeAnnee> noteGeneralDeAnnees = noteGeneraleService.findByEmployeDoti(employe.getDoti());
+			for (NoteGeneralDeAnnee noteGeneralDeAnnee : noteGeneralDeAnnees) {
+				noteGeneraleService.deleteById(noteGeneralDeAnnee.getId());
+			}
+			List<Congé> congés = congeService.findByEmployeDoti(employe.getDoti());
+			for (Congé congé : congés) {
+				congeService.deleteById(congé.getId());
+			}
 			employeDao.deleteById(id);
 			if (findByid(id) == null) {
 				return 1;
@@ -286,12 +309,12 @@ public class EmployeeServiceImpl implements EmployeService {
 	}
 
 	@Override
-	public Employe findByCin(Integer cin) {
+	public Employe findByCin(String cin) {
 		return employeDao.findByCin(cin);
 	}
 
 	@Override
-	public Employe findByDoti(Integer doti) {
+	public Employe findByDoti(String doti) {
 		return employeDao.findByDoti(doti);
 	}
 
@@ -410,8 +433,8 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	}
 
 	@Override
-	public List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel) {
-		return employeDao.findBySoldeRestantesCongéExceptionnel(soldeRestantesCongéExceptionnel);
+	public List<Employe> findBySoldeRestantesCongeExceptionnel(Integer soldeRestantesCongéExceptionnel) {
+		return employeDao.findBySoldeRestantesCongeExceptionnel(soldeRestantesCongéExceptionnel);
 	}
 
 	@Override

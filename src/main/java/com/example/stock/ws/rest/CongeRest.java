@@ -1,9 +1,11 @@
 package com.example.stock.ws.rest;
 
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +24,14 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+@GetMapping("findByCongeeLibelleAndDateDeDebut/libelle/{libelle}/date/{date}")
+public List<Congé> findByCongeeLibelleAndDateDeDebut(@PathVariable String libelle,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
+	return congeService.findByCongeeLibelleAndDateDeDebut(libelle, date);
+}
+@GetMapping("findCongeByAnne/annee/{annee}/type/{type}")
+public List<Congé> findCongeByAnne(@PathVariable Integer annee,@PathVariable String type) {
+	return congeService.findCongeByAnne(annee, type);
+}
 @PostMapping("update")
 public int update(@RequestBody Congé congé) {
 	return congeService.update(congé);
@@ -33,6 +43,14 @@ public int listeDesCongéPdf(@RequestBody List<Congé> conges) throws DocumentEx
 @GetMapping("findAll")
 public List<Congé> findAll() {
 	return congeService.findAll();
+}
+@GetMapping("findCongeCertificatLongDuree")
+public List<Congé> findCongeCertificatLongDuree() {
+	return congeService.findByCongeeLibelle("certificat long duree");
+}
+@GetMapping("findCongeCertificatcourtDuree")
+public List<Congé> findCongeCertificatcourtDuree() {
+	return congeService.findByCongeeLibelle("certificat court duree");
 }
 @GetMapping("deleteById/id/{id}")
 public int deleteById(@PathVariable Long id) {
@@ -50,7 +68,7 @@ public List<Congé> findByEmployeEmail(@PathVariable String email) {
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<Congé> findByEmployeDoti(@PathVariable Integer doti) {
+public List<Congé> findByEmployeDoti(@PathVariable String doti) {
 	return congeService.findByEmployeDoti(doti);
 }
 

@@ -64,7 +64,7 @@ public List<SalaireEmploye> findByMonatntModifie(Double montantModifier) {
 }
 
 @Override
-public SalaireEmploye findByEmployeDoti(Integer doti) {
+public SalaireEmploye findByEmployeDoti(String doti) {
 	return salaireEmployeDao.findByEmployeDoti(doti);
 }
 

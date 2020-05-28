@@ -6,14 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.FonctionDao;
+import com.example.stock.bean.DepFonction;
+import com.example.stock.bean.Employe;
 import com.example.stock.bean.Fonction;
+import com.example.stock.service.facade.DepFonctionService;
+import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FonctionService;
 
 @Service
 public class FonctionServiceImpl implements FonctionService {
 @Autowired
 private FonctionDao fonctionDao;
-
+@Autowired
+private EmployeService employeService;
+@Autowired
+private DepFonctionService depFonctionService;
 
 @Override
 public int save(Fonction fonction) {
@@ -35,6 +42,10 @@ public Fonction findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	List<DepFonction> depFonctions = depFonctionService.findByFonctionLibelle(findByid(id).getLibelle());
+	for (DepFonction depFonction : depFonctions) {
+		depFonctionService.deleteById(depFonction.getId());
+	}
 	fonctionDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;

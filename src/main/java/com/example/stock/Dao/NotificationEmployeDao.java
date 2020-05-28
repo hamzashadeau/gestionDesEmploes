@@ -13,7 +13,7 @@ import com.example.stock.bean.NotificationEmploye;
 public interface NotificationEmployeDao extends JpaRepository<NotificationEmploye, Long> {
 List<NotificationEmploye> findByEmployeId(Long id);
 List<NotificationEmploye> findByEmployeEmail(String email);
-List<NotificationEmploye> findByemployeDoti(Integer doti);
+List<NotificationEmploye> findByemployeDoti(String doti);
 List<NotificationEmploye> findByDateDeNotification(Date dateDeObtenation);
 
 

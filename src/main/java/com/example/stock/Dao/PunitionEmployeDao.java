@@ -15,6 +15,6 @@ public interface PunitionEmployeDao extends JpaRepository<PunitionEmploye, Long>
 List<PunitionEmploye> findByEmployeEmail(String email);
 List<PunitionEmploye> findByPunitionLibelle(String libelle);
 List<PunitionEmploye> findByPunitionType(String type);
-List<PunitionEmploye> findByEmployeDoti(Integer doti);
+List<PunitionEmploye> findByEmployeDoti(String doti);
 List<PunitionEmploye> findByEmployeId(Long id);
 }

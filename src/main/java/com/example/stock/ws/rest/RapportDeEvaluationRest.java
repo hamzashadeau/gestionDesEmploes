@@ -30,7 +30,7 @@ public int update(@RequestBody RapportDeEvaluation rapportDeEvaluation) {
 }
 
 @GetMapping("findByNouveauGradeIdAndEmployeDoti/id/{id}/doti/{doti}")
-public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(@PathVariable Long id,@PathVariable Integer doti) {
+public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(@PathVariable Long id,@PathVariable String doti) {
 	return emoulumentsService.findByNouveauGradeIdAndEmployeDoti(id, doti);
 }
 
@@ -45,7 +45,7 @@ public List<RapportDeEvaluation> findByNouveauGradeId(@PathVariable Long id) {
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<RapportDeEvaluation> findByEmployeDoti(@PathVariable Integer doti) {
+public List<RapportDeEvaluation> findByEmployeDoti(@PathVariable String doti) {
 	return emoulumentsService.findByEmployeDoti(doti);
 }
 

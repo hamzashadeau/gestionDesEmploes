@@ -7,6 +7,10 @@ import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.xml.transform.TransformerException;
+
 import org.hibernate.mapping.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.example.stock.Dao.DemaneDeDocumentDao;
 import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.TypeDocumentDao;
+import com.example.stock.Utilis.HashUtil;
 import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
@@ -95,7 +100,6 @@ public int update(DemaneDeDocument demaneDeDocument) {
 public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoundException {
 	Document document = new Document();
 	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "Info.pdf")); 
-	
 	document.open();
 	Image img,img1;
 	try {
@@ -114,7 +118,6 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
 	Paragraph p1 = new Paragraph("\n\t info Personnel", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
@@ -137,9 +140,7 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 	Paragraph p5 = new Paragraph("\n les dernier Grade :\n\n", font);
 	p1.setAlignment(Element.ALIGN_LEFT);
 	document.add(p5);
-    
     PdfPTable table = new PdfPTable(2); // 3 columns.
-
     PdfPCell cell1 = new PdfPCell(new Paragraph("libelle "));
     PdfPCell cell2 = new PdfPCell(new Paragraph("date affectation"));
     PdfPCell cell3 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));
@@ -148,7 +149,6 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
     table.addCell(cell2);
     table.addCell(cell3);
     table.addCell(cell4);
-
   document.add(table);
 
 //les dernier note    
@@ -372,12 +372,12 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
 	return 1;
 }
 //attestation de salaire 
-public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
 	Employe employe = demaneDeDocument.getEmploye();
 	SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
 	
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream("iTextHelloWorld.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -435,18 +435,30 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
     Paragraph p4 = new Paragraph( "\n \r\r marakech  le :"+new  Date().toString(),f);
     p4.setAlignment(Element.ALIGN_LEFT);
     document.add(p4);
-
 	document.close();
+	try {
+		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf");
+	} catch (AddressException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (MessagingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
 	return 1;
 	}
 
 //attestation de travail 
-public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
 	Employe employe = demaneDeDocument.getEmploye();
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream("iTextHelloWorld.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFullName()+"attestaionDeTravail" +demaneDeDocument.getEmploye().getDoti()+".pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -497,8 +509,20 @@ public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws Docume
   Paragraph p4 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
   p4.setAlignment(Element.ALIGN_LEFT);
   document.add(p4);
-
 	document.close();
+	try {
+		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf");
+	} catch (AddressException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (MessagingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
 	return 1;
@@ -538,7 +562,7 @@ public List<DemaneDeDocument> findByEmployeEmail(String email) {
 }
 
 @Override
-public List<DemaneDeDocument> findByEmployeDoti(Integer doti) {
+public List<DemaneDeDocument> findByEmployeDoti(String doti) {
 	return demaneDeDocumentDao.findByEmployeDoti(doti);
 }
 

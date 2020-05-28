@@ -11,7 +11,7 @@ import com.itextpdf.text.DocumentException;
 public interface PrixEmployeService {
 	PrixEmploye findByid(Long id);
 
-	List<PrixEmploye> findByEmployeDoti(Integer doti);
+	List<PrixEmploye> findByEmployeDoti(String doti);
 
 	List<PrixEmploye> findByPrixLibelle(String libelle);
 

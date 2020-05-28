@@ -16,7 +16,7 @@ import com.example.stock.bean.Prix;
 public interface PermanenceAdministrativeDao extends JpaRepository<PermanenceAdministrative, Long> {
 	List<PermanenceAdministrative> findByEmployeId(Long id);
 	List<PermanenceAdministrative> findByEmployeEmail(String email);
-	List<PermanenceAdministrative> findByemployeDoti(Integer doti);
+	List<PermanenceAdministrative> findByemployeDoti(String doti);
 	List<PermanenceAdministrative> findByPeriode(Integer periode);
 	PermanenceAdministrative findByDate(Date date);
 

@@ -21,8 +21,8 @@ private Long id;
 private String fullName;
 private String email;
 private String gender;
-private Integer cin;
-private Integer doti;
+private String cin;
+private String doti;
 private Integer enfants;
 private String adresse;
 private String pays;//ville
@@ -52,7 +52,7 @@ private Date dateProchainEvaluation;
 private Date dateDeProchainNote;
 @Temporal(TemporalType.DATE)
 private Date dateAvancementPrevue;
-private Integer soldeRestantesCongéExceptionnel;
+private Integer soldeRestantesCongeExceptionnel;
 
 
 public NoteGeneralDeAnnee getDernierNote() {
@@ -108,10 +108,10 @@ public String getGender() {
 public void setGender(String gender) {
 	this.gender = gender;
 }
-public Integer getCin() {
+public String getCin() {
 	return cin;
 }
-public void setCin(Integer cin) {
+public void setCin(String cin) {
 	this.cin = cin;
 }
 
@@ -170,10 +170,10 @@ public void setDateSortie(Date dateSortie) {
 	this.dateSortie = dateSortie;
 }
 
-public Integer getDoti() {
+public String getDoti() {
 	return doti;
 }
-public void setDoti(Integer doti) {
+public void setDoti(String doti) {
 	this.doti = doti;
 }
 public String getLieuDeNaissance() {
@@ -195,11 +195,11 @@ public Integer getCompteBancaireRib() {
 public void setCompteBancaireRib(Integer compteBancaireRib) {
 	this.compteBancaireRib = compteBancaireRib;
 }
-public Integer getSoldeRestantesCongéExceptionnel() {
-	return soldeRestantesCongéExceptionnel;
+public Integer getSoldeRestantesCongeExceptionnel() {
+	return soldeRestantesCongeExceptionnel;
 }
-public void setSoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel) {
-	this.soldeRestantesCongéExceptionnel = soldeRestantesCongéExceptionnel;
+public void setSoldeRestantesCongeExceptionnel(Integer soldeRestantesCongeExceptionnel) {
+	this.soldeRestantesCongeExceptionnel = soldeRestantesCongeExceptionnel;
 }
 public GradeEmploye getDernierGrade() {
 	return dernierGrade;
@@ -213,12 +213,12 @@ public Fonction getFonction() {
 public void setFonction(Fonction fonction) {
 	this.fonction = fonction;
 }
-public Employe(Long id, String fullName, String email, String gender, Integer cin, Integer doti, Integer enfants,
+public Employe(Long id, String fullName, String email, String gender, String cin, String doti, Integer enfants,
 		String adresse, String pays, String situationFamiliale, Date dateDeNaissance, String lieuDeNaissance,
 		Integer tel, Employe sup, Fonction fonction, Departement dep, Date dateEntree, Date dateSortie,
 		GradeEmploye dernierGrade, Integer compteBancaireRib, NoteGeneralDeAnnee dernierNote,
 		Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
-		Integer soldeRestantesCongéExceptionnel) {
+		Integer soldeRestantesCongeExceptionnel) {
 	super();
 	this.id = id;
 	this.fullName = fullName;
@@ -244,7 +244,7 @@ public Employe(Long id, String fullName, String email, String gender, Integer ci
 	this.dateProchainEvaluation = dateProchainEvaluation;
 	this.dateDeProchainNote = dateDeProchainNote;
 	this.dateAvancementPrevue = dateAvancementPrevue;
-	this.soldeRestantesCongéExceptionnel = soldeRestantesCongéExceptionnel;
+	this.soldeRestantesCongeExceptionnel = soldeRestantesCongeExceptionnel;
 }
 @Override
 public String toString() {
@@ -256,7 +256,7 @@ public String toString() {
 			+ dernierGrade + ", compteBancaireRib=" + compteBancaireRib + ", dernierNote=" + dernierNote
 			+ ", dateProchainEvaluation=" + dateProchainEvaluation + ", dateDeProchainNote=" + dateDeProchainNote
 			+ ", dateAvancementPrevue=" + dateAvancementPrevue + ", soldeRestantesCongéExceptionnel="
-			+ soldeRestantesCongéExceptionnel + "]";
+			+ soldeRestantesCongeExceptionnel + "]";
 }
 
 }

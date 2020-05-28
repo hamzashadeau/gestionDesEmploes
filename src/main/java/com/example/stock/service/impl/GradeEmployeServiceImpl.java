@@ -51,6 +51,8 @@ private EmployeDao employeDao;
 @Autowired
 private GradeService gradeService;
 @Autowired
+private GradeEmployeService gradeEmployeService;
+@Autowired
 private NoteGeneraleService noteGeneraleService;
 @Autowired
 private FormationService formationService;
@@ -99,7 +101,7 @@ rapportDeEvaluationService.save(rapportDeEvaluation);
 		return 1;
 }
 	}
-public int  creeUnGradeNonTraite(Integer doti) {
+public int  creeUnGradeNonTraite(String doti) {
 GradeEmploye gradeEmploye = new GradeEmploye();
 Employe employe = employeService.findByDoti(doti);
 	gradeEmploye.setDoti(employe.getDoti());
@@ -151,7 +153,9 @@ public GradeEmploye findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
-	gradeDao.deleteById(id);
+	 GradeEmploye gradeEmploye = gradeEmployeService.findByid(id);
+	 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
+	 gradeDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;
 	} else
@@ -166,7 +170,7 @@ public List<GradeEmploye> findAll() {
 
 
 @Override
-public List<GradeEmploye> findByDoti(Integer doti) {
+public List<GradeEmploye> findByDoti(String doti) {
 	return gradeDao.findByDoti(doti);
 }
 
@@ -207,7 +211,7 @@ public int update(GradeEmploye grade) {
 
 //liste Des grades de Employe Pdf
 public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentException, FileNotFoundException {
-Integer doti = null;
+	String doti = null;
 	for (GradeEmploye gradeEmploye : grades) {
 	doti = gradeEmploye.getDoti();
 }

@@ -99,7 +99,7 @@ public List<Formation> findByemployeEmail(String email) {
 }
 
 @Override
-public List<Formation> findByemployeDoti(Integer doti) {
+public List<Formation> findByemployeDoti(String doti) {
 	return formationDao.findByEmployeDoti(doti);
 }
 @Override

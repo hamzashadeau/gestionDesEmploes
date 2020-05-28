@@ -118,7 +118,7 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	}
 
 	@Override
-	public List<PrixEmploye> findByEmployeDoti(Integer doti) {
+	public List<PrixEmploye> findByEmployeDoti(String doti) {
 		return prixEmployeDao.findByEmployeDoti(doti);
 	}
 

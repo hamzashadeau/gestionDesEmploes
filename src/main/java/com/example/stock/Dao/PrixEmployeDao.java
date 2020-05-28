@@ -10,7 +10,7 @@ import com.example.stock.bean.PrixEmploye;
 
 @Repository
 public interface PrixEmployeDao extends JpaRepository<PrixEmploye, Long> {
-List<PrixEmploye> findByEmployeDoti(Integer doti);
+List<PrixEmploye> findByEmployeDoti(String doti);
 List<PrixEmploye> findByPrixLibelle(String libelle);
 
 }

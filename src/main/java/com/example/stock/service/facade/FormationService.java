@@ -13,7 +13,7 @@ public interface FormationService {
 
 	List<Formation> findByemployeEmail(String email);
 
-	List<Formation> findByemployeDoti(Integer doti);
+	List<Formation> findByemployeDoti(String doti);
 
 	List<Formation> findAll();
 

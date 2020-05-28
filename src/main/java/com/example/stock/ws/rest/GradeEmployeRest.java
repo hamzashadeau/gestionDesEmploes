@@ -27,7 +27,7 @@ public class GradeEmployeRest {
 private GradeEmployeService gradeService;
 
 @GetMapping("creeUnGradeNonTraite/doti/{doti}")
-public int creeUnGradeNonTraite(@PathVariable Integer doti) {
+public int creeUnGradeNonTraite(@PathVariable String doti) {
 	return gradeService.creeUnGradeNonTraite(doti);
 }
 
@@ -59,7 +59,7 @@ public List<GradeEmploye> findByEtat(@PathVariable String etat) {
 
 
 @GetMapping("findByDoti/doti/{doti}")
-public List<GradeEmploye> findByDoti(@PathVariable Integer doti) {
+public List<GradeEmploye> findByDoti(@PathVariable String doti) {
 	return gradeService.findByDoti(doti);
 }
 

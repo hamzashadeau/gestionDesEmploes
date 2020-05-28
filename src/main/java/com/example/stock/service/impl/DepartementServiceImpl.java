@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.DepartementDao;
+import com.example.stock.bean.DepFonction;
 import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
+import com.example.stock.service.facade.DepFonctionService;
 import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.EmployeService;
 import com.itextpdf.text.BaseColor;
@@ -33,7 +35,11 @@ public class DepartementServiceImpl implements DepartementService {
 @Autowired
 private DepartementDao departementDao;
 @Autowired
+private DepartementService departementService;
+@Autowired
 private EmployeService employeService;
+@Autowired
+private DepFonctionService depFonctionService;
 
 @Override
 public int save(Departement departement) {
@@ -41,6 +47,20 @@ public int save(Departement departement) {
 	if(employe == null) {
 		return -2;
 	} else if (departement.getId() != null) {
+		return -3;
+	} else {
+	departement.setFullname(employe.getFullName());
+	departement.setChefdoti(employe.getDoti());
+	departementDao.save(departement);
+		return 1;
+	}
+}
+@Override
+public int update(Departement departement) {
+	Employe employe = employeService.findByDoti(departement.getChefdoti());
+	if(employe == null) {
+		return -2;
+	} else if (departement.getId() == null) {
 		return -3;
 	} else {
 	departement.setChefdoti(employe.getDoti());
@@ -117,11 +137,26 @@ public Departement findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	List<Employe> employes = employeService.findByDepNom(departementService.findByid(id).getNom());
+	if(employes != null) {
+		return -2;
+	}
+//	for (Employe employe : employes) {
+	//	employeService.deleteById(employe.getId());
+	//}
+	List<DepFonction> depFonctions = depFonctionService.findByDepartemantNom(departementService.findByid(id).getNom());
+	//for (DepFonction depFonction : depFonctions) {
+		//depFonctionService.deleteById(depFonction.getId());
+	//}
+	if(depFonctions != null) {
+		return -3;
+	} else {
 	departementDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;
 	} else
 		return -1;
+}
 }
 
 @Override
@@ -131,7 +166,7 @@ public Departement findByNom(String nom){
 
 
 @Override
-public Departement findByChefdoti(Integer doti) {
+public Departement findByChefdoti(String doti) {
 	return departementDao.findByChefdoti(doti);
 }
 

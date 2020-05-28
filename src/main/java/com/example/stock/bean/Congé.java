@@ -23,6 +23,7 @@ private Employe employe;
 @ManyToOne
 private TypeCongee congee;
 private Integer periode;
+private String raison;
 public Long getId() {
 	return id;
 }
@@ -58,19 +59,29 @@ public TypeCongee getCongee() {
 public void setCongee(TypeCongee congee) {
 	this.congee = congee;
 }
-public Congé(Long id, Date dateDeDebut, Employe employe, TypeCongee congee, Integer periode) {
+public String getRaison() {
+	return raison;
+}
+public void setRaison(String raison) {
+	this.raison = raison;
+}
+public Congé(Long id, Date dateDeDebut, Employe employe, TypeCongee congee, Integer periode, String raison) {
 	super();
 	this.id = id;
 	this.dateDeDebut = dateDeDebut;
 	this.employe = employe;
 	this.congee = congee;
 	this.periode = periode;
+	this.raison = raison;
 }
 @Override
 public String toString() {
 	return "Congé [id=" + id + ", dateDeDebut=" + dateDeDebut + ", employe=" + employe + ", congee=" + congee
-			+ ", periode=" + periode + "]";
+			+ ", periode=" + periode + ", raison=" + raison + "]";
 }
+
+
+
 
 
 }

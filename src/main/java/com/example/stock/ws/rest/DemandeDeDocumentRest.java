@@ -3,6 +3,8 @@ package com.example.stock.ws.rest;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,7 +41,7 @@ public int infoEmployePdf(@RequestBody Employe employe) throws DocumentException
 	return demandeDeDocumentService.infoEmployePdf(employe);
 }
 @PostMapping("attestationDeSalaire")
-public int attestationDeSalaire(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+public int attestationDeSalaire(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException,TransformerException {
 	return demandeDeDocumentService.attestationDeSalaire(demaneDeDocument);
 }
 @PostMapping("rapportPdf")
@@ -52,7 +54,7 @@ public List<DemaneDeDocument> findDemandeNonTraite() {
 }
 
 @PostMapping("attestationDeTravail")
-public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException {
+public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
 	return demandeDeDocumentService.attestationDeTravail(demaneDeDocument);
 }
 
@@ -67,7 +69,7 @@ public List<DemaneDeDocument> findByEmployeEmail(@PathVariable String email) {
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<DemaneDeDocument> findByEmployeDoti(@PathVariable Integer doti) {
+public List<DemaneDeDocument> findByEmployeDoti(@PathVariable String doti) {
 	return demandeDeDocumentService.findByEmployeDoti(doti);
 }
 

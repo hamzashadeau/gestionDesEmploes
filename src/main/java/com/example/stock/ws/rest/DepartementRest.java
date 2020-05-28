@@ -22,9 +22,13 @@ import com.itextpdf.text.DocumentException;
 public class DepartementRest {
 @Autowired
 private DepartementService departementService;
+@PostMapping("update")
+public int update(@RequestBody Departement departement) {
+	return departementService.update(departement);
+}
 
 @GetMapping("findByChefdoti/doti/{doti}")
-public Departement findByChefdoti(@PathVariable Integer doti) {
+public Departement findByChefdoti(@PathVariable String doti) {
 	return departementService.findByChefdoti(doti);
 }
 
@@ -50,7 +54,7 @@ public Departement findByNom(@PathVariable String nom) {
 }
 
 @GetMapping("findBySupMatricule/doti/{matricule}")
-public Departement findByChefMatricule(@PathVariable Integer matricule) {
+public Departement findByChefMatricule(@PathVariable String matricule) {
 	return departementService.findByChefdoti(matricule);
 }
 

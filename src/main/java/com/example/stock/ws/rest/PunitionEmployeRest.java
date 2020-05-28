@@ -46,7 +46,7 @@ public List<PunitionEmploye> findByPunitionType(@PathVariable String type) {
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<PunitionEmploye> findByEmployeDoti(@PathVariable Integer doti) {
+public List<PunitionEmploye> findByEmployeDoti(@PathVariable String doti) {
 	return punitionEmployeService.findByEmployeDoti(doti);
 }
 

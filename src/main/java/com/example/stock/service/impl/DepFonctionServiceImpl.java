@@ -34,7 +34,9 @@ return -1;
 	if(fonction == null) {
 		fonctionService.save(depFonction.getFonction());
 	}
-	depFonction.setFonction(fonction);
+	fonctionService.save(depFonction.getFonction());
+	Fonction fonction1 = fonctionService.findByLibelle(depFonction.getFonction().getLibelle());
+	depFonction.setFonction(fonction1);
 	depFonctionDao.save(depFonction);
 		return 1;
 }

@@ -39,7 +39,7 @@ public List<PermanenceAdministrative> findByEmployeEmail(@PathVariable String em
 }
 
 @GetMapping("findByemployeDoti/doti/{doti}")
-public List<PermanenceAdministrative> findByemployeDoti(@PathVariable Integer doti) {
+public List<PermanenceAdministrative> findByemployeDoti(@PathVariable String doti) {
 	return permanenceAdministrativeService.findByemployeDoti(doti);
 }
 

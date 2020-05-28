@@ -75,7 +75,7 @@ public List<NotificationEmploye> findByEmployeEmail(String email) {
 }
 
 @Override
-public List<NotificationEmploye> findByemployeDoti(Integer doti) {
+public List<NotificationEmploye> findByemployeDoti(String doti) {
 	return notificationEmployeDao.findByemployeDoti(doti);
 }
 
@@ -99,7 +99,7 @@ public int sendmail(String email, String subject,String content) throws AddressE
 	   Message msg = new MimeMessage(session);
 	   msg.setFrom(new InternetAddress(email, false));
 
-	   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse("abiabiya10042003@gmail.com"));
+	   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
 	   msg.setSubject(subject);
 	   msg.setContent(content, "text/html");
 	   msg.setSentDate(new Date());

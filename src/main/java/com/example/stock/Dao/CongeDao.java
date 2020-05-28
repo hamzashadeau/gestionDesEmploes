@@ -1,6 +1,7 @@
 package com.example.stock.Dao;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +12,8 @@ import com.example.stock.bean.Congé;
 @Repository
 public interface CongeDao extends JpaRepository<Congé, Long> {
 	List<Congé> findByCongeeLibelle(String libelle);
+	List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date);
 	List<Congé> findByEmployeEmail(String email);
-	List<Congé> findByEmployeDoti(Integer matricule);
+	List<Congé> findByEmployeDoti(String matricule);
 	//List<Congé> findByEtat(String etat);
 }

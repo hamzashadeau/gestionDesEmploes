@@ -42,7 +42,7 @@ public List<PrixEmploye> findPrixDeEmploye(@RequestBody Employe employe) {
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<PrixEmploye> findByEmployeDoti(@PathVariable Integer doti) {
+public List<PrixEmploye> findByEmployeDoti(@PathVariable String doti) {
 	return prixEmployeService.findByEmployeDoti(doti);
 }
 

@@ -17,7 +17,7 @@ public class GradeEmploye {
 	@Id
 	@GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
-private Integer doti;
+private String doti;
 @ManyToOne
 private Grade grade;
 @Temporal(TemporalType.DATE)
@@ -57,15 +57,15 @@ public void setEtat(String etat) {
 	this.etat = etat;
 }
 
-public Integer getDoti() {
+public String getDoti() {
 	return doti;
 }
 
-public void setDoti(Integer doti) {
+public void setDoti(String doti) {
 	this.doti = doti;
 }
 
-public GradeEmploye(Long id, Integer doti, Grade grade, Date dateDeAffectation, String etat) {
+public GradeEmploye(Long id, String doti, Grade grade, Date dateDeAffectation, String etat) {
 	super();
 	this.id = id;
 	this.doti = doti;

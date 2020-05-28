@@ -51,13 +51,13 @@ public List<NoteGeneralDeAnnee> findByEtat(@PathVariable String etat) {
 
 
 @GetMapping("findByDateAndEmployeDoti/date/{date}/doti/{doti}")
-public NoteGeneralDeAnnee findByDateAndEmployeDoti(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date,@PathVariable Integer doti) {
+public NoteGeneralDeAnnee findByDateAndEmployeDoti(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date,@PathVariable String doti) {
 	return noteGeneralDeAnneeService.findByDateAndEmployeDoti(date, doti);
 }
 
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public List<NoteGeneralDeAnnee> findByEmployeDoti(@PathVariable Integer doti) {
+public List<NoteGeneralDeAnnee> findByEmployeDoti(@PathVariable String doti) {
 	return noteGeneralDeAnneeService.findByEmployeDoti(doti);
 }
 

@@ -12,7 +12,7 @@ import com.example.stock.bean.DemaneDeDocument;
 public interface DemaneDeDocumentDao extends JpaRepository<DemaneDeDocument, Long> {
 	List<DemaneDeDocument> findByEmployeId(Long id);
 	List<DemaneDeDocument> findByEmployeEmail(String email);
-	List<DemaneDeDocument> findByEmployeDoti(Integer doti);
+	List<DemaneDeDocument> findByEmployeDoti(String doti);
 	List<DemaneDeDocument> findByEtat(String etat);
 	
 

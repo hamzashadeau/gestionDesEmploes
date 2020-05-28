@@ -14,6 +14,6 @@ import com.example.stock.bean.PermanenceAdministrative;
 public interface FormationDao extends JpaRepository<Formation, Long> {
 	List<Formation> findByEmployeId(Long id);
 List<Formation> findByEmployeEmail(String email);
-List<Formation> findByEmployeDoti(Integer doti);
+List<Formation> findByEmployeDoti(String doti);
 
 }

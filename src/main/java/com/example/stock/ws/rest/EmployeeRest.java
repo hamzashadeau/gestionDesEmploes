@@ -52,6 +52,11 @@ public List<Employe> findByDepNom(@PathVariable String nomDepartement) {
 public int update(@RequestBody Employe employe) {
 	return employeService.update(employe);
 }
+@GetMapping("findLesEmployeAyantEpuiseSoldeRestant")
+public List<Employe> findLesEmployeAyantEpuiseSoldeRestant() {
+	return employeService.findBySoldeRestantesCongeExceptionnel(0);
+}
+
 @GetMapping("findLesEmployeAyantEvaluationAujourdHui")
 public List<Employe> findLesEmployeAyantEvaluationAujourdHui() {
 	return employeService.findLesEmployeAyantEvaluationAujourdHui();
@@ -105,11 +110,11 @@ public List<Employe> EmployesParAnneeDeEntré(@PathVariable Integer annee) {
 	return employeService.EmployesParAnneeDeEntré(annee);
 }
 @GetMapping("findByCin/cin/{cin}")
-public Employe findByCin(@PathVariable Integer cin) {
+public Employe findByCin(@PathVariable String cin) {
 	return employeService.findByCin(cin);
 }
 @GetMapping("findByDoti/doti/{doti}")
-public Employe findByDoti(@PathVariable Integer doti) {
+public Employe findByDoti(@PathVariable String doti) {
 	return employeService.findByDoti(doti);
 }
 @GetMapping("findByEmail/email/{email}")
@@ -138,8 +143,9 @@ public int deleteById(@PathVariable Long id) {
 public Employe findByid(@PathVariable Long id) {
 	return employeService.findByid(id);
 }
-@GetMapping("findBySoldeRestantesCongéExceptionnel/soldeRestantesCongéExceptionnel/{soldeRestantesCongéExceptionnel}")
-public List<Employe> findBySoldeRestantesCongéExceptionnel(@PathVariable Integer soldeRestantesCongéExceptionnel) {
-	return employeService.findBySoldeRestantesCongéExceptionnel(soldeRestantesCongéExceptionnel);
+@GetMapping("findBySoldeRestantesCongeExceptionnel/soldeRestantesCongeExceptionnel/{soldeRestantesCongeExceptionnel}")
+public List<Employe> findBySoldeRestantesCongeExceptionnel(@PathVariable Integer soldeRestantesCongeExceptionnel) {
+	System.out.println("ha nombre " + soldeRestantesCongeExceptionnel);
+	return employeService.findBySoldeRestantesCongeExceptionnel(soldeRestantesCongeExceptionnel);
 }
 }

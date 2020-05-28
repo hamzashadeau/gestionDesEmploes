@@ -69,7 +69,7 @@ public List<PermanenceAdministrative> findByEmployeEmail(String email) {
 }
 
 @Override
-public List<PermanenceAdministrative> findByemployeDoti(Integer doti) {
+public List<PermanenceAdministrative> findByemployeDoti(String doti) {
 	return permanenceAdministrativeDao.findByemployeDoti(doti);
 }
 

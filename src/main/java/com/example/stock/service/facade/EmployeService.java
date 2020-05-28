@@ -9,8 +9,8 @@ import com.example.stock.bean.Employe;
 import com.itextpdf.text.DocumentException;
 
 public interface EmployeService {
-	Employe findByCin(Integer cin);
-	Employe findByDoti(Integer doti);
+	Employe findByCin(String cin);
+	Employe findByDoti(String doti);
 	Employe findByEmail(String email);
 	List<Employe> findBySupId(Long id);
 	List<Employe> findByDateAvancementPrevue(Date dateAvancementPrevue);
@@ -30,9 +30,9 @@ public interface EmployeService {
 	public List<Employe> findLesEmployeAyantEvaluationAujourdHui();
 	public List<Employe> findLesEmployeAyantAvancementAujourdHui();
 	public List<Employe> findLesEmployeAyantLaNoteGeneraleAujourdHui();
-	 List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel);
-	 public int update(Employe employe);
-	 public int listeDesEmployePdf() throws DocumentException, FileNotFoundException;
-		public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
-		public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
+	public List<Employe> findBySoldeRestantesCongeExceptionnel(Integer soldeRestantesCongeExceptionnel);
+	public int update(Employe employe);
+	public int listeDesEmployePdf() throws DocumentException, FileNotFoundException;
+	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
+	public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
 }

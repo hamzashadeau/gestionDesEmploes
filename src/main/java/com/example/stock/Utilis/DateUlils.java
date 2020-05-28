@@ -9,12 +9,34 @@ import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 
 public class DateUlils {
+	
 	public static Integer getYear(Date d) {
 		Calendar c = new GregorianCalendar();
 		c.setTime(d);
 		return c.get(Calendar.YEAR);
 	}
-
+	public static boolean verifierdateDebutEtFin(Date dateDebut,Integer year) {
+		long milliSeconde1 = dateDebut.getTime();
+		System.out.println(year-1);
+		long milliSeconde2 = getDateByYearDebut(year-1).getTime();
+		if (milliSeconde1 < milliSeconde2 && getYear(dateDebut) <= year) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	public static Date getDateByYearDebut(Integer year) {
+		 GregorianCalendar calendar = new GregorianCalendar(year,9,1);
+		return calendar.getTime();
+	 }
+	public static Date getDateByYearFin(Integer year) {
+		 GregorianCalendar calendar = new GregorianCalendar(year,7,1);
+		return calendar.getTime();
+	 }
+	public static Date getDateFin(Date date, Long periode) {
+		long milliSeconde = date.getTime() + periode * 86400000;
+		return new Date(milliSeconde);
+	 }
 	public static Long getDateDiff(Date date1, Date date2) {
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
@@ -34,7 +56,12 @@ public class DateUlils {
 		long milliSeconde2 = date2.getTime();
 		return ((milliSeconde1 - milliSeconde2) / (1000 * 60 * 60 * 24));
 	}
-
+	 public  static Integer getYear(){
+		 	Date d=new Date();
+			 Calendar c=new GregorianCalendar();
+			 c.setTime(d);
+			 return c.get(Calendar.YEAR);
+		 }
 	public static Date getDateEvaluationDeGrade(GradeEmploye grade) {
 		String libelleGrade = grade.getGrade().getLibelle();
 		Long nombreAnnee = null;
@@ -65,7 +92,7 @@ public class DateUlils {
 				nombreAnnee =   3 * big.longValue();
 				break;
 			case "grade9":
-				nombreAnnee =   3 * big.longValue();
+				nombreAnnee =   4 * big.longValue();
 				break;
 			case "grade10":
 				nombreAnnee =   2 * big.longValue();

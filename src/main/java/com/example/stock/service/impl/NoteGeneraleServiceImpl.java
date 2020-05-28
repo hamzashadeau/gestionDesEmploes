@@ -90,7 +90,7 @@ public List<NoteGeneralDeAnnee> findAll() {
 }
 
 @Override
-public List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti) {
+public List<NoteGeneralDeAnnee> findByEmployeDoti(String doti) {
 	return noteGeneraleDao.findByEmployeDoti(doti);
 }
 
@@ -108,7 +108,7 @@ public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe) {
 }
 
 @Override
-public NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date, Integer doti) {
+public NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date, String doti) {
 //	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	//String strDate1 = formatter.format(date);
 //Date date1 = formatter.parse(strDate1);

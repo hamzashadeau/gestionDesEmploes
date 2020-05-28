@@ -22,7 +22,7 @@ public class SalaireEmployeRest {
 private SalaireEmployeService salaireEmployeService;
 
 @GetMapping("findByEmployeDoti/doti/{doti}")
-public SalaireEmploye findByEmployeDoti(@PathVariable Integer doti) {
+public SalaireEmploye findByEmployeDoti(@PathVariable String doti) {
 	return salaireEmployeService.findByEmployeDoti(doti);
 }
 @GetMapping("findBySalaireNet/montantDeBase/{montantDeBase}")

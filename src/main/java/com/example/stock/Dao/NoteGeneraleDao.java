@@ -11,7 +11,7 @@ import com.example.stock.bean.NoteGeneralDeAnnee;
 
 @Repository
 public interface NoteGeneraleDao extends JpaRepository<NoteGeneralDeAnnee, Long> {
-List<NoteGeneralDeAnnee> findByEmployeDoti(Integer doti);
-NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date,Integer doti);
+List<NoteGeneralDeAnnee> findByEmployeDoti(String doti);
+NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date,String doti);
 List<NoteGeneralDeAnnee> findByEtat(String etat);
 }

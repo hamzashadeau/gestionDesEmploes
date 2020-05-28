@@ -9,10 +9,11 @@ import com.itextpdf.text.DocumentException;
 public interface DepartementService {
 	Departement findByid(Long id);
 	Departement findByNom(String nom);
-	Departement findByChefdoti(Integer doti);
+	Departement findByChefdoti(String doti);
 	List<Departement> findAll();
 	int save(Departement departement);
 	int deleteById(Long id);
 	int nombreDesDepartements();
 	public int listedepartementPdf() throws DocumentException, FileNotFoundException;
+	public int update(Departement departement);
 }

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.CongeDao;
+import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Congé;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.TypeCongee;
@@ -47,16 +49,45 @@ public int save(Congé congé) {
 		return -2;
 	}else if(congé2 == null) {
 		return -3;
-	}else 
-	if(congé.getId() != null) {
+	}else 	if(congé.getId() != null) {
 return -1;
 }else {
+	if(congé.getCongee().getLibelle().equals("conge exceptionnel") && employe.getSoldeRestantesCongeExceptionnel() < congé.getPeriode()) {
+		return -4;
+	}else {
+		employe.setSoldeRestantesCongeExceptionnel(employe.getSoldeRestantesCongeExceptionnel() - congé.getPeriode());
+	}
+	if(congé.getCongee().getLibelle().equals("certificat court duree") && congé.getPeriode() > 84) {
+		// modifier salaire
+	}
 	congé.setCongee(congé2);
 	congé.setEmploye(employe);
 	congeDao.save(congé);
 		return 1;
 }
 	}
+
+
+@Override
+public List<Congé>  findCongeByAnne(Integer annee, String type) {
+	List<Congé> resultat = new ArrayList<Congé>();
+	if(type.equals("longDuree")) {
+	List<Congé> congés = findByCongeeLibelle("certificat long duree");
+	for (Congé congé : congés) {
+		if(DateUlils.verifierdateDebutEtFin(congé.getDateDeDebut(), annee))
+			resultat.add(congé);
+	}
+	}
+	else if(type.equals("courtDuree")) {
+	List<Congé> congés = findByCongeeLibelle("certificat court duree");
+	for (Congé congé : congés) {
+		if(DateUlils.verifierdateDebutEtFin(congé.getDateDeDebut(), annee))
+			resultat.add(congé);
+	}
+	}
+return	resultat;
+}
+
 @Override
 public int update(Congé congé) {
 	Employe employe = employeService.findByDoti(congé.getEmploye().getDoti());
@@ -107,7 +138,7 @@ public List<Congé> findByEmployeEmail(String email) {
 }
 
 @Override
-public List<Congé> findByEmployeDoti(Integer doti) {
+public List<Congé> findByEmployeDoti(String doti) {
 	return congeDao.findByEmployeDoti(doti);
 }
 
@@ -179,6 +210,12 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
    document.add(p20);
     document.close();
 	return 1;
+}
+
+
+@Override
+public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date) {
+	return congeDao.findByCongeeLibelleAndDateDeDebut(libelle, date);
 }
 
 

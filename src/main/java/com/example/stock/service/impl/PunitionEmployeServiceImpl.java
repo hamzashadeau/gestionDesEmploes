@@ -114,7 +114,7 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 	}
 
 	@Override
-	public List<PunitionEmploye> findByEmployeDoti(Integer doti) {
+	public List<PunitionEmploye> findByEmployeDoti(String doti) {
 		return punitionEmployeDao.findByEmployeDoti(doti);
 	}
 

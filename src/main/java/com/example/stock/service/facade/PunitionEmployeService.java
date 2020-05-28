@@ -17,7 +17,7 @@ public interface PunitionEmployeService {
 
 	List<PunitionEmploye> findByPunitionType(String type);
 
-	List<PunitionEmploye> findByEmployeDoti(Integer doti);
+	List<PunitionEmploye> findByEmployeDoti(String doti);
 
 	List<PunitionEmploye> findByEmployeId(Long id);
 

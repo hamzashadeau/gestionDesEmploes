@@ -22,7 +22,7 @@ public class NoteGeneralDeAnnee {
 private Long id;
 private Double moyenGeneral;//a calculer
 private String mention;
-private Integer employeDoti;
+private String employeDoti;
 private String fuulName;
 @ManyToOne
 private Note noteDeAffectationDesTachesLieeAuTravail;
@@ -104,10 +104,10 @@ public String getEtat() {
 public void setEtat(String etat) {
 	this.etat = etat;
 }
-public Integer getEmployeDoti() {
+public String getEmployeDoti() {
 	return employeDoti;
 }
-public void setEmployeDoti(Integer employeDoti) {
+public void setEmployeDoti(String employeDoti) {
 	this.employeDoti = employeDoti;
 }
 public String getFuulName() {
@@ -116,7 +116,7 @@ public String getFuulName() {
 public void setFuulName(String fuulName) {
 	this.fuulName = fuulName;
 }
-public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, Integer employeDoti, String fuulName,
+public NoteGeneralDeAnnee(Long id, Double moyenGeneral, String mention, String employeDoti, String fuulName,
 		Note noteDeAffectationDesTachesLieeAuTravail, Note noteDeRentabilite, Note noteDeCapaciteDeOrganisation,
 		Note noteDeCompotement, Note noteDeRechercheEtDeInnovation, Date date, String etat) {
 	super();

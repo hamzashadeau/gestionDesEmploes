@@ -153,7 +153,7 @@ public List<RapportDeEvaluation> findByEmployeEmail(String email) {
 
 
 @Override
-public List<RapportDeEvaluation> findByEmployeDoti(Integer doti) {
+public List<RapportDeEvaluation> findByEmployeDoti(String doti) {
 	return rapportDeEvaluationDao.findByEmployeDoti(doti);
 }
 
@@ -168,7 +168,7 @@ public List<RapportDeEvaluation> findByNouveauGradeId(Long id) {
 }
 
 @Override
-public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id, Integer doti) {
+public RapportDeEvaluation findByNouveauGradeIdAndEmployeDoti(Long id, String doti) {
 	return rapportDeEvaluationDao.findByNouveauGradeIdAndEmployeDoti(id, doti);
 }
 

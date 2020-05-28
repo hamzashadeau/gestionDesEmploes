@@ -10,7 +10,7 @@ import com.itextpdf.text.DocumentException;
 
 public interface GradeEmployeService {
 
-	List<GradeEmploye> findByDoti(Integer doti);
+	List<GradeEmploye> findByDoti(String doti);
 
 	List<GradeEmploye> findByDateDeAffectation(Date dateAfectation);
 
@@ -26,7 +26,7 @@ public interface GradeEmployeService {
 
 	public List<GradeEmploye> findGradeNonTraite();
 
-	public int creeUnGradeNonTraite(Integer doti);
+	public int creeUnGradeNonTraite(String doti);
 
 	public int accepterUnGrade(GradeEmploye gradeEmploye);
 

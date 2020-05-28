@@ -9,7 +9,7 @@ public interface PermanenceAdministrativeService {
 	PermanenceAdministrative findByid(Long id);
 	List<PermanenceAdministrative> findByEmployeId(Long id);
 	List<PermanenceAdministrative> findByEmployeEmail(String email);
-	List<PermanenceAdministrative> findByemployeDoti(Integer doti);
+	List<PermanenceAdministrative> findByemployeDoti(String doti);
 	List<PermanenceAdministrative> findByPeriode(Integer periode);	
 	List<PermanenceAdministrative> findAll();
 	PermanenceAdministrative findByDate(Date date);

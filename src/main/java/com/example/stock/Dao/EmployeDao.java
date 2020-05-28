@@ -11,8 +11,8 @@ import com.example.stock.bean.Employe;
 
 @Repository
 public interface EmployeDao extends JpaRepository<Employe, Long> {
-Employe findByCin(Integer cin);
-Employe findByDoti(Integer doti);
+Employe findByCin(String cin);
+Employe findByDoti(String doti);
 Employe findByEmail(String email);
 List<Employe> findByDernierGradeGradeLibelle(String libelle);
 List<Employe> findBySupId(Long id);
@@ -20,6 +20,5 @@ List<Employe> findByDateAvancementPrevue(Date dateAvancementPrevue);
 List<Employe> findByDepNom(String nomDepartement);
 List<Employe> findByDateDeProchainNote(Date dateDeProchainNote);
 List<Employe> findByDateProchainEvaluation(Date dateProchainEvaluation);
-List<Employe> findBySoldeRestantesCongéExceptionnel(Integer soldeRestantesCongéExceptionnel);
-
+List<Employe> findBySoldeRestantesCongeExceptionnel(Integer soldeRestantesCongeExceptionnel);
 }
