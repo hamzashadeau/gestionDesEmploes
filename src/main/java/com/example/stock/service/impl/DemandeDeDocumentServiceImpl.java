@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,8 @@ import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.bean.NoteGeneralDeAnnee;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
@@ -30,6 +33,8 @@ import com.example.stock.bean.SalaireEmploye;
 import com.example.stock.bean.TypeDocument;
 import com.example.stock.service.facade.DemandeDeDocumentService;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.RapportDeEvaluationService;
 import com.example.stock.service.facade.SalaireEmployeService;
 import com.itextpdf.text.BaseColor;
@@ -58,6 +63,10 @@ private EmployeDao employeDao;
 private TypeDocumentDao typeDocumentDao;
 @Autowired
 private SalaireEmployeService salaireEmployeService;
+@Autowired
+private NotificationService notificationService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
 
 @Override
 public int save(DemaneDeDocument demaneDeDocument) {
@@ -75,6 +84,9 @@ return -1;
 	demaneDeDocument.setDateDemande(new Date());
 	demaneDeDocument.setEtat("non traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save demande");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	}
@@ -93,11 +105,16 @@ public int update(DemaneDeDocument demaneDeDocument) {
 		demaneDeDocument.setDateDemande(new Date());
 		demaneDeDocument.setEtat("non traité");
 		demaneDeDocumentDao.save(demaneDeDocument);
+		Notification notification = notificationService.findByType("update");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update demande");
+		notificationEmployeService.save(notificationEmploye);
 			return 1;
 	}
 	}
 //infoEmployePdf
 public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoundException {
+	 String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Document document = new Document();
 	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "Info.pdf")); 
 	document.open();
@@ -134,7 +151,7 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
     "*adresse: " + employe.getAdresse() + "                                       *enfant: " + employe.getEnfants() + "\n" + 
     		"*date de naissance:" + employe.getDateDeNaissance() + "                                *lieu de naissance : " + employe.getLieuDeNaissance() + "\n" + 
     		"*departement :" + employe.getDep().getNom() + "                                             * fonction : " + employe.getFonction().getLibelle() + "\n" + 
-    		"*date entrée : " + employe.getDateEntree() + "");
+    		"*date entrée : " + simpleDateFormat.format(employe.getDateEntree()) + "");
     document.add(p);
 //les dernier grade    
 	Paragraph p5 = new Paragraph("\n les dernier Grade :\n\n", font);
@@ -142,9 +159,11 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 	document.add(p5);
     PdfPTable table = new PdfPTable(2); // 3 columns.
     PdfPCell cell1 = new PdfPCell(new Paragraph("libelle "));
+    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell2 = new PdfPCell(new Paragraph("date affectation"));
+    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell3 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));
-    PdfPCell cell4 = new PdfPCell(new Paragraph(employe.getDernierGrade().getDateDeAffectation().toString()));
+    PdfPCell cell4 = new PdfPCell(new Paragraph(simpleDateFormat.format(employe.getDernierGrade().getDateDeAffectation())));
     table.addCell(cell1);
     table.addCell(cell2);
     table.addCell(cell3);
@@ -159,11 +178,16 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
     PdfPTable table1 = new PdfPTable(3); // 3 columns.
 
     PdfPCell cell5 = new PdfPCell(new Paragraph("moyen "));
+    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell6 = new PdfPCell(new Paragraph("mention"));
+    cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell7 = new PdfPCell(new Paragraph("date "));
+    cell7.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell8 = new PdfPCell(new Paragraph(employe.getDernierNote().getMoyenGeneral().toString()));
     PdfPCell cell9 = new PdfPCell(new Paragraph(employe.getDernierNote().getMention()));
-    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getDernierNote().getDate().toString()));
+   
+    String date = simpleDateFormat.format(employe.getDernierNote().getDate());
+    PdfPCell cell10 = new PdfPCell(new Paragraph(date));
    
     table1.addCell(cell5);
     table1.addCell(cell6);
@@ -186,6 +210,9 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer info employe");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 
@@ -193,6 +220,8 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 
 
 public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentException, FileNotFoundException {
+	 String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Document document = new Document();
 	PdfWriter.getInstance(document, new FileOutputStream( rapportDeEvaluation.getEmploye().getFullName() + "Rapport.pdf")); 
 	
@@ -225,14 +254,14 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
 	document.add(p3);
 	
     Paragraph p = new Paragraph();
-    p.add("\n\n*FullName: " + rapportDeEvaluation.getEmploye().getFullName()+     "                                  *cin:" + rapportDeEvaluation.getEmploye().getCin() + " \n" + 
+    p.add("\n\n*FullName: " + rapportDeEvaluation.getEmploye().getFullName()+     "                                       *cin:" + rapportDeEvaluation.getEmploye().getCin() + " \n" + 
     		"*doti:" + rapportDeEvaluation.getEmploye().getDoti() + "                                                               *email:" + rapportDeEvaluation.getEmploye().getEmail() + "\n" + 
-    		"*gender: " + rapportDeEvaluation.getEmploye().getGender() + "                                               *situation Familial:" + rapportDeEvaluation.getEmploye().getSituationFamiliale()+ " \n" + 
-    "*adresse: " + rapportDeEvaluation.getEmploye().getAdresse() + "                                       *enfant: " + rapportDeEvaluation.getEmploye().getEnfants() + "\n" + 
-    		"*date de naissance:" + rapportDeEvaluation.getEmploye().getDateDeNaissance() + "                                *lieu de naissance : " + rapportDeEvaluation.getEmploye().getLieuDeNaissance() + "\n" + 
-    		"*departement :" + rapportDeEvaluation.getEmploye().getDep().getNom() + "                                             * fonction : " + rapportDeEvaluation.getEmploye().getFonction().getLibelle() + "\n" + 
-    		"*date entrée : " + rapportDeEvaluation.getEmploye().getDateEntree() + "                                          Dernier Grade : " + rapportDeEvaluation.getEmploye().getDernierGrade().getGrade().getLibelle() + "  \n" + 
-    		" date Affecation : " + rapportDeEvaluation.getEmploye().getDernierGrade().getDateDeAffectation() + "\n" + 
+    		"*gender: " + rapportDeEvaluation.getEmploye().getGender() + "                                                           *situation Familial:" + rapportDeEvaluation.getEmploye().getSituationFamiliale()+ " \n" + 
+    "*adresse: " + rapportDeEvaluation.getEmploye().getAdresse() + "                                 *enfant: " + rapportDeEvaluation.getEmploye().getEnfants() + "\n" + 
+    		"*date de naissance:" + simpleDateFormat.format(rapportDeEvaluation.getEmploye().getDateDeNaissance())  + "                                   *lieu de naissance : " + rapportDeEvaluation.getEmploye().getLieuDeNaissance() + "\n" + 
+    		"*departement :" + rapportDeEvaluation.getEmploye().getDep().getNom() + "                                        * fonction : " + rapportDeEvaluation.getEmploye().getFonction().getLibelle() + "\n" + 
+    		"*date entrée : " + simpleDateFormat.format(rapportDeEvaluation.getEmploye().getDateEntree()) + "                                             Dernier Grade : " + rapportDeEvaluation.getEmploye().getDernierGrade().getGrade().getLibelle() + "  \n" + 
+    		" date Affecation : " + simpleDateFormat.format(rapportDeEvaluation.getEmploye().getDernierGrade().getDateDeAffectation()) + "\n" + 
     		"");
     document.add(p);
 //les notes    
@@ -241,17 +270,22 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
 	document.add(p5);
     
     PdfPTable table = new PdfPTable(3); // 3 columns.
+    table.setWidthPercentage(100);
 
     PdfPCell cell1 = new PdfPCell(new Paragraph("moyen "));
+    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell2 = new PdfPCell(new Paragraph("mention"));
+    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell3 = new PdfPCell(new Paragraph("date"));
+    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+
     table.addCell(cell1);
     table.addCell(cell2);
     table.addCell(cell3);
   for (NoteGeneralDeAnnee note : rapportDeEvaluation.getNoteGenerale()) {
 	    PdfPCell cell4 = new PdfPCell(new Paragraph(note.getMoyenGeneral().toString()));
 	    PdfPCell cell5 = new PdfPCell(new Paragraph(note.getMention()));
-	    PdfPCell cell6 = new PdfPCell(new Paragraph(note.getDate().toString()));
+	    PdfPCell cell6 = new PdfPCell(new Paragraph(simpleDateFormat.format(note.getDate())));
 	    table.addCell(cell4);
 	    table.addCell(cell5);
 	    table.addCell(cell6);	
@@ -264,13 +298,23 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
 	document.add(p6);
   
   PdfPTable table1 = new PdfPTable(6); // 3 columns.
-
+  table1.setWidthPercentage(100);
+  table1.setTotalWidth(600);
+  table1.setLockedWidth(true);
   PdfPCell cell10 = new PdfPCell(new Paragraph("attestation "));
+  cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
   PdfPCell cell11 = new PdfPCell(new Paragraph("domaine"));
+  cell11.setHorizontalAlignment(Element.ALIGN_CENTER);
+  
   PdfPCell cell12 = new PdfPCell(new Paragraph("etablissement"));
-  PdfPCell cell13 = new PdfPCell(new Paragraph("mention "));
+  cell12.setHorizontalAlignment(Element.ALIGN_CENTER);
+  PdfPCell cell13 = new PdfPCell(new Paragraph("mention"));
+  cell13.setHorizontalAlignment(Element.ALIGN_CENTER);
   PdfPCell cell14 = new PdfPCell(new Paragraph("ville"));
+  cell14.setHorizontalAlignment(Element.ALIGN_CENTER);
   PdfPCell cell15 = new PdfPCell(new Paragraph("date"));
+  cell15.setHorizontalAlignment(Element.ALIGN_CENTER);
+
   table1.addCell(cell10);
   table1.addCell(cell11);
   table1.addCell(cell12);
@@ -279,11 +323,11 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
   table1.addCell(cell15);
 for (Formation note : rapportDeEvaluation.getFormation()) {
 	    PdfPCell cell4 = new PdfPCell(new Paragraph(note.getAttestation()));
-	    PdfPCell cell5 = new PdfPCell(new Paragraph(note.getDomaine()));
-	    PdfPCell cell6 = new PdfPCell(new Paragraph(note.getEtablissement()));
+        PdfPCell cell5 = new PdfPCell(new Paragraph(note.getDomaine()));
+        PdfPCell cell6 = new PdfPCell(new Paragraph(note.getEtablissement()));
 	    PdfPCell cell7 = new PdfPCell(new Paragraph(note.getMention()));
 	    PdfPCell cell8 = new PdfPCell(new Paragraph(note.getVille()));
-	    PdfPCell cell9 = new PdfPCell(new Paragraph(note.getAnnee().toString()));
+	    PdfPCell cell9 = new PdfPCell(new Paragraph(simpleDateFormat.format(note.getAnnee())));
 	    table1.addCell(cell4);
 	    table1.addCell(cell5);
 	    table1.addCell(cell6);
@@ -302,13 +346,15 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
     PdfPTable table2 = new PdfPTable(2); // 3 columns.
 
     PdfPCell cell16 = new PdfPCell(new Paragraph("prix "));
+    cell16.setHorizontalAlignment(Element.ALIGN_CENTER);
     PdfPCell cell17 = new PdfPCell(new Paragraph("date Obtenation"));
+    cell17.setHorizontalAlignment(Element.ALIGN_CENTER);
 
     table2.addCell(cell16);
     table2.addCell(cell17);
   for (PrixEmploye note : rapportDeEvaluation.getPrix()) {
   	    PdfPCell cell4 = new PdfPCell(new Paragraph(note.getPrix().getLibelle()));
-  	    PdfPCell cell5 = new PdfPCell(new Paragraph(note.getDateDeObtenation().toString()));
+  	    PdfPCell cell5 = new PdfPCell(new Paragraph(simpleDateFormat.format(note.getDateDeObtenation())));
 
   	    table2.addCell(cell4);
   	    table2.addCell(cell5);
@@ -323,13 +369,15 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
      PdfPTable table3 = new PdfPTable(2); // 3 columns.
 
      PdfPCell cell18 = new PdfPCell(new Paragraph("punition "));
+     cell18.setHorizontalAlignment(Element.ALIGN_CENTER);
      PdfPCell cell19 = new PdfPCell(new Paragraph("date Obtenation"));
+     cell19.setHorizontalAlignment(Element.ALIGN_CENTER);
 
      table3.addCell(cell16);
      table3.addCell(cell17);
    for (PunitionEmploye note : rapportDeEvaluation.getPunition()) {
    	    PdfPCell cell4 = new PdfPCell(new Paragraph(note.getPunition().getLibelle()));
-   	    PdfPCell cell5 = new PdfPCell(new Paragraph(note.getDateObtenation().toString()));
+   	    PdfPCell cell5 = new PdfPCell(new Paragraph(simpleDateFormat.format(note.getDateObtenation())));
 
    	    table3.addCell(cell4);
    	    table3.addCell(cell5);
@@ -344,8 +392,12 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
        PdfPTable table4 = new PdfPTable(3); // 3 columns.
 
        PdfPCell cell20 = new PdfPCell(new Paragraph("moyen "));
+       cell20.setHorizontalAlignment(Element.ALIGN_CENTER);
        PdfPCell cell21 = new PdfPCell(new Paragraph("mention"));
+       cell21.setHorizontalAlignment(Element.ALIGN_CENTER);
        PdfPCell cell22 = new PdfPCell(new Paragraph("remarque"));
+       cell22.setHorizontalAlignment(Element.ALIGN_CENTER);
+
        PdfPCell cell23 = new PdfPCell(new Paragraph(rapportDeEvaluation.getMoyen().toString()));
        PdfPCell cell24 = new PdfPCell(new Paragraph(rapportDeEvaluation.getMention()));
        PdfPCell cell25 = new PdfPCell(new Paragraph(rapportDeEvaluation.getRemarques()));
@@ -369,10 +421,15 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "imprimer rapport evaluation");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 //attestation de salaire 
 public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
+	 String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Employe employe = demaneDeDocument.getEmploye();
 	SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
 	
@@ -436,8 +493,9 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
     p4.setAlignment(Element.ALIGN_LEFT);
     document.add(p4);
 	document.close();
+	if(demaneDeDocument.getManiereDeRetrait().equals("gmail")) {
 	try {
-		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf");
+		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de salaire", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf");
 	} catch (AddressException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -448,14 +506,19 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-
+	}
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer attestation de salaire");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 	}
 
 //attestation de travail 
 public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
+	 String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Employe employe = demaneDeDocument.getEmploye();
 	Document document = new Document();
 	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFullName()+"attestaionDeTravail" +demaneDeDocument.getEmploye().getDoti()+".pdf")); 
@@ -510,6 +573,7 @@ public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws Docume
   p4.setAlignment(Element.ALIGN_LEFT);
   document.add(p4);
 	document.close();
+	if(demaneDeDocument.getManiereDeRetrait().equals("gmail")) {
 	try {
 		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf");
 	} catch (AddressException e) {
@@ -522,9 +586,12 @@ public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws Docume
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-
+	}
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer attestation de travail");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 
@@ -538,8 +605,12 @@ public DemaneDeDocument findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	DemaneDeDocument demaneDeDocument = findByid(id);
 	demaneDeDocumentDao.deleteById(id);
 	if (findByid(id) == null) {
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, demaneDeDocument.getEmploye(), new Date(), "delete demande");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	} else
 		return -1;
@@ -572,12 +643,12 @@ public List<DemaneDeDocument> findByEtat(String etat) {
 }
 //liste des demandes
 public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentException, FileNotFoundException {
-	String fullName = null;
+	Employe employe = null;
 	for (DemaneDeDocument demaneDeDocument : demandes) {
-		fullName = demaneDeDocument.getEmploye().getFullName();
+		employe = demaneDeDocument.getEmploye();
 	}
 		Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(fullName + "listedemandes.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "listedemandes.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -593,7 +664,7 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des demandes"+ fullName+"\n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des demandes"+ employe.getFullName()+"\n\r\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
@@ -637,6 +708,9 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer liste des demandes");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 

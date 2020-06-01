@@ -12,6 +12,8 @@ import com.example.stock.bean.Fonction;
 import com.example.stock.service.facade.DepFonctionService;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FonctionService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 
 @Service
 public class FonctionServiceImpl implements FonctionService {

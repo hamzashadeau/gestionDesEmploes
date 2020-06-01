@@ -1,25 +1,36 @@
 package com.example.stock.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.SalaireEmployeDao;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.SalaireEmployeService;
 
 @Service
 public class SalaireEmployeServiceImpl implements SalaireEmployeService {
 @Autowired
 private SalaireEmployeDao salaireEmployeDao;
-
+@Autowired
+private NotificationEmployeService notificationEmployeService;
+@Autowired
+private NotificationService notificationService;
 
 @Override
 public int save(SalaireEmploye salaireEmploye) {
 	if(salaireEmploye.getId()!= null) {
 return -1;
 }else {
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "save salaire employe ");
+	notificationEmployeService.save(notificationEmploye);
 	salaireEmployeDao.save(salaireEmploye);
 		return 1;
 }
@@ -35,6 +46,10 @@ public SalaireEmploye findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	SalaireEmploye salaireEmploye = findByid(id);
+	Notification notification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "delete salaire employe ");
+	notificationEmployeService.save(notificationEmploye);
 	salaireEmployeDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;

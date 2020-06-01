@@ -19,7 +19,7 @@ private Long id;
 private Notification notification;
 @ManyToOne
 private Employe employe;
-@Temporal(TemporalType.DATE)
+@Temporal(TemporalType.TIMESTAMP)
 private Date dateDeNotification;
 private String libelle;
 //private String etat;//lus ou 

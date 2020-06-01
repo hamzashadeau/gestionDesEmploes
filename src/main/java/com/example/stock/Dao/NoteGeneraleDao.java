@@ -14,4 +14,5 @@ public interface NoteGeneraleDao extends JpaRepository<NoteGeneralDeAnnee, Long>
 List<NoteGeneralDeAnnee> findByEmployeDoti(String doti);
 NoteGeneralDeAnnee findByDateAndEmployeDoti(Date date,String doti);
 List<NoteGeneralDeAnnee> findByEtat(String etat);
+
 }

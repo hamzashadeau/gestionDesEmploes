@@ -15,5 +15,5 @@ public interface PermanenceAdministrativeService {
 	PermanenceAdministrative findByDate(Date date);
 	int save(PermanenceAdministrative permanenceAdministrative);
 	int deleteById(Long id);
-
+	public int update(PermanenceAdministrative permanenceAdministrative);
 }

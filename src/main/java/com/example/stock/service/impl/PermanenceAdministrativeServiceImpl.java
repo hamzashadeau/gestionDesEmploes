@@ -8,8 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.PermanenceAdministrativeDao;
 import com.example.stock.bean.Employe;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PermanenceAdministrativeService;
 
 @Service
@@ -18,16 +22,38 @@ public class PermanenceAdministrativeServiceImpl implements PermanenceAdministra
 private PermanenceAdministrativeDao permanenceAdministrativeDao;
 @Autowired
 private EmployeService employeService;
-
+@Autowired
+private NotificationEmployeService notificationEmployeService;
+@Autowired
+private NotificationService notificationService;
 
 @Override
 public int save(PermanenceAdministrative permanenceAdministrative) {
 	Employe employe = employeService.findByDoti(permanenceAdministrative.getEmploye().getDoti());
 	if(employe == null) {
 		return -2;
-//	}else 	if(findByid(permanenceAdministrative.getId())!= null) {
-//return -1;
+	}else 	if(permanenceAdministrative.getId() !=  null) {
+return -1;
 }else {
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save permanence");
+	notificationEmployeService.save(notificationEmploye);
+	permanenceAdministrative.setEmploye(employe);
+	permanenceAdministrativeDao.save(permanenceAdministrative);
+		return 1;
+}
+	}
+@Override
+public int update(PermanenceAdministrative permanenceAdministrative) {
+	Employe employe = employeService.findByDoti(permanenceAdministrative.getEmploye().getDoti());
+	if(employe == null) {
+		return -2;
+	}else 	if(permanenceAdministrative.getId() ==  null) {
+return -1;
+}else {
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update permanence");
+	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrative.setEmploye(employe);
 	permanenceAdministrativeDao.save(permanenceAdministrative);
 		return 1;
@@ -44,6 +70,10 @@ public PermanenceAdministrative findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	PermanenceAdministrative permanenceAdministrative = findByid(id);
+	Notification notification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, permanenceAdministrative.getEmploye(), new Date(), "save permanence");
+	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrativeDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;

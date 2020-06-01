@@ -19,12 +19,16 @@ import com.example.stock.bean.Employe;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.NoteGeneralDeAnnee;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
 import com.example.stock.service.facade.GradeEmployeService;
 import com.example.stock.service.facade.GradeService;
 import com.example.stock.service.facade.NoteGeneraleService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PunitionEmployeService;
 import com.example.stock.service.facade.RapportDeEvaluationService;
@@ -64,7 +68,10 @@ private PrixEmployeService prixEmployeService;
 private RapportDeEvaluationService rapportDeEvaluationService;
 @Autowired
 private RapportDeEvaluationDao rapportDeEvaluationDao;
-
+@Autowired
+private NotificationEmployeService notificationEmployeService;
+@Autowired
+private NotificationService notificationService;
 @Override
 public int save(GradeEmploye gradeEmploye) {
 	Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
@@ -98,6 +105,9 @@ rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(
 //moyen
 rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 rapportDeEvaluationService.save(rapportDeEvaluation);
+Notification notification = notificationService.findByType("save");
+NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "save grade employe");
+notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	}
@@ -154,7 +164,11 @@ public GradeEmploye findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	 GradeEmploye gradeEmploye = gradeEmployeService.findByid(id);
+	 Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
 	 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "delete grade employe");
+		notificationEmployeService.save(notificationEmploye);
 	 gradeDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;
@@ -203,7 +217,13 @@ employeDao.save(employe);
 
 @Override
 public int update(GradeEmploye grade) {
-	grade.setGrade(gradeService.findByLibelle(grade.getGrade().getLibelle()));
+	Employe employe = employeService.findByDoti(grade.getDoti());
+	Grade grade2 = gradeService.findByLibelle(grade.getGrade().getLibelle());
+	grade.setGrade(grade2);
+	grade.setDoti(employe.getDoti());
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "update grade employe");
+	notificationEmployeService.save(notificationEmploye);
 	// ncriw rapport evaluation
 	gradeDao.save(grade);
 	return 1;
@@ -267,6 +287,9 @@ document.add(table);
  p20.setAlignment(Element.ALIGN_LEFT);
  document.add(p20);
   document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "imprimer liste grade employe");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }	
 

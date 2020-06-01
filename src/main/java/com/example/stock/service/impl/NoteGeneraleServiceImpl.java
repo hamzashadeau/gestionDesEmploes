@@ -11,13 +11,18 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.NoteGeneraleDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.NoteGeneralDeAnnee;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.NoteGeneraleService;
 import com.example.stock.service.facade.NoteService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -38,6 +43,12 @@ private NoteGeneraleDao noteGeneraleDao;
 private NoteService noteService;
 @Autowired
 private EmployeService employeService;
+@Autowired
+private EmployeDao employeDao;
+@Autowired
+private NotificationService notificationService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
 
 @Override
 public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
@@ -62,6 +73,11 @@ public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
 	noteGeneralDeAnnee.setMoyenGeneral(somme/5);
 	//calucler la mention et la moyen
 	noteGeneraleDao.save(noteGeneralDeAnnee);
+	employe.setDernierNote(noteGeneralDeAnnee);
+	employeDao.save(employe);
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save note");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	//}
@@ -76,8 +92,13 @@ public NoteGeneralDeAnnee findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	NoteGeneralDeAnnee noteGeneralDeAnnee = findByid(id);
 	noteGeneraleDao.deleteById(id);
 	if (findByid(id) == null) {
+		Notification notification = notificationService.findByType("delete");
+		Employe employe =  employeDao.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "delete note employe ");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	} else
 		return -1;
@@ -227,6 +248,9 @@ public int RapportDesNoteePdf(NoteGeneralDeAnnee note) throws DocumentException,
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer rapport note");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 }

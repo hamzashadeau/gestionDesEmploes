@@ -7,14 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.RapportDeEvaluationDao;
+import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.bean.NoteGeneralDeAnnee;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.FormationService;
 import com.example.stock.service.facade.NoteGeneraleService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PrixService;
 import com.example.stock.service.facade.PunitionEmployeService;
@@ -32,6 +37,11 @@ private PrixEmployeService prixEmployeService;
 private PunitionEmployeService punitionEmployeService;
 @Autowired
 private NoteGeneraleService noteGeneraleService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
+@Autowired
+private NotificationService notificationService;
+
 @Override
 public int save(RapportDeEvaluation rapportDeEvaluation) {
 	if(rapportDeEvaluation.getId()!= null) {
@@ -75,6 +85,9 @@ return -1;
 	}
 	}
 	}
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 
@@ -121,6 +134,9 @@ return -1;
 	}
 	}
 	}
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "update rapport ");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 
@@ -134,6 +150,10 @@ public RapportDeEvaluation findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	RapportDeEvaluation rapportDeEvaluation = findByid(id);
+	Notification notification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "delete rapport ");
+	notificationEmployeService.save(notificationEmploye);
 	rapportDeEvaluationDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;

@@ -40,6 +40,7 @@ import com.example.stock.service.facade.GradeEmployeService;
 import com.example.stock.service.facade.GradeService;
 import com.example.stock.service.facade.NoteGeneraleService;
 import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PunitionEmployeService;
 import com.example.stock.service.facade.RapportDeEvaluationService;
@@ -93,6 +94,8 @@ public class EmployeeServiceImpl implements EmployeService {
 	private RapportDeEvaluationService rapportDeEvaluationService;
 	@Autowired
 	private CongeService congeService;
+	@Autowired
+	private NotificationService notificationService;
 	@Override
 	public List<Employe> findAll() {
 		return employeDao.findAll();
@@ -166,6 +169,9 @@ public class EmployeeServiceImpl implements EmployeService {
 		salaireEmployeService.save(salaireEmploye);
 		// save employe
 		employeDao.save(employe);
+		Notification notification = notificationService.findByType("save");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "save employe");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
 	}
@@ -203,6 +209,9 @@ public class EmployeeServiceImpl implements EmployeService {
 			}
 			employe.setSup(findByDoti(dep.getChefdoti()));
 			employeDao.save(employe);
+			Notification notification = notificationService.findByType("update");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "update employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
 
@@ -220,6 +229,9 @@ public class EmployeeServiceImpl implements EmployeService {
 		if (employe.getSup() == null) {
 			return -2;
 		} else {
+			Notification notification = notificationService.findByType("delete");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "delete employe");
+			notificationEmployeService.save(notificationEmploye);
 			List<GradeEmploye> gradeEmployes = gradeEmployeService.findByDoti(employe.getDoti());
 			gradeEmployes.forEach(grade -> {
 				gradeEmployeService.deleteById(grade.getId());
@@ -487,8 +499,10 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	//liste Des Employe De grade Pdf
 		public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
 			String grade= null;
+			Employe employe2 = new Employe();
 			for (Employe employe : employes) {
 				grade = employe.getDernierGrade().getGrade().getLibelle();
+				employe2= employe;
 			}
 				Document document = new Document();
 			PdfWriter.getInstance(document, new FileOutputStream(grade + "listeEmployes.pdf")); 
@@ -567,6 +581,9 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		   p20.setAlignment(Element.ALIGN_LEFT);
 		   document.add(p20);
 		    document.close();
+			Notification notification = notificationService.findByType("imprimer");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe2 , new Date(), "imprimer grade employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}	
 
@@ -577,8 +594,10 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	//liste Des Employe De Departement Pdf
 	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
 		String depatrement= null;
+		Employe employe2 = new Employe();
 		for (Employe employe : employes) {
 			depatrement = employe.getDep().getNom();
+			employe2 = employe;
 		}
 			Document document = new Document();
 		PdfWriter.getInstance(document, new FileOutputStream(depatrement + "listeEmployes.pdf")); 
@@ -657,6 +676,9 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	   p20.setAlignment(Element.ALIGN_LEFT);
 	   document.add(p20);
 	    document.close();
+		Notification notification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe2 , new Date(), "imprimer employe d'une departement");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}	
 	//liste des employes
@@ -739,6 +761,9 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	   p20.setAlignment(Element.ALIGN_LEFT);
 	   document.add(p20);
 	    document.close();
+		Notification notification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,null , new Date(), "imprimer la liste employe");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
 

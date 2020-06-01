@@ -15,9 +15,13 @@ import com.example.stock.Dao.DepartementDao;
 import com.example.stock.bean.DepFonction;
 import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.service.facade.DepFonctionService;
 import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -40,6 +44,10 @@ private DepartementService departementService;
 private EmployeService employeService;
 @Autowired
 private DepFonctionService depFonctionService;
+@Autowired
+private NotificationService notificationService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
 
 @Override
 public int save(Departement departement) {
@@ -52,6 +60,9 @@ public int save(Departement departement) {
 	departement.setFullname(employe.getFullName());
 	departement.setChefdoti(employe.getDoti());
 	departementDao.save(departement);
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save departement");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
 }
@@ -65,6 +76,9 @@ public int update(Departement departement) {
 	} else {
 	departement.setChefdoti(employe.getDoti());
 	departementDao.save(departement);
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update departement");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
 }
@@ -101,10 +115,11 @@ Document document = new Document();
 
     table.addCell(cell1);
     table.addCell(cell2);
-
+    Employe employe = new Employe();
     for (Departement departement : departements) {
+    	employe = employeService.findByDoti(departement.getChefdoti());
 	    PdfPCell cell10 = new PdfPCell(new Paragraph(departement.getNom()));
-	    PdfPCell cell11 = new PdfPCell(new Paragraph(departement.getChefdoti().toString()));
+	    PdfPCell cell11 = new PdfPCell(new Paragraph(departement.getChefdoti()));
 	    table.addCell(cell10);
 	    table.addCell(cell11);
 	}
@@ -123,6 +138,9 @@ Document document = new Document();
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "imprimer liste des departement");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }	
 
@@ -151,6 +169,9 @@ public int deleteById(Long id) {
 	if(depFonctions != null) {
 		return -3;
 	} else {
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,null , new Date(), "delete departemnt");
+		notificationEmployeService.save(notificationEmploye);
 	departementDao.deleteById(id);
 	if (findByid(id) == null) {
 		return 1;

@@ -1,9 +1,14 @@
 package com.example.stock.ws.rest;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,6 +29,22 @@ import com.example.stock.service.facade.UserService;
 public class UserRest {
 @Autowired
 private UserService userService;
+
+
+@GetMapping("sendCode/email/{email}")
+public int sendCode(@PathVariable String email) throws AddressException, MessagingException, IOException, TransformerException {
+	return userService.sendCode(email);
+}
+
+@GetMapping("resetPasswordCodeVerification/email/{email}/nvpassword/{nvpassword}/code/{code}")
+public int resetPasswordCodeVerification(@PathVariable String email,@PathVariable String nvpassword,@PathVariable Long code) throws Exception {
+	return userService.resetPasswordCodeVerification(email, nvpassword, code);
+}
+
+@GetMapping("resetPassword/email/{email}/oldPassword/{oldPassword}/nvPassword/{nvPassword}")
+public int resetPassword(@PathVariable String email,@PathVariable String oldPassword,@PathVariable String nvPassword) throws Exception {
+	return userService.resetPassword(email, oldPassword, nvPassword);
+}
 
 @PostMapping("seConnecter")
 public int seConnecter(@RequestBody User user) throws Exception {

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -15,9 +16,13 @@ import com.example.stock.Dao.FormationDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -36,6 +41,10 @@ public class FormationServiceImpl implements FormationService {
 private FormationDao formationDao;
 @Autowired
 private EmployeService employeService;
+@Autowired
+private NotificationService notificationService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
 
 
 @Override
@@ -46,6 +55,9 @@ return -1;
 }else if (employe == null) {
 	return -2;
 }{
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save formation");
+	notificationEmployeService.save(notificationEmploye);
 	formation.setEmploye(employe);
 	formationDao.save(formation);
 		return 1;
@@ -59,6 +71,9 @@ return -1;
 }else if (employe == null) {
 	return -2;
 }{
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update formation");
+	notificationEmployeService.save(notificationEmploye);
 	formation.setEmploye(employe);
 	formationDao.save(formation);
 		return 1;
@@ -75,8 +90,12 @@ public Formation findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	Formation formation = findByid(id);
 	formationDao.deleteById(id);
 	if (findByid(id) == null) {
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, formation.getEmploye(), new Date(), "delete formation");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	} else
 		return -1;
@@ -114,9 +133,11 @@ public List<Formation> findFormationDeEmploye(Employe employe) {
 }
 
 public int listeDesFormationsPdf(ArrayList<Formation> formations) throws DocumentException, FileNotFoundException {
-	String fullName = null;
+	 String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	Employe employe = null;
 	for (Formation formation : formations) {
-		fullName = formation.getEmploye().getFullName();
+		employe = formation.getEmploye();
 	}
 		Document document = new Document();
 	PdfWriter.getInstance(document, new FileOutputStream("listeFormations.pdf")); 
@@ -135,14 +156,16 @@ public int listeDesFormationsPdf(ArrayList<Formation> formations) throws Documen
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des formation" + fullName + " \n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des formation" + employe.getFullName() + " \n\r\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
     
     PdfPTable table = new PdfPTable(7); // 3 columns.
-
-    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
+    table.setWidthPercentage(100);
+    //table.setTotalWidth(600);
+    //table.setLockedWidth(true);
+    PdfPCell cell1 = new PdfPCell(new Paragraph("doti"));
     PdfPCell cell2 = new PdfPCell(new Paragraph("attestation"));
     PdfPCell cell3 = new PdfPCell(new Paragraph("domaine"));
     PdfPCell cell4 = new PdfPCell(new Paragraph("etablissement"));
@@ -159,13 +182,21 @@ public int listeDesFormationsPdf(ArrayList<Formation> formations) throws Documen
     table.addCell(cell7);
 
     for (Formation formation : formations) {
-	    PdfPCell cell10 = new PdfPCell(new Paragraph(formation.getEmploye().getFullName()));
+	    PdfPCell cell10 = new PdfPCell(new Paragraph(formation.getEmploye().getDoti()));
+	    cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    PdfPCell cell11 = new PdfPCell(new Paragraph(formation.getAttestation()));
+	    cell11.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    PdfPCell cell12 = new PdfPCell(new Paragraph(formation.getDomaine()));
+	    cell12.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    PdfPCell cell13 = new PdfPCell(new Paragraph(formation.getEtablissement()));
+	    cell13.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    PdfPCell cell14 = new PdfPCell(new Paragraph(formation.getMention().toString()));
+	    cell14.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    PdfPCell cell15 = new PdfPCell(new Paragraph(formation.getVille()));
-	    PdfPCell cell16 = new PdfPCell(new Paragraph(formation.getAnnee().toString()));
+	    cell15.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell16 = new PdfPCell(new Paragraph(simpleDateFormat.format(formation.getAnnee())));
+	    cell16.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    
 	    table.addCell(cell10);
 	    table.addCell(cell11);
 	    table.addCell(cell12);
@@ -189,6 +220,9 @@ public int listeDesFormationsPdf(ArrayList<Formation> formations) throws Documen
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer formation");
+	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }
 

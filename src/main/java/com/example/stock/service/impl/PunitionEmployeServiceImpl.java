@@ -14,10 +14,14 @@ import org.springframework.stereotype.Service;
 import com.example.stock.Dao.PunitionEmployeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.Punition;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PunitionEmployeService;
 import com.example.stock.service.facade.PunitionService;
 import com.itextpdf.text.BaseColor;
@@ -40,7 +44,11 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 	private EmployeService employeService;
 	@Autowired
 	private PunitionService punitionService;
-
+	@Autowired
+	private NotificationEmployeService notificationEmployeService;
+	@Autowired
+	private NotificationService notificationService;
+	
 	@Override
 	public int save(PunitionEmploye punitionEmploye) {
 		Employe employe = employeService.findByDoti(punitionEmploye.getEmploye().getDoti());
@@ -55,6 +63,9 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 			punitionEmploye.setEmploye(employe);
 			punitionEmploye.setPunition(punition);
 			punitionEmployeDao.save(punitionEmploye);
+			Notification notification = notificationService.findByType("save");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save punition employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
 	}
@@ -72,6 +83,9 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 			punitionEmploye.setEmploye(employe);
 			punitionEmploye.setPunition(punition);
 			punitionEmployeDao.save(punitionEmploye);
+			Notification notification = notificationService.findByType("update");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update punition employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
 	}
@@ -86,6 +100,10 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 
 	@Override
 	public int deleteById(Long id) {
+		PunitionEmploye punitionEmploye = findByid(id);
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, punitionEmploye.getEmploye(), new Date(), "delete punition employe");
+		notificationEmployeService.save(notificationEmploye);
 		punitionEmployeDao.deleteById(id);
 		if (findByid(id) == null) {
 			return 1;

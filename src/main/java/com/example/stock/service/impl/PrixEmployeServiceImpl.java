@@ -16,9 +16,13 @@ import com.example.stock.Dao.PrixEmployeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.Prix;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PrixService;
 import com.itextpdf.text.BaseColor;
@@ -42,7 +46,11 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	private PrixService prixService;
 	@Autowired
 	private EmployeService employeService;
-
+	@Autowired
+	private NotificationEmployeService notificationEmployeService;
+	@Autowired
+	private NotificationService notificationService;
+	
 	@Override
 	public int save(PrixEmploye prixEmploye) {
 		Employe employe = employeService.findByDoti(prixEmploye.getEmploye().getDoti());
@@ -57,6 +65,9 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 			prixEmploye.setEmploye(employe);
 			prixEmploye.setPrix(prix);
 			prixEmployeDao.save(prixEmploye);
+			Notification notification = notificationService.findByType("save");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save prix employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
 	}
@@ -74,6 +85,9 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 			prixEmploye.setEmploye(employe);
 			prixEmploye.setPrix(prix);
 			prixEmployeDao.save(prixEmploye);
+			Notification notification = notificationService.findByType("update");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update prix employe");
+			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
 	}
@@ -88,6 +102,10 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 
 	@Override
 	public int deleteById(Long id) {
+		PrixEmploye prixEmploye = findByid(id);
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, prixEmploye.getEmploye(), new Date(), "delete prix employe");
+		notificationEmployeService.save(notificationEmploye);
 		prixEmployeDao.deleteById(id);
 		if (findByid(id) == null) {
 			return 1;
@@ -123,9 +141,9 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	}
 
 	public int listeDesPrixPdf(ArrayList<PrixEmploye> prixEmployes) throws DocumentException, FileNotFoundException {
-		String fullName = null;
+		Employe employe = null;
 		for (PrixEmploye prixEmploye : prixEmployes) {
-			fullName = prixEmploye.getEmploye().getFullName();
+			employe = prixEmploye.getEmploye();
 		}
 		Document document = new Document();
 		PdfWriter.getInstance(document, new FileOutputStream("listePrixEmploye.pdf"));
@@ -144,7 +162,7 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 		}
 
 		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Paragraph p1 = new Paragraph("\n\t liste des prix" + fullName + " \n\r\n", font);
+		Paragraph p1 = new Paragraph("\n\t liste des prix" + employe.getFullName() + " \n\r\n", font);
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 
@@ -182,6 +200,9 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 		p20.setAlignment(Element.ALIGN_LEFT);
 		document.add(p20);
 		document.close();
+		Notification notification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer liste prix employe");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
 

@@ -1,8 +1,13 @@
 package com.example.stock.service.impl;
 
 import java.io.Console;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +24,7 @@ import antlr.Utils;
 public class UserServiceImpl implements UserService {
 @Autowired
 private UserDao userDao;
-
+static Long codeVerfication;
 
 @Override
 public int save(User user) {
@@ -37,6 +42,43 @@ public User findByid(Long id) {
 		return userDao.findById(id).get();
 	} else
 		return null;
+}
+
+@Override
+public int sendCode(String email) throws AddressException, MessagingException, IOException, TransformerException {
+	  codeVerfication = HashUtil.generateRandomIntIntRange(1000, 9000); 
+	  HashUtil.sendCodeVerification(email, "verificationo de compte", "code de verification", codeVerfication);
+	  return 1;
+}
+@Override
+public int resetPasswordCodeVerification(String email, String nvpassword,Long code ) throws Exception {
+	System.out.println("ha code" + codeVerfication);
+	System.out.println(" ha code tani" + code);
+	if(code.equals(codeVerfication) ) {
+	User user = userDao.findByLogin(email);
+	System.out.println("ha email" + email);
+	System.out.println("ha nouveau password" + nvpassword);
+	System.out.println("ha user" + user);
+	user.setPwd(HashUtil.hash(nvpassword));
+	userDao.save(user);
+	return 1;
+	} else {
+		return -2;
+	}
+}
+@Override
+public int resetPassword(String email, String oldPassword, String nvPassword) throws Exception {
+	User user = userDao.findByLogin(email);
+	System.out.println("ha old password" + oldPassword);
+	System.out.println("ha nv password " + nvPassword);
+	System.out.println("ha password dial user" + user.getPwd());
+	if(user.getPwd().equals(HashUtil.hash(oldPassword))) {
+		user.setPwd(nvPassword);
+		userDao.save(user);
+		return 1;
+	} else {
+		return -2;
+	}
 }
 
 @Override

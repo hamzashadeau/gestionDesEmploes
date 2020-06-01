@@ -15,9 +15,13 @@ import com.example.stock.Dao.CongeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Congé;
 import com.example.stock.bean.Employe;
+import com.example.stock.bean.Notification;
+import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.TypeCongee;
 import com.example.stock.service.facade.CongeService;
 import com.example.stock.service.facade.EmployeService;
+import com.example.stock.service.facade.NotificationEmployeService;
+import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.TypeCongeeService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -39,7 +43,10 @@ private CongeDao congeDao;
 private EmployeService employeService;
 @Autowired
 private TypeCongeeService typeCongeeService;
-
+@Autowired
+private NotificationService notificationService;
+@Autowired
+private NotificationEmployeService notificationEmployeService;
 
 @Override
 public int save(Congé congé) {
@@ -63,6 +70,9 @@ return -1;
 	congé.setCongee(congé2);
 	congé.setEmploye(employe);
 	congeDao.save(congé);
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update conge");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	}
@@ -100,6 +110,9 @@ public int update(Congé congé) {
 	congé.setCongee(congé2);
 	congé.setEmploye(employe);
 	congeDao.save(congé);
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update conge");
+	notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	}
@@ -114,8 +127,12 @@ public Congé findByid(Long id) {
 
 @Override
 public int deleteById(Long id) {
+	Congé congé = findByid(id);
 	congeDao.deleteById(id);
 	if (findByid(id) == null) {
+		Notification notification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, congé.getEmploye(), new Date(), "delete conge");
+		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	} else
 		return -1;
@@ -144,12 +161,12 @@ public List<Congé> findByEmployeDoti(String doti) {
 
 //liste des conges
 public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, FileNotFoundException {
-	String fullName = null;
+	Employe employe = null;
 	for (Congé congé : conges) {
-		 fullName = congé.getEmploye().getFullName();
+		 employe = congé.getEmploye();
 	}
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(fullName + "ListeCongé.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "ListeCongé.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -165,7 +182,7 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des conge de"+ fullName +" \n\r\n" , font);
+	Paragraph p1 = new Paragraph("\n\t liste des conge de"+ employe.getFullName() +" \n\r\n" , font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
@@ -209,7 +226,10 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
-	return 1;
+	Notification notification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer liste conge");
+	notificationEmployeService.save(notificationEmploye);
+    return 1;
 }
 
 
