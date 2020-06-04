@@ -11,6 +11,7 @@ public interface CongeService {
 	List<Congé> findByCongeeLibelle(String libelle);
 	List<Congé> findByEmployeEmail(String email);
 	List<Congé> findByEmployeDoti(String matricule);
+	List<Congé> findByEmployeDotiAndCongeeLibelle(String matricule, String libelle);
 	//List<Congé> findByEtat(String etat);
 	List<Congé> findAll();
 	List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date);
@@ -20,4 +21,6 @@ public interface CongeService {
 	public int update(Congé congé);
 	public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, FileNotFoundException;
 	public List<Congé>  findCongeByAnne(Integer annee, String type);
+	public List<Congé> findListeCertificatByAnnee();
+	public List<Congé> findCongeCertificat();
 }

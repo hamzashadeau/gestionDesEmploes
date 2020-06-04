@@ -24,6 +24,20 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+
+@GetMapping("findListeCertificatByAnnee")
+public List<Congé> findListeCertificatByAnnee() {
+	return congeService.findListeCertificatByAnnee();
+}
+
+@GetMapping("findCongeCertificat")
+public List<Congé> findCongeCertificat() {
+	return congeService.findCongeCertificat();
+}
+@GetMapping("findByEmployeDotiAndCongeeLibelle/matricule/{matricule}/libelle/{libelle}")
+public List<Congé> findByEmployeDotiAndCongeeLibelle(@PathVariable String matricule,@PathVariable String libelle) {
+	return congeService.findByEmployeDotiAndCongeeLibelle(matricule, libelle);
+}
 @GetMapping("findByCongeeLibelleAndDateDeDebut/libelle/{libelle}/date/{date}")
 public List<Congé> findByCongeeLibelleAndDateDeDebut(@PathVariable String libelle,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
 	return congeService.findByCongeeLibelleAndDateDeDebut(libelle, date);

@@ -119,15 +119,12 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "Info.pdf")); 
 	document.open();
 	Image img,img1;
+	// importation des images
 	try {
 		img = Image.getInstance("fstgIcone.png");
-//		img1 = Image.getInstance("gouveronementEducation.jpg");
 		img.setAlignment(Element.ALIGN_TOP);
 		img.setAlignment(Element.ALIGN_LEFT);
-		//img1.setAlignment(Element.ALIGN_TOP);
-	//	img1.setAlignment(Element.ALIGN_RIGHT);
 		document.add(img);
-		//document.add(img1);
 	} catch (MalformedURLException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -135,21 +132,23 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+	// la création de titre
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
 	Paragraph p1 = new Paragraph("\n\t info Personnel", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
-
+	
 	Paragraph p3 = new Paragraph("\n info de base", font);
 	p1.setAlignment(Element.ALIGN_LEFT);
 	document.add(p3);
 	
+	// la création d'une paragraphe
     Paragraph p = new Paragraph();
     p.add("\n\n*FullName: " + employe.getFullName()+     "                                  *cin:" + employe.getCin() + " \n" + 
     		"*doti:" + employe.getDoti() + "                                                               *email:" + employe.getEmail() + "\n" + 
     		"*gender: " + employe.getGender() + "                                               *situation Familial:" + employe.getSituationFamiliale()+ " \n" + 
     "*adresse: " + employe.getAdresse() + "                                       *enfant: " + employe.getEnfants() + "\n" + 
-    		"*date de naissance:" + employe.getDateDeNaissance() + "                                *lieu de naissance : " + employe.getLieuDeNaissance() + "\n" + 
+    		"*date de naissance:" + simpleDateFormat.format(employe.getDateDeNaissance()) + "                           *lieu de naissance : " + employe.getLieuDeNaissance() + "\n" + 
     		"*departement :" + employe.getDep().getNom() + "                                             * fonction : " + employe.getFonction().getLibelle() + "\n" + 
     		"*date entrée : " + simpleDateFormat.format(employe.getDateEntree()) + "");
     document.add(p);

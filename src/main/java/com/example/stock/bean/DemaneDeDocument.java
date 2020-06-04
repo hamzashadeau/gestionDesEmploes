@@ -24,9 +24,20 @@ private Date dateDemande;
 private TypeDocument typeDeDocument;
 private String maniereDeRetrait;
 private String etat;
+private int nbrDeDocument;
 public DemaneDeDocument() {
 	super();
 	// TODO Auto-generated constructor stub
+}
+
+
+public int getNbrDeDocument() {
+	return nbrDeDocument;
+}
+
+
+public void setNbrDeDocument(int nbrDeDocument) {
+	this.nbrDeDocument = nbrDeDocument;
 }
 
 
@@ -73,7 +84,7 @@ public void setEtat(String etat) {
 
 
 public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument typeDeDocument,
-		String maniereDeRetrait, String etat) {
+		String maniereDeRetrait, String etat, int nbrDeDocument) {
 	super();
 	this.id = id;
 	this.employe = employe;
@@ -81,15 +92,16 @@ public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument
 	this.typeDeDocument = typeDeDocument;
 	this.maniereDeRetrait = maniereDeRetrait;
 	this.etat = etat;
+	this.nbrDeDocument = nbrDeDocument;
 }
 
 
 @Override
 public String toString() {
 	return "DemaneDeDocument [id=" + id + ", employe=" + employe + ", dateDemande=" + dateDemande + ", typeDeDocument="
-			+ typeDeDocument + ", maniereDeRetrait=" + maniereDeRetrait + ", etat=" + etat + "]";
+			+ typeDeDocument + ", maniereDeRetrait=" + maniereDeRetrait + ", etat=" + etat + ", nbrDeDocument="
+			+ nbrDeDocument + "]";
 }
-
 
 
 }

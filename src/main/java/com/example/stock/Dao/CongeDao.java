@@ -15,5 +15,6 @@ public interface CongeDao extends JpaRepository<Congé, Long> {
 	List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date);
 	List<Congé> findByEmployeEmail(String email);
 	List<Congé> findByEmployeDoti(String matricule);
+	List<Congé> findByEmployeDotiAndCongeeLibelle(String matricule, String libelle);
 	//List<Congé> findByEtat(String etat);
 }

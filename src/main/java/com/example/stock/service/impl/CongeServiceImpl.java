@@ -69,6 +69,7 @@ return -1;
 	}
 	congé.setCongee(congé2);
 	congé.setEmploye(employe);
+	congé.setDateDeFin(DateUlils.getDateFin(congé.getDateDeDebut(), congé.getPeriode()));
 	congeDao.save(congé);
 	Notification notification = notificationService.findByType("save");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update conge");
@@ -108,6 +109,7 @@ public int update(Congé congé) {
 		return -3;
 	}else {
 	congé.setCongee(congé2);
+	congé.setDateDeFin(DateUlils.getDateFin(congé.getDateDeDebut(), congé.getPeriode()));
 	congé.setEmploye(employe);
 	congeDao.save(congé);
 	Notification notification = notificationService.findByType("update");
@@ -232,10 +234,34 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
     return 1;
 }
 
+public List<Congé> findCongeCertificat() {
+	List<Congé> congés = findByCongeeLibelle("certificat court duree 3 mois");
+	 congés.addAll(findByCongeeLibelle("certificat long duree")) ;
+	 congés.addAll(findByCongeeLibelle("certificat court duree 6 mois"));
+	 return congés;
+}
+public List<Congé> findListeCertificatByAnnee(){
+	List<Congé> congés = findCongeCertificat();
+	List<Congé> resultat = new ArrayList<Congé>();
+	for (Congé congé : congés) {
+		System.out.println("ha ana");
+		if(DateUlils.VerifieDateSup(DateUlils.getDateFin(congé.getDateDeDebut(), congé.getPeriode()))) {
+			resultat.add(congé);
+		}
+	}
+	return resultat;
+}
+
 
 @Override
 public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date) {
 	return congeDao.findByCongeeLibelleAndDateDeDebut(libelle, date);
+}
+
+
+@Override
+public List<Congé> findByEmployeDotiAndCongeeLibelle(String matricule, String libelle) {
+	return congeDao.findByEmployeDotiAndCongeeLibelle(matricule, libelle);
 }
 
 
