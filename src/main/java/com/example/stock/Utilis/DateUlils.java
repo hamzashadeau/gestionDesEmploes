@@ -15,6 +15,25 @@ public class DateUlils {
 		c.setTime(d);
 		return c.get(Calendar.YEAR);
 	}
+	public static Integer getMonth(Date d) {
+		Calendar c = new GregorianCalendar();
+		c.setTime(d);
+		return c.get(Calendar.MONTH);
+	}
+	
+	public static boolean VerifieDateSup(Date date1) {
+		Date date2;
+		Date date = new Date();
+		if((getMonth(date)+1) >= 9)
+		{
+			date2 = getDateByYearDebut(getYear(date));
+		} else {
+			 date2 = getDateByYearDebut(getYear(date)-1);
+		}
+		long milliSeconde1 = date1.getTime();
+		long milliSeconde2 = date2.getTime();
+		return milliSeconde2 < milliSeconde1 ? true: false;
+	}
 	public static boolean verifierdateDebutEtFin(Date dateDebut,Integer year) {
 		long milliSeconde1 = dateDebut.getTime();
 		System.out.println(year-1);
@@ -33,7 +52,7 @@ public class DateUlils {
 		 GregorianCalendar calendar = new GregorianCalendar(year,7,1);
 		return calendar.getTime();
 	 }
-	public static Date getDateFin(Date date, Long periode) {
+	public static Date getDateFin(Date date, Integer periode) {
 		long milliSeconde = date.getTime() + periode * 86400000;
 		return new Date(milliSeconde);
 	 }
@@ -261,11 +280,9 @@ public class DateUlils {
 		return milliSeconde1 < milliSeconde2 ? true : false;
 	}
 	public static boolean verifierDateSup(Date date1,Date date2) {
-		System.out.println("ha date1" + date1);
-		System.out.println("ha date2" + date2);
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
-		return milliSeconde1 < milliSeconde2 ? true : false;
+		return milliSeconde1 <= milliSeconde2 ? true : false;
 	}
 	public static String GetMention(Double moyen) {
 		String resultat = null;

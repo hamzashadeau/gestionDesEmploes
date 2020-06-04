@@ -18,6 +18,8 @@ public class Congé {
 private Long id;
 @Temporal(TemporalType.DATE )
 private Date dateDeDebut;
+@Temporal(TemporalType.DATE )
+private Date dateDeFin;
 @ManyToOne
 private Employe employe;
 @ManyToOne
@@ -65,10 +67,18 @@ public String getRaison() {
 public void setRaison(String raison) {
 	this.raison = raison;
 }
-public Congé(Long id, Date dateDeDebut, Employe employe, TypeCongee congee, Integer periode, String raison) {
+public Date getDateDeFin() {
+	return dateDeFin;
+}
+public void setDateDeFin(Date dateDeFin) {
+	this.dateDeFin = dateDeFin;
+}
+public Congé(Long id, Date dateDeDebut, Date dateDeFin, Employe employe, TypeCongee congee, Integer periode,
+		String raison) {
 	super();
 	this.id = id;
 	this.dateDeDebut = dateDeDebut;
+	this.dateDeFin = dateDeFin;
 	this.employe = employe;
 	this.congee = congee;
 	this.periode = periode;
@@ -76,9 +86,10 @@ public Congé(Long id, Date dateDeDebut, Employe employe, TypeCongee congee, Int
 }
 @Override
 public String toString() {
-	return "Congé [id=" + id + ", dateDeDebut=" + dateDeDebut + ", employe=" + employe + ", congee=" + congee
-			+ ", periode=" + periode + ", raison=" + raison + "]";
+	return "Congé [id=" + id + ", dateDeDebut=" + dateDeDebut + ", dateDeFin=" + dateDeFin + ", employe=" + employe
+			+ ", congee=" + congee + ", periode=" + periode + ", raison=" + raison + "]";
 }
+
 
 
 

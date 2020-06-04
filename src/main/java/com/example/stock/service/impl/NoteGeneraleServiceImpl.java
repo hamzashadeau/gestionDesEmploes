@@ -58,6 +58,7 @@ public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
 	Double somme = 0.0;
 	Employe employe = employeService.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
 	noteGeneralDeAnnee.setFuulName(employe.getFullName());
+	noteGeneralDeAnnee.setDate(new Date());
 	//noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().setLibelle("NoteDeAffectationDesTachesLieeAuTravail"+ employe.getDoti() + noteGeneralDeAnnee.getDate().toString() );	
 	noteService.save(noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail());
 	somme += noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().getMention();
@@ -69,11 +70,11 @@ public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
 	somme += noteGeneralDeAnnee.getNoteDeRechercheEtDeInnovation().getMention();
 	noteService.save(noteGeneralDeAnnee.getNoteDeRentabilite());
 	somme += noteGeneralDeAnnee.getNoteDeRentabilite().getMention();
-	
 	noteGeneralDeAnnee.setMoyenGeneral(somme/5);
-	//calucler la mention et la moyen
+	noteGeneralDeAnnee.setMention(DateUlils.GetMention(noteGeneralDeAnnee.getMoyenGeneral()));
 	noteGeneraleDao.save(noteGeneralDeAnnee);
 	employe.setDernierNote(noteGeneralDeAnnee);
+	employe.setDateDeProchainNote(DateUlils.getDateDeNote(noteGeneralDeAnnee.getDate()));
 	employeDao.save(employe);
 	Notification notification = notificationService.findByType("save");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save note");
@@ -121,7 +122,6 @@ public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe) {
 	List<NoteGeneralDeAnnee> punitionEmployes = findByEmployeDoti(employe.getDoti());
 	List<NoteGeneralDeAnnee> resultat = new ArrayList<NoteGeneralDeAnnee>();
 	for (NoteGeneralDeAnnee punitionEmploye : punitionEmployes) {
-		System.out.println("ha date hna" +  punitionEmploye.getDate());
 		if(DateUlils.verifierDateSup(employe.getDernierGrade().getDateDeAffectation(), punitionEmploye.getDate()))
 			resultat.add(punitionEmploye);
 	}

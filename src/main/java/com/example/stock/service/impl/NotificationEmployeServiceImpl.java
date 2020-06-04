@@ -32,7 +32,7 @@ private NotificationEmployeDao notificationEmployeDao;
 
 @Override
 public int save(NotificationEmploye notificationEmploye) {
-	if(findByid(notificationEmploye.getId())!= null) {
+	if(notificationEmploye.getId()!= null) {
 return -1;
 }else {
 	notificationEmployeDao.save(notificationEmploye);

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -292,5 +293,55 @@ document.add(table);
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }	
-
+public void getDateEvaluation() {
+	List<Employe> employes = employeService.findAll();
+	List<NoteGeneralDeAnnee> notes = new ArrayList<NoteGeneralDeAnnee>();
+	for (Employe employe : employes) {
+		if(employe.getDateProchainEvaluation() != null) {
+		if(DateUlils.verifierDateSup(new Date(), employe.getDateProchainEvaluation())) {
+			employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)))));
+			employe.setDateProchainEvaluation(null);
+			employeDao.save(employe);
+		}
+		}
+	}
+}
+public void getDateAvancement() {
+	List<Employe> employes = employeService.findAll();
+	List<NoteGeneralDeAnnee> notes = new ArrayList<NoteGeneralDeAnnee>();
+	for (Employe employe : employes) {
+		if(employe.getDateAvancementPrevue() != null) {
+		if(DateUlils.verifierDateSup(new Date(), employe.getDateAvancementPrevue())) {
+			GradeEmploye gradeEmploye = new GradeEmploye();
+				gradeEmploye.setDoti(employe.getDoti());
+				gradeEmploye.setGrade(gradeService.findByLibelle(DateUlils.getNouvauGrade(employe.getDernierGrade().getGrade())));
+				gradeEmploye.setEtat("en traitement");
+				gradeDao.save(gradeEmploye);
+				//rapport evaluation
+				RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
+				rapportDeEvaluation.setEmploye(employe);
+				rapportDeEvaluation.setNouveauGrade(gradeEmploye);
+				if(noteGeneraleService.findNoteDeEmploye(employe)!= null) {
+					//note
+					rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+					//moyen
+					rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+					//moyen
+					rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));}
+					if(formationService.findFormationDeEmploye(employe)!= null) {
+					//formation
+					rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));}
+					if(punitionEmployeService.findPunitionDeEmploye(employe)!= null) {
+					//punition
+					rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));}
+					if(prixEmployeService.findPrixDeEmploye(employe)!= null) {
+					//prix
+					rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));}
+					rapportDeEvaluationDao.save(rapportDeEvaluation);
+					employe.setDateAvancementPrevue(null);
+					employeDao.save(employe);
+		}
+		}
+	}
+}
 }
