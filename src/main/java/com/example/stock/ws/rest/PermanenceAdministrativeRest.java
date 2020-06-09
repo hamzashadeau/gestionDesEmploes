@@ -23,6 +23,21 @@ public class PermanenceAdministrativeRest {
 @Autowired
 private PermanenceAdministrativeService permanenceAdministrativeService;
 
+@GetMapping("findByAnnee/annee/{annee}")
+public List<PermanenceAdministrative> findByAnnee(@PathVariable Integer annee) {
+	return permanenceAdministrativeService.findByAnnee(annee);
+}
+
+@GetMapping("findByAnneeAndemployeDoti/annee/{annee}/doti/{doti}")
+public List<PermanenceAdministrative> findByAnneeAndemployeDoti(@PathVariable Integer annee,@PathVariable String doti) {
+	return permanenceAdministrativeService.findByAnneeAndemployeDoti(annee, doti);
+}
+
+@GetMapping("update")
+public int update(@RequestBody PermanenceAdministrative permanenceAdministrative) {
+	return permanenceAdministrativeService.update(permanenceAdministrative);
+}
+
 @GetMapping("findByDate/date/{date}")
 public PermanenceAdministrative findByDate(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
 	return permanenceAdministrativeService.findByDate(date);

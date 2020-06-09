@@ -20,6 +20,11 @@ public class DateUlils {
 		c.setTime(d);
 		return c.get(Calendar.MONTH);
 	}
+	public static Integer getDay(Date d) {
+		Calendar c = new GregorianCalendar();
+		c.setTime(d);
+		return c.get(Calendar.DAY_OF_MONTH);
+	}
 	
 	public static boolean VerifieDateSup(Date date1) {
 		Date date2;
@@ -48,8 +53,9 @@ public class DateUlils {
 		 GregorianCalendar calendar = new GregorianCalendar(year,9,1);
 		return calendar.getTime();
 	 }
-	public static Date getDateByYearFin(Integer year) {
-		 GregorianCalendar calendar = new GregorianCalendar(year,7,1);
+	public static Date getDateDebutOfMonth(Integer year,int month) {
+		 GregorianCalendar calendar = new GregorianCalendar(year,month,1);
+		 System.out.println("ha date de debut" + calendar.getTime());
 		return calendar.getTime();
 	 }
 	public static Date getDateFin(Date date, Integer periode) {
@@ -280,6 +286,8 @@ public class DateUlils {
 		return milliSeconde1 < milliSeconde2 ? true : false;
 	}
 	public static boolean verifierDateSup(Date date1,Date date2) {
+		System.out.println(" ha date 1" + date1);
+		System.out.println(" ha date 2" + date2);
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
 		return milliSeconde1 <= milliSeconde2 ? true : false;

@@ -50,7 +50,7 @@ private NotificationEmployeService notificationEmployeService;
 @Override
 public int save(Formation formation) {
 	Employe employe = employeService.findByDoti(formation.getEmploye().getDoti());
-	if(formation.getId()!= null) {
+	if(formation.getId() != null) {
 return -1;
 }else if (employe == null) {
 	return -2;
@@ -66,7 +66,7 @@ return -1;
 @Override
 public int update(Formation formation) {
 	Employe employe = employeService.findByDoti(formation.getEmploye().getDoti());
-	if(formation.getId()== null) {
+	if(formation.getId() == null) {
 return -1;
 }else if (employe == null) {
 	return -2;
@@ -156,7 +156,7 @@ public int listeDesFormationsPdf(ArrayList<Formation> formations) throws Documen
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des formation" + employe.getFullName() + " \n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des formation" + employe.getFirstName() + employe.getLastName() + " \n\r\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 

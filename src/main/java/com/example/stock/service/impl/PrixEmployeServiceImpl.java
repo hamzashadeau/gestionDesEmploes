@@ -162,7 +162,7 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 		}
 
 		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Paragraph p1 = new Paragraph("\n\t liste des prix" + employe.getFullName() + " \n\r\n", font);
+		Paragraph p1 = new Paragraph("\n\t liste des prix" + employe.getFirstName() + employe.getLastName() + " \n\r\n", font);
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 
@@ -177,7 +177,7 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 		table.addCell(cell3);
 
 		for (PrixEmploye prixEmploye : prixEmployes) {
-			PdfPCell cell10 = new PdfPCell(new Paragraph(prixEmploye.getEmploye().getFullName()));
+			PdfPCell cell10 = new PdfPCell(new Paragraph(prixEmploye.getEmploye().getFirstName() + prixEmploye.getEmploye().getLastName()));
 			PdfPCell cell11 = new PdfPCell(new Paragraph(prixEmploye.getPrix().getLibelle()));
 			PdfPCell cell12 = new PdfPCell(new Paragraph(prixEmploye.getDateDeObtenation().toString()));
 

@@ -1,5 +1,6 @@
 package com.example.stock.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.PermanenceAdministrativeDao;
+import com.example.stock.Utilis.DateUlils;
+import com.example.stock.Utilis.HashUtil;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Notification;
 import com.example.stock.bean.NotificationEmploye;
@@ -111,6 +114,30 @@ public List<PermanenceAdministrative> findByPeriode(Integer periode) {
 @Override
 public PermanenceAdministrative findByDate(Date date) {
 	return permanenceAdministrativeDao.findByDate(date);
+}
+@Override
+public List<PermanenceAdministrative> findByAnnee(Integer annee) {
+List<PermanenceAdministrative> permanenceAdministratives = findAll();
+List<PermanenceAdministrative> resultats = new ArrayList<PermanenceAdministrative>() ;
+permanenceAdministratives.forEach(per ->{
+	System.out.println(DateUlils.getYear(per.getDate()));
+	if(DateUlils.getYear(per.getDate()).equals(annee)) {
+		resultats.add(per);
+	}
+});
+	return resultats;
+}
+@Override
+public List<PermanenceAdministrative> findByAnneeAndemployeDoti(Integer annee, String doti) {
+List<PermanenceAdministrative> permanenceAdministratives = permanenceAdministrativeDao.findByemployeDoti(doti);
+List<PermanenceAdministrative> resultats = new ArrayList<PermanenceAdministrative>();
+permanenceAdministratives.forEach(per ->{
+	System.out.println(DateUlils.getYear(per.getDate()));
+	if(DateUlils.getYear(per.getDate()) == annee) {
+		resultats.add(per);
+	}
+});
+	return resultats;
 }
 
 

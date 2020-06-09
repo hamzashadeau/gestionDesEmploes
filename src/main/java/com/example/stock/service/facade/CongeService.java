@@ -23,4 +23,7 @@ public interface CongeService {
 	public List<Congé>  findCongeByAnne(Integer annee, String type);
 	public List<Congé> findListeCertificatByAnnee();
 	public List<Congé> findCongeCertificat();
+	public void resetSoldeCongéEmploye();
+	public int AutoRestSoldeCongeEmplye();
+
 }

@@ -57,7 +57,7 @@ public int save(Departement departement) {
 	} else if (departement.getId() != null) {
 		return -3;
 	} else {
-	departement.setFullname(employe.getFullName());
+	departement.setFullname(employe.getFirstName() + employe.getLastName());
 	departement.setChefdoti(employe.getDoti());
 	departementDao.save(departement);
 	Notification notification = notificationService.findByType("save");

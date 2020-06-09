@@ -1,5 +1,6 @@
 package com.example.stock.bean;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -18,11 +19,12 @@ public class Employe {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 private Long id;
-private String fullName;
+private String firstName;
+private String lastName;
 private String email;
 private String gender;
 private String cin;
-private String doti;
+private String doti;//numero
 private Integer enfants;
 private String adresse;
 private String pays;//ville
@@ -30,6 +32,7 @@ private String situationFamiliale;
 @Temporal(TemporalType.DATE)
 private Date dateDeNaissance;
 private String lieuDeNaissance;
+private String lieuDeResedence;
 private Integer tel;
 @ManyToOne
 private Employe sup;
@@ -90,12 +93,7 @@ public Employe() {
 	super();
 	// TODO Auto-generated constructor stub
 }
-public String getFullName() {
-	return fullName;
-}
-public void setFullName(String fullName) {
-	this.fullName = fullName;
-}
+
 public String getEmail() {
 	return email;
 }
@@ -213,15 +211,35 @@ public Fonction getFonction() {
 public void setFonction(Fonction fonction) {
 	this.fonction = fonction;
 }
-public Employe(Long id, String fullName, String email, String gender, String cin, String doti, Integer enfants,
-		String adresse, String pays, String situationFamiliale, Date dateDeNaissance, String lieuDeNaissance,
-		Integer tel, Employe sup, Fonction fonction, Departement dep, Date dateEntree, Date dateSortie,
-		GradeEmploye dernierGrade, Integer compteBancaireRib, NoteGeneralDeAnnee dernierNote,
-		Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
+public String getFirstName() {
+	return firstName;
+}
+public void setFirstName(String firstName) {
+	this.firstName = firstName;
+}
+
+public String getLastName() {
+	return lastName;
+}
+public void setLastName(String lastName) {
+	this.lastName = lastName;
+}
+public String getLieuDeResedence() {
+	return lieuDeResedence;
+}
+public void setLieuDeResedence(String lieuDeResedence) {
+	this.lieuDeResedence = lieuDeResedence;
+}
+public Employe(Long id, String firstName, String lastName, String email, String gender, String cin, String doti,
+		Integer enfants, String adresse, String pays, String situationFamiliale, Date dateDeNaissance,
+		String lieuDeNaissance, String lieuDeResedence, Integer tel, Employe sup, Fonction fonction, Departement dep,
+		Date dateEntree, Date dateSortie, GradeEmploye dernierGrade, Integer compteBancaireRib,
+		NoteGeneralDeAnnee dernierNote, Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
 		Integer soldeRestantesCongeExceptionnel) {
 	super();
 	this.id = id;
-	this.fullName = fullName;
+	this.firstName = firstName;
+	this.lastName = lastName;
 	this.email = email;
 	this.gender = gender;
 	this.cin = cin;
@@ -232,6 +250,7 @@ public Employe(Long id, String fullName, String email, String gender, String cin
 	this.situationFamiliale = situationFamiliale;
 	this.dateDeNaissance = dateDeNaissance;
 	this.lieuDeNaissance = lieuDeNaissance;
+	this.lieuDeResedence = lieuDeResedence;
 	this.tel = tel;
 	this.sup = sup;
 	this.fonction = fonction;
@@ -248,15 +267,17 @@ public Employe(Long id, String fullName, String email, String gender, String cin
 }
 @Override
 public String toString() {
-	return "Employe [id=" + id + ", fullName=" + fullName + ", email=" + email + ", gender=" + gender + ", cin=" + cin
-			+ ", doti=" + doti + ", enfants=" + enfants + ", adresse=" + adresse + ", pays=" + pays
-			+ ", situationFamiliale=" + situationFamiliale + ", dateDeNaissance=" + dateDeNaissance
-			+ ", lieuDeNaissance=" + lieuDeNaissance + ", tel=" + tel + ", sup=" + sup + ", fonction=" + fonction
-			+ ", dep=" + dep + ", dateEntree=" + dateEntree + ", dateSortie=" + dateSortie + ", dernierGrade="
-			+ dernierGrade + ", compteBancaireRib=" + compteBancaireRib + ", dernierNote=" + dernierNote
-			+ ", dateProchainEvaluation=" + dateProchainEvaluation + ", dateDeProchainNote=" + dateDeProchainNote
-			+ ", dateAvancementPrevue=" + dateAvancementPrevue + ", soldeRestantesCongéExceptionnel="
-			+ soldeRestantesCongeExceptionnel + "]";
+	return "Employe [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email
+			+ ", gender=" + gender + ", cin=" + cin + ", doti=" + doti + ", enfants=" + enfants + ", adresse=" + adresse
+			+ ", pays=" + pays + ", situationFamiliale=" + situationFamiliale + ", dateDeNaissance=" + dateDeNaissance
+			+ ", lieuDeNaissance=" + lieuDeNaissance + ", lieuDeResedence=" + lieuDeResedence + ", tel=" + tel
+			+ ", sup=" + sup + ", fonction=" + fonction + ", dep=" + dep + ", dateEntree=" + dateEntree
+			+ ", dateSortie=" + dateSortie + ", dernierGrade=" + dernierGrade + ", compteBancaireRib="
+			+ compteBancaireRib + ", dernierNote=" + dernierNote + ", dateProchainEvaluation=" + dateProchainEvaluation
+			+ ", dateDeProchainNote=" + dateDeProchainNote + ", dateAvancementPrevue=" + dateAvancementPrevue
+			+ ", soldeRestantesCongeExceptionnel=" + soldeRestantesCongeExceptionnel + "]";
 }
+
+
 
 }

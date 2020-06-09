@@ -1,5 +1,6 @@
 package com.example.stock.service.impl;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -7,9 +8,19 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import javax.xml.transform.TransformerException;
 
 import org.hibernate.mapping.Table;
@@ -87,6 +98,12 @@ return -1;
 	Notification notification = notificationService.findByType("save");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save demande");
 	notificationEmployeService.save(notificationEmploye);
+	try {
+		HashUtil.sendmail(employe.getEmail(), "sauvegarde de demande de document", "votre demande de document est bien sauvegarder");
+	} catch (MessagingException | IOException | TransformerException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 		return 1;
 }
 	}
@@ -116,7 +133,7 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 	 String pattern = "yyyy-MM-dd";
 	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "Info.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFirstName() + employe.getLastName() + "Info.pdf")); 
 	document.open();
 	Image img,img1;
 	// importation des images
@@ -144,7 +161,7 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
 	
 	// la création d'une paragraphe
     Paragraph p = new Paragraph();
-    p.add("\n\n*FullName: " + employe.getFullName()+     "                                  *cin:" + employe.getCin() + " \n" + 
+    p.add("\n\n*FullName: " + employe.getFirstName() + employe.getLastName() +     "                                  *cin:" + employe.getCin() + " \n" + 
     		"*doti:" + employe.getDoti() + "                                                               *email:" + employe.getEmail() + "\n" + 
     		"*gender: " + employe.getGender() + "                                               *situation Familial:" + employe.getSituationFamiliale()+ " \n" + 
     "*adresse: " + employe.getAdresse() + "                                       *enfant: " + employe.getEnfants() + "\n" + 
@@ -205,7 +222,7 @@ public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoun
    p4.setAlignment(Element.ALIGN_RIGHT);
    document.add(p4);
 
-   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
+   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+ new  Date().toString(),f);
    p20.setAlignment(Element.ALIGN_LEFT);
    document.add(p20);
     document.close();
@@ -222,7 +239,7 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
 	 String pattern = "yyyy-MM-dd";
 	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream( rapportDeEvaluation.getEmploye().getFullName() + "Rapport.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream( rapportDeEvaluation.getEmploye().getFirstName() + rapportDeEvaluation.getEmploye().getLastName() + "Rapport.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -253,7 +270,7 @@ public int rapportPdf(RapportDeEvaluation rapportDeEvaluation) throws DocumentEx
 	document.add(p3);
 	
     Paragraph p = new Paragraph();
-    p.add("\n\n*FullName: " + rapportDeEvaluation.getEmploye().getFullName()+     "                                       *cin:" + rapportDeEvaluation.getEmploye().getCin() + " \n" + 
+    p.add("\n\n*FullName: " + rapportDeEvaluation.getEmploye().getFirstName() + rapportDeEvaluation.getEmploye().getLastName() +     "                                       *cin:" + rapportDeEvaluation.getEmploye().getCin() + " \n" + 
     		"*doti:" + rapportDeEvaluation.getEmploye().getDoti() + "                                                               *email:" + rapportDeEvaluation.getEmploye().getEmail() + "\n" + 
     		"*gender: " + rapportDeEvaluation.getEmploye().getGender() + "                                                           *situation Familial:" + rapportDeEvaluation.getEmploye().getSituationFamiliale()+ " \n" + 
     "*adresse: " + rapportDeEvaluation.getEmploye().getAdresse() + "                                 *enfant: " + rapportDeEvaluation.getEmploye().getEnfants() + "\n" + 
@@ -426,14 +443,14 @@ for (Formation note : rapportDeEvaluation.getFormation()) {
 	return 1;
 }
 //attestation de salaire 
-public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
+public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException {
 	 String pattern = "yyyy-MM-dd";
 	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Employe employe = demaneDeDocument.getEmploye();
 	SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
 	
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFirstName() + demaneDeDocument.getEmploye().getLastName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -461,7 +478,7 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
 	
 
     Paragraph p = new Paragraph();
-    p.add(" \r\n" +"le service RH de  l'etablissement de science et de technique ATTESTE PAR LA PRESENTE QUE MR "+ employe.getFullName() +
+    p.add(" \r\n" +"le service RH de  l'etablissement de science et de technique ATTESTE PAR LA PRESENTE QUE MR "+ employe.getFirstName() + employe.getLastName() +
     		"TITULAIRE  DE LA CIN N°" + employe.getCin()+  
     		" ,TRAVAILLE EN QUALITE dans " + 
     		"la faculté de science et technique DEPUIS LE"+  employe.getDateEntree()+",ET PERCOIT UN SALAIRE ANNUEL NET DE :"+salaireEmploye.getSalaireNet()+"DHS,DONT LE DETAIL EST LE SUIVANT :\r\n"
@@ -480,7 +497,7 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
     document.add(p);
 
     Paragraph p2 = new Paragraph();
-    p2.add(" \n\r\rCETTE ATTESTATION LUI EST DELIVREE POUR SERVIR ET VALOIR CE QUE DE DROIT.\r\n" + " \n \r\r\r\r Signé ");//no alignment
+    p2.add(" \n\r\r CETTE ATTESTATION LUI EST DELIVREE POUR SERVIR ET VALOIR CE QUE DE DROIT.\r\n" + " \n \r\r\r\r Signé ");//no alignment
     p2.setAlignment(Element.ALIGN_CENTER);
     document.add(p2);
 
@@ -492,35 +509,22 @@ public int attestationDeSalaire(DemaneDeDocument demaneDeDocument) throws Docume
     p4.setAlignment(Element.ALIGN_LEFT);
     document.add(p4);
 	document.close();
-	if(demaneDeDocument.getManiereDeRetrait().equals("gmail")) {
-	try {
-		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de salaire", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestationDeSalaire" +demaneDeDocument.getEmploye().getDoti() + ".pdf");
-	} catch (AddressException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (MessagingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	}
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
 	Notification notification = notificationService.findByType("imprimer");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer attestation de salaire");
 	notificationEmployeService.save(notificationEmploye);
+	HashUtil.sendmail(employe.getEmail(),"demande en traitement" , "votre demande attestation de salaire est en traitement voua allez avoir le document  dans un durée 24 heures au maximum");
 	return 1;
 	}
 
 //attestation de travail 
-public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
+public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException {
 	 String pattern = "yyyy-MM-dd";
 	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 	Employe employe = demaneDeDocument.getEmploye();
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFullName()+"attestaionDeTravail" +demaneDeDocument.getEmploye().getDoti()+".pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(demaneDeDocument.getEmploye().getFirstName() + demaneDeDocument.getEmploye().getLastName() +"attestaionDeTravail" +demaneDeDocument.getEmploye().getDoti()+".pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -548,7 +552,7 @@ public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws Docume
 
   Paragraph p = new Paragraph();
   p.add("\n\nJe soussigné  le service RH de la faculté de la science et de technique atteste que :" +  "\n\r"+
-"Mr (Mme) (Melle)    :  " + employe.getFullName() + "\n\r"+
+"Mr (Mme) (Melle)    :  " + employe.getFirstName() + employe.getLastName() + "\n\r"+
 "D.O.T.I     : " + employe.getDoti() + "\n\r"+
 "CIN     : " + employe.getCin() +  "\n\r"+
 "Date de recrutement  : " + employe.getDateEntree() + "\n\r"+ 
@@ -572,28 +576,64 @@ public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws Docume
   p4.setAlignment(Element.ALIGN_LEFT);
   document.add(p4);
 	document.close();
-	if(demaneDeDocument.getManiereDeRetrait().equals("gmail")) {
-	try {
-		HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFullName() + "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf");
-	} catch (AddressException e) {
+	//if(demaneDeDocument.getManiereDeRetrait().equals("gmail")) {
+	//try {
+	//	HashUtil.sendmail(demaneDeDocument.getEmploye().getEmail(), "attestation de travail", "bon reception","C:/Users/hp/eclipse-workspace/gestionDesEmploye/" + demaneDeDocument.getEmploye().getFirstName() + demaneDeDocument.getEmploye().getLastName() + "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf");
+	//} catch (AddressException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (MessagingException e) {
+		//e.printStackTrace();
+	//} catch (MessagingException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (IOException e) {
+		//e.printStackTrace();
+	//} catch (IOException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	}
+		//e.printStackTrace();
+	//}
+	//}
 	demaneDeDocument.setEtat("traité");
 	demaneDeDocumentDao.save(demaneDeDocument);
 	Notification notification = notificationService.findByType("imprimer");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer attestation de travail");
 	notificationEmployeService.save(notificationEmploye);
+	HashUtil.sendmail(employe.getEmail(),"demande en traitement" , "votre demande attestation de travail est en traitement voua allez avoir le document  dans un durée 24 heures au maximum");
 	return 1;
 }
+public int  sendmail(String email, String subject,String content,File file) throws AddressException, MessagingException, IOException, TransformerException {
+	   Properties props = new Properties();
+	   props.put("mail.smtp.auth", "true");
+	   props.put("mail.smtp.starttls.enable", "true");
+	   props.put("mail.smtp.host", "smtp.gmail.com");
+	   props.put("mail.smtp.port", "587");
 
+	   Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+	      protected PasswordAuthentication getPasswordAuthentication() {
+	         return new PasswordAuthentication("etablissementfstg@gmail.com", "Fstg-2020/2021");
+	      }
+	   });
+	   Message msg = new MimeMessage(session);
+	   msg.setFrom(new InternetAddress(email, false));
+
+	   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
+	   msg.setSubject(subject);
+	   msg.setContent(content, "text/html");
+	   msg.setSentDate(new Date());
+
+	   MimeBodyPart messageBodyPart = new MimeBodyPart();
+	   messageBodyPart.setContent(content , "text/html");
+
+	   Multipart multipart = new MimeMultipart();
+	   multipart.addBodyPart(messageBodyPart);
+	   MimeBodyPart attachPart = new MimeBodyPart();
+	   attachPart.attachFile(file);
+	      multipart.addBodyPart(attachPart);
+	   //MimeBodyPart attachmentBodyPart = new MimeBodyPart();
+	   //attachmentBodyPart.attachFile(new File("path/to/file"))
+	   msg.setContent(multipart);
+
+	  //attachPart.attachFile();
+	   Transport.send(msg); 
+	   return 1;
+	}
 @Override
 public DemaneDeDocument findByid(Long id) {
 	if (demaneDeDocumentDao.findById(id).isPresent()) {
@@ -647,7 +687,7 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
 		employe = demaneDeDocument.getEmploye();
 	}
 		Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "listedemandes.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFirstName() + employe.getLastName() + "listedemandes.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -663,7 +703,7 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des demandes"+ employe.getFullName()+"\n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des demandes"+ employe.getFirstName() + employe.getLastName()+"\n\r\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
@@ -681,7 +721,7 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
     table.addCell(cell4);
 
 	for (DemaneDeDocument demaneDeDocument : demandes) {
-	    PdfPCell cell10 = new PdfPCell(new Paragraph(demaneDeDocument.getEmploye().getFullName()));
+	    PdfPCell cell10 = new PdfPCell(new Paragraph(demaneDeDocument.getEmploye().getFirstName() + employe.getLastName()));
 	    PdfPCell cell11 = new PdfPCell(new Paragraph(demaneDeDocument.getTypeDeDocument().getLibelle()));
 	    PdfPCell cell12 = new PdfPCell(new Paragraph(demaneDeDocument.getDateDemande().toString()));
 	    PdfPCell cell13 = new PdfPCell(new Paragraph(demaneDeDocument.getManiereDeRetrait()));
@@ -711,6 +751,10 @@ public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentEx
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer liste des demandes");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
+}
+@Override
+public List<DemaneDeDocument> findByTypeDeDocumentLibelleAndEmployeDoti(String libelle, String doti) {
+	return demaneDeDocumentDao.findByTypeDeDocumentLibelleAndEmployeDoti(libelle, doti);
 }
 
 

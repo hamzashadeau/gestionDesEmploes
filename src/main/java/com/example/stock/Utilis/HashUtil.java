@@ -50,7 +50,7 @@ for (int i = 0; i < byteData.length; i++) {
 	    	Long l=new Long(r.nextInt((max - min) + 1) + min);
 	    		return  l;
 	}
-	public static void  sendmail(String email, String subject,String content,String url) throws AddressException, MessagingException, IOException, TransformerException {
+	public static void  sendmail(String email, String subject,String content) throws AddressException, MessagingException, IOException, TransformerException {
 		   Properties props = new Properties();
 		   props.put("mail.smtp.auth", "true");
 		   props.put("mail.smtp.starttls.enable", "true");
@@ -73,14 +73,14 @@ for (int i = 0; i < byteData.length; i++) {
 		   MimeBodyPart messageBodyPart = new MimeBodyPart();
 		   messageBodyPart.setContent(content , "text/html");
 
-		   Multipart multipart = new MimeMultipart();
-		   multipart.addBodyPart(messageBodyPart);
-		   MimeBodyPart attachPart = new MimeBodyPart();
-		   attachPart.attachFile(new File(url));
-		      multipart.addBodyPart(attachPart);
+		 //  Multipart multipart = new MimeMultipart();
+		   //multipart.addBodyPart(messageBodyPart);
+		   //MimeBodyPart attachPart = new MimeBodyPart();
+		   //attachPart.attachFile(file);
+		    //  multipart.addBodyPart(attachPart);
 		   //MimeBodyPart attachmentBodyPart = new MimeBodyPart();
 		   //attachmentBodyPart.attachFile(new File("path/to/file"))
-		   msg.setContent(multipart);
+		   //msg.setContent(multipart);
 
 		  //attachPart.attachFile();
 		   Transport.send(msg);  

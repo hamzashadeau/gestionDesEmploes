@@ -26,6 +26,16 @@ public class GradeEmployeRest {
 @Autowired
 private GradeEmployeService gradeService;
 
+@GetMapping("getDateEvaluation")
+public int getDateEvaluation() {
+	return gradeService.getDateEvaluation();
+}
+
+@GetMapping("getDateAvancement")
+public int getDateAvancement() {
+	return gradeService.getDateAvancement();
+}
+
 @GetMapping("creeUnGradeNonTraite/doti/{doti}")
 public int creeUnGradeNonTraite(@PathVariable String doti) {
 	return gradeService.creeUnGradeNonTraite(doti);

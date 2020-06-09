@@ -27,6 +27,11 @@ public class EmployeeRest {
 private EmployeService employeService;
 
 
+@GetMapping("getProchaineAvancement")
+public List<Employe> getProchaineAvancement() {
+	return employeService.getProchaineAvancement();
+}
+
 @PostMapping("listeDesEmployeDeDepartementPdf")
 public int listeDesEmployeDeDepartementPdf(@RequestBody ArrayList<Employe> employes)	throws DocumentException, FileNotFoundException {
 	return employeService.listeDesEmployeDeDepartementPdf(employes);
@@ -145,7 +150,6 @@ public Employe findByid(@PathVariable Long id) {
 }
 @GetMapping("findBySoldeRestantesCongeExceptionnel/soldeRestantesCongeExceptionnel/{soldeRestantesCongeExceptionnel}")
 public List<Employe> findBySoldeRestantesCongeExceptionnel(@PathVariable Integer soldeRestantesCongeExceptionnel) {
-	System.out.println("ha nombre " + soldeRestantesCongeExceptionnel);
 	return employeService.findBySoldeRestantesCongeExceptionnel(soldeRestantesCongeExceptionnel);
 }
 }

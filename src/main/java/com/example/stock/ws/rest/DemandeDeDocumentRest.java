@@ -1,8 +1,12 @@
 package com.example.stock.ws.rest;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +32,15 @@ public class DemandeDeDocumentRest {
 @Autowired
 private DemandeDeDocumentService demandeDeDocumentService;
 
+
+@GetMapping("sendmail/email/{email}/subject/{subject}/ String/content/{content}")
+public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestBody File file)throws AddressException, MessagingException, IOException, TransformerException {
+	return demandeDeDocumentService.sendmail(email, subject, content, file);
+}
+@GetMapping("findByTypeDeDocumentLibelleAndEmployeDoti/libelle/{libelle}/doti/{doti}")
+public List<DemaneDeDocument>  findByTypeDeDocumentLibelleAndEmployeDoti(@PathVariable String libelle,@PathVariable String doti) {
+	return demandeDeDocumentService.findByTypeDeDocumentLibelleAndEmployeDoti(libelle, doti);
+}
 @PostMapping("update")
 public int update(@RequestBody DemaneDeDocument demaneDeDocument) {
 	return demandeDeDocumentService.update(demaneDeDocument);
@@ -40,8 +53,9 @@ public int listeDesDemandePdf(@RequestBody List<DemaneDeDocument> demandes) thro
 public int infoEmployePdf(@RequestBody Employe employe) throws DocumentException, FileNotFoundException {
 	return demandeDeDocumentService.infoEmployePdf(employe);
 }
+
 @PostMapping("attestationDeSalaire")
-public int attestationDeSalaire(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException,TransformerException {
+public int attestationDeSalaire(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException{
 	return demandeDeDocumentService.attestationDeSalaire(demaneDeDocument);
 }
 @PostMapping("rapportPdf")
@@ -54,7 +68,7 @@ public List<DemaneDeDocument> findDemandeNonTraite() {
 }
 
 @PostMapping("attestationDeTravail")
-public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, FileNotFoundException, TransformerException {
+public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException{
 	return demandeDeDocumentService.attestationDeTravail(demaneDeDocument);
 }
 

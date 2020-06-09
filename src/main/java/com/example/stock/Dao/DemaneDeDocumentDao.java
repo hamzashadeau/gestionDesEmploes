@@ -14,6 +14,5 @@ public interface DemaneDeDocumentDao extends JpaRepository<DemaneDeDocument, Lon
 	List<DemaneDeDocument> findByEmployeEmail(String email);
 	List<DemaneDeDocument> findByEmployeDoti(String doti);
 	List<DemaneDeDocument> findByEtat(String etat);
-	
-
+	List<DemaneDeDocument> findByTypeDeDocumentLibelleAndEmployeDoti(String libelle, String doti);
 }

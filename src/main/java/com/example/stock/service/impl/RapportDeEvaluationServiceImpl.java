@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.RapportDeEvaluationDao;
+import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.bean.NoteGeneralDeAnnee;
@@ -44,100 +45,49 @@ private NotificationService notificationService;
 
 @Override
 public int save(RapportDeEvaluation rapportDeEvaluation) {
-	if(rapportDeEvaluation.getId()!= null) {
+	if(rapportDeEvaluation.getId() != null) {
 return -1;
 }else {
-	List<PrixEmploye> prixEmployes = rapportDeEvaluation.getPrix();
-	for (PrixEmploye prixEmploye : prixEmployes) {
-		if(prixEmploye.getId() == null) {
-		prixEmployeService.save(prixEmploye);
-	} else {
-		prixEmployeService.update(prixEmploye);
-
-	}		
-		}
-	List<PunitionEmploye> punitionEmployes = rapportDeEvaluation.getPunition();
-	for (PunitionEmploye punitionEmploye : punitionEmployes) {
-		if(punitionEmploye.getId() == null) {
-			punitionEmployeService.save(punitionEmploye);
-	} else {
-		punitionEmployeService.save(punitionEmploye);
-	}
-	}
-	Double somme = 0.0;
-	List<NoteGeneralDeAnnee> noteGeneralDeAnnees = rapportDeEvaluation.getNoteGenerale();
-	for (NoteGeneralDeAnnee noteGeneralDeAnnee : noteGeneralDeAnnees) {
-		if(noteGeneralDeAnnee.getId() == null) {
-			somme += noteGeneralDeAnnee.getMoyenGeneral();
-			noteGeneraleService.save(noteGeneralDeAnnee);	
-			} else {
-				somme += noteGeneralDeAnnee.getMoyenGeneral();
-				noteGeneraleService.save(noteGeneralDeAnnee);// a changé
-	}
-	}
-	rapportDeEvaluation.setMoyen(somme/noteGeneralDeAnnees.size());
-	List<Formation> formations = rapportDeEvaluation.getFormation();
-	for (Formation formation : formations) {
-		if(formation.getId() == null) {
-			formationService.save(formation);
-	} else {
-		formationService.update(formation);
-	}
-	}
-	}
+	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
+	rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+	rapportDeEvaluationDao.save(rapportDeEvaluation);
 	Notification notification = notificationService.findByType("save");
 	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
+		}
 }
-
 @Override
 public int update(RapportDeEvaluation rapportDeEvaluation) {
-	if(rapportDeEvaluation.getId()== null) {
+	if(rapportDeEvaluation.getId() == null) {
 return -1;
 }else {
-	List<PrixEmploye> prixEmployes = rapportDeEvaluation.getPrix();
-	for (PrixEmploye prixEmploye : prixEmployes) {
-		if(prixEmploye.getId() == null) {
-		prixEmployeService.save(prixEmploye);
-	} else {
-		prixEmployeService.update(prixEmploye);
-
-	}		
-		}
-	List<PunitionEmploye> punitionEmployes = rapportDeEvaluation.getPunition();
-	for (PunitionEmploye punitionEmploye : punitionEmployes) {
-		if(punitionEmploye.getId() == null) {
-			punitionEmployeService.save(punitionEmploye);
-	} else {
-		punitionEmployeService.save(punitionEmploye);
-	}
-	}
-	Double somme = 0.0;
-	List<NoteGeneralDeAnnee> noteGeneralDeAnnees = rapportDeEvaluation.getNoteGenerale();
-	for (NoteGeneralDeAnnee noteGeneralDeAnnee : noteGeneralDeAnnees) {
-		if(noteGeneralDeAnnee.getId() == null) {
-			somme += noteGeneralDeAnnee.getMoyenGeneral();
-			noteGeneraleService.save(noteGeneralDeAnnee);	
-			} else {
-				somme += noteGeneralDeAnnee.getMoyenGeneral();
-				noteGeneraleService.save(noteGeneralDeAnnee);// a changé
-	}
-	}
-	rapportDeEvaluation.setMoyen(somme/noteGeneralDeAnnees.size());
-	List<Formation> formations = rapportDeEvaluation.getFormation();
-	for (Formation formation : formations) {
-		if(formation.getId() == null) {
-			formationService.save(formation);
-	} else {
-		formationService.update(formation);
-	}
-	}
-	}
-	Notification notification = notificationService.findByType("update");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "update rapport ");
+	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
+	rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+	rapportDeEvaluationDao.save(rapportDeEvaluation);
+	Notification notification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
+		}
+}
+
+//getMoyenNote
+public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
+Double somme = 0.0;
+for (NoteGeneralDeAnnee noteGeneralDeAnnee : notes) {
+	System.out.println("ha note" + noteGeneralDeAnnee.getMoyenGeneral());
+	somme += noteGeneralDeAnnee.getMoyenGeneral();
+}
+return somme/notes.size();
 }
 
 @Override

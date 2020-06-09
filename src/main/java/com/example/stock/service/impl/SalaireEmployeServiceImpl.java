@@ -35,6 +35,18 @@ return -1;
 		return 1;
 }
 	}
+@Override
+public int update(SalaireEmploye salaireEmploye) {
+	if(salaireEmploye.getId() == null) {
+return -1;
+}else {
+	Notification notification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "update salaire employe ");
+	notificationEmployeService.save(notificationEmploye);
+	salaireEmployeDao.save(salaireEmploye);
+		return 1;
+}
+	}
 
 @Override
 public SalaireEmploye findByid(Long id) {

@@ -24,6 +24,10 @@ public interface GradeEmployeService {
 
 	List<GradeEmploye> findByEtat(String etat);
 
+	public int getDateEvaluation();
+
+	public int getDateAvancement();
+
 	public List<GradeEmploye> findGradeNonTraite();
 
 	public int creeUnGradeNonTraite(String doti);

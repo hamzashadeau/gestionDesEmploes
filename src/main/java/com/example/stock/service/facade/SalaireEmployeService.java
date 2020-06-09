@@ -14,5 +14,6 @@ public interface SalaireEmployeService {
 	List<SalaireEmploye> findAll();
 	int save(SalaireEmploye salaireEmploye);
 	int deleteById(Long id);
+	public int update(SalaireEmploye salaireEmploye);
 
 }

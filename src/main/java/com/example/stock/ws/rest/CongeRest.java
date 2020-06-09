@@ -24,6 +24,15 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+@GetMapping("AutoRestSoldeCongeEmplye")
+public int AutoRestSoldeCongeEmplye() {
+	return congeService.AutoRestSoldeCongeEmplye();
+}
+
+@GetMapping("resetSoldeCongéEmploye")
+public void resetSoldeCongéEmploye() {
+	 congeService.resetSoldeCongéEmploye();
+}
 
 @GetMapping("findListeCertificatByAnnee")
 public List<Congé> findListeCertificatByAnnee() {

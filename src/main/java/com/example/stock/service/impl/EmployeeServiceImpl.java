@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.soap.SAAJMetaFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -113,7 +115,7 @@ public class EmployeeServiceImpl implements EmployeService {
 
 	@Override
 	public int save(Employe employe) {
-		if (!validate(employe.getFullName(), "[a-zA-Z ]*")){
+		if ((!validate(employe.getFirstName(), "[a-zA-Z]*")) || (!validate(employe.getLastName(), "[a-zA-Z]*"))){
 			return -1;
 		} else if(!validate(employe.getEmail(),"[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+")) {
 			return -2;
@@ -121,7 +123,6 @@ public class EmployeeServiceImpl implements EmployeService {
 		// departement de employe
 		Departement dep = departementService.findByNom(employe.getDep().getNom());
 		employe.setDep(dep);
-		employe.setDoti("fstg" + employe.getCin());
 		// donction de employe
 		Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
 		employe.setFonction(fct);
@@ -137,7 +138,11 @@ public class EmployeeServiceImpl implements EmployeService {
 		gradeEmploye.setDoti(employe.getDoti());
 		employe.setDateAvancementPrevue(null);
 		//sup employe
-		employe.setSup(findByDoti(dep.getChefdoti()));
+		if(employe.getFonction().getLibelle().startsWith("chef département")) {
+			employe.setSup(null);
+		}else {
+			employe.setSup(employeDao.findByDoti(dep.getChefdoti()));
+		}
 		Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
 
 		//date prochaine evaluation
@@ -147,6 +152,7 @@ public class EmployeeServiceImpl implements EmployeService {
 		//grade employe
 		gradeEmploye.setDateDeAffectation(date);
 		gradeEmploye.setGrade(grade);
+		gradeEmploye.setEtat("traité");
 		employe.setDernierGrade(gradeEmploye);
 		//save grade employe
 		gradeEmployeDao.save(gradeEmploye);
@@ -154,17 +160,29 @@ public class EmployeeServiceImpl implements EmployeService {
 		SalaireEmploye salaireEmploye = new SalaireEmploye();
 		salaireEmploye.setEmploye(employe);
 		salaireEmploye.setSalaireNet(getSalaireParGrade(gradeEmploye.getGrade()));
+		if(employe.getEnfants() == null) {
+			employe.setEnfants(0);
+		}
 					//emoulument
+		Double som = 0.0;
 		salaireEmploye.setAllocationDeEncadrement(emolumentsService.findByLibelle("allocationDeEncadrement"));
+		som += salaireEmploye.getAllocationDeEncadrement().getMontant();
 		salaireEmploye.setAllocationDeEnseignement(emolumentsService.findByLibelle("allocationDeEnseignement"));
+		som += salaireEmploye.getAllocationDeEnseignement().getMontant();
 		salaireEmploye.setIdemDeLaResidence(emolumentsService.findByLibelle("idemDeLaResidence"));
+		som += salaireEmploye.getIdemDeLaResidence().getMontant();
 		salaireEmploye.setIdemFamialieleMarocaine(emolumentsService.findByLibelle("idemFamialieleMarocaine"));
+		som += salaireEmploye.getIdemFamialieleMarocaine().getMontant() * employe.getEnfants();
 					//revenu
 		salaireEmploye.setAssuranceMaladieObligatoire(revenuService.findByLibelle("assuranceMaladieObligatoire"));
+		som -= salaireEmploye.getAssuranceMaladieObligatoire().getMontant();
 		salaireEmploye.setImpotSurLeRevenu(revenuService.findByLibelle("impotSurLeRevenu"));
+		som -= salaireEmploye.getImpotSurLeRevenu().getMontant();
 		salaireEmploye.setMutuelleCaisseRetraitEtDeces(revenuService.findByLibelle("mutuelleCaisseRetraitEtDeces"));
+		som -= salaireEmploye.getMutuelleCaisseRetraitEtDeces().getMontant();
 		salaireEmploye.setCaisseMarocaineDeretrait(revenuService.findByLibelle("caisseMarocaineDeretrait"));
-		salaireEmploye.setMonatntModifie(salaireEmploye.getSalaireNet());
+		som -= salaireEmploye.getCaisseMarocaineDeretrait().getMontant();
+		salaireEmploye.setMonatntModifie(salaireEmploye.getSalaireNet() + som);
 		// save salaire employe
 		salaireEmployeService.save(salaireEmploye);
 		// save employe
@@ -175,6 +193,7 @@ public class EmployeeServiceImpl implements EmployeService {
 		return 1;
 	}
 	}
+	
 	@Override
 	public int update(Employe employe) {
 		Employe loadedemploye = findByid(employe.getId());
@@ -185,28 +204,39 @@ public class EmployeeServiceImpl implements EmployeService {
 			// donction de employe
 			Fonction fct = fonctionService.findByLibelle(employe.getFonction().getLibelle());
 			employe.setFonction(fct);
-			// grade de employe
-			if (!loadedemploye.getDernierGrade().getGrade().getLibelle()
-					.equals(employe.getDernierGrade().getGrade().getLibelle())) {
-				// dernier grade
-				Date date = employe.getDernierGrade().getDateDeAffectation();
-				// grade employe
-				Grade grade = gradeService.findByLibelle(employe.getDernierGrade().getGrade().getLibelle());
-				GradeEmploye gradeEmploye = new GradeEmploye();
-				gradeEmploye.setDoti(employe.getDoti());
-				gradeEmploye.setDateDeAffectation(date);
-				gradeEmploye.setGrade(grade);
-				employe.setDernierGrade(gradeEmploye);
-				// terminer les instructions
-				employe.setDateAvancementPrevue(null);
-				employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(employe.getDernierGrade()));
-				employe.setDernierGrade(null);
-				// dernier note
-				employe.setDateDeProchainNote(
-						DateUlils.getDateDeNote(employe.getDernierGrade().getDateDeAffectation()));
-				employe.setDernierNote(null);
-				gradeEmployeDao.save(gradeEmploye);
+			// salaire employe
+			SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
+			salaireEmploye.setEmploye(employe);
+			if(employe.getEnfants() == null) {
+				employe.setEnfants(0);
 			}
+						//emoulument
+			Double som = 0.0;
+			salaireEmploye.setAllocationDeEncadrement(emolumentsService.findByLibelle("allocationDeEncadrement"));
+			som += salaireEmploye.getAllocationDeEncadrement().getMontant();
+			salaireEmploye.setAllocationDeEnseignement(emolumentsService.findByLibelle("allocationDeEnseignement"));
+			som += salaireEmploye.getAllocationDeEnseignement().getMontant();
+			salaireEmploye.setIdemDeLaResidence(emolumentsService.findByLibelle("idemDeLaResidence"));
+			som += salaireEmploye.getIdemDeLaResidence().getMontant();
+			salaireEmploye.setIdemFamialieleMarocaine(emolumentsService.findByLibelle("idemFamialieleMarocaine"));
+			som += salaireEmploye.getIdemFamialieleMarocaine().getMontant() * employe.getEnfants();
+						//revenu
+			salaireEmploye.setAssuranceMaladieObligatoire(revenuService.findByLibelle("assuranceMaladieObligatoire"));
+			som -= salaireEmploye.getAssuranceMaladieObligatoire().getMontant();
+			salaireEmploye.setImpotSurLeRevenu(revenuService.findByLibelle("impotSurLeRevenu"));
+			som -= salaireEmploye.getImpotSurLeRevenu().getMontant();
+			salaireEmploye.setMutuelleCaisseRetraitEtDeces(revenuService.findByLibelle("mutuelleCaisseRetraitEtDeces"));
+			som -= salaireEmploye.getMutuelleCaisseRetraitEtDeces().getMontant();
+			salaireEmploye.setCaisseMarocaineDeretrait(revenuService.findByLibelle("caisseMarocaineDeretrait"));
+			som -= salaireEmploye.getCaisseMarocaineDeretrait().getMontant();
+			salaireEmploye.setMonatntModifie(salaireEmploye.getSalaireNet() + som);
+			// save salaire employe
+			salaireEmployeService.save(salaireEmploye);
+			if(employe.getFonction().getLibelle().startsWith("chef département")) {
+				employe.setSup(null);
+			}else {
+				employe.setSup(employeDao.findByDoti(dep.getChefdoti()));
+			}			
 			employe.setSup(findByDoti(dep.getChefdoti()));
 			employeDao.save(employe);
 			Notification notification = notificationService.findByType("update");
@@ -429,15 +459,14 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	public List<Employe> findLesEmployeAyantLaNoteGeneraleAujourdHui() {
 		Date dateAujourdHui = new Date();
 		List<Employe> employes = findAll();
-		Notification notification = new Notification("note générale est aujourd'hui");
 		List<Employe> resultat = new ArrayList<Employe>();
 		for (Employe employe : employes) {
-			if (employe.getDateDeProchainNote() == dateAujourdHui) {
+			if (DateUlils.verifierDateSup(employe.getDateDeProchainNote(), dateAujourdHui)) {
 				resultat.add(employe);
 				NotificationEmploye notificationEmploye = new NotificationEmploye();
 				notificationEmploye.setDateDeNotification(dateAujourdHui);
 				notificationEmploye.setEmploye(employe);
-				notificationEmploye.setNotification(notification);
+				notificationEmploye.setNotification(notificationService.findByType("note aujourd'hui"));
 				notificationEmploye.setLibelle("non lus");
 			}
 		}
@@ -547,7 +576,7 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		    table.addCell(cell8);
 		    table.addCell(cell9);
 		    for (Employe employe : employes) {
-			    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFullName()));
+			    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
 			    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
 			    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
 			    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
@@ -642,7 +671,7 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	    table.addCell(cell8);
 	    table.addCell(cell9);
 	    for (Employe employe : employes) {
-		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFullName()));
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
 		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
 		    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
 		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
@@ -727,7 +756,7 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	    table.addCell(cell8);
 	    table.addCell(cell9);
 	    for (Employe employe : employes) {
-		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFullName()));
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
 		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
 		    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
 		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
@@ -766,5 +795,20 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
-
+	public List<Employe> getProchaineAvancement(){
+		Date date = new Date();
+		System.out.println("ha month" + (DateUlils.getMonth(date) + 1));
+		System.out.println("ha year" + DateUlils.getYear(date));
+		List<Employe> employes = findAll();
+		List<Employe> resultat= new ArrayList<Employe>();
+        for (Employe employe : employes) {
+        	if(employe.getDateAvancementPrevue() != null) {
+    			if(DateUlils.verifierDateSup(DateUlils.getDateDebutOfMonth(DateUlils.getYear(date), (DateUlils.getMonth(date))), employe.getDateAvancementPrevue())) {
+    		resultat.add(employe);
+    		System.out.println("ana hna");
+        	}        		
+        	}
+        }
+        return resultat;
+	}
 }

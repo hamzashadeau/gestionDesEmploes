@@ -15,7 +15,6 @@ import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Dao.RapportDeEvaluationDao;
 import com.example.stock.Utilis.DateUlils;
-import com.example.stock.bean.Departement;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
@@ -23,6 +22,8 @@ import com.example.stock.bean.NoteGeneralDeAnnee;
 import com.example.stock.bean.Notification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
+import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.service.facade.EmolumentsService;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
 import com.example.stock.service.facade.GradeEmployeService;
@@ -33,6 +34,8 @@ import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PunitionEmployeService;
 import com.example.stock.service.facade.RapportDeEvaluationService;
+import com.example.stock.service.facade.RevenuService;
+import com.example.stock.service.facade.SalaireEmployeService;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -73,6 +76,12 @@ private RapportDeEvaluationDao rapportDeEvaluationDao;
 private NotificationEmployeService notificationEmployeService;
 @Autowired
 private NotificationService notificationService;
+@Autowired
+private SalaireEmployeService salaireEmployeService;
+@Autowired
+private EmolumentsService emolumentsService;
+@Autowired
+private RevenuService revenuService;
 @Override
 public int save(GradeEmploye gradeEmploye) {
 	Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
@@ -166,7 +175,10 @@ public GradeEmploye findByid(Long id) {
 public int deleteById(Long id) {
 	 GradeEmploye gradeEmploye = gradeEmployeService.findByid(id);
 	 Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
-	 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
+	 if(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId() != null) {
+		 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
+		 
+	 }
 		Notification notification = notificationService.findByType("delete");
 		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "delete grade employe");
 		notificationEmployeService.save(notificationEmploye);
@@ -212,10 +224,74 @@ Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
 employe.setDernierGrade(gradeEmploye);
 employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(gradeEmploye));
 employe.setDateDeProchainNote(DateUlils.getDateDeNote(gradeEmploye.getDateDeAffectation()));
+SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
+salaireEmploye.setSalaireNet(getSalaireParGrade(gradeEmploye.getGrade()));
+if(employe.getEnfants() == null) {
+	employe.setEnfants(0);
+}
+			//emoulument
+Double som = 0.0;
+salaireEmploye.setAllocationDeEncadrement(emolumentsService.findByLibelle("allocationDeEncadrement"));
+som += salaireEmploye.getAllocationDeEncadrement().getMontant();
+salaireEmploye.setAllocationDeEnseignement(emolumentsService.findByLibelle("allocationDeEnseignement"));
+som += salaireEmploye.getAllocationDeEnseignement().getMontant();
+salaireEmploye.setIdemDeLaResidence(emolumentsService.findByLibelle("idemDeLaResidence"));
+som += salaireEmploye.getIdemDeLaResidence().getMontant();
+salaireEmploye.setIdemFamialieleMarocaine(emolumentsService.findByLibelle("idemFamialieleMarocaine"));
+som += salaireEmploye.getIdemFamialieleMarocaine().getMontant() * employe.getEnfants();
+			//revenu
+salaireEmploye.setAssuranceMaladieObligatoire(revenuService.findByLibelle("assuranceMaladieObligatoire"));
+som -= salaireEmploye.getAssuranceMaladieObligatoire().getMontant();
+salaireEmploye.setImpotSurLeRevenu(revenuService.findByLibelle("impotSurLeRevenu"));
+som -= salaireEmploye.getImpotSurLeRevenu().getMontant();
+salaireEmploye.setMutuelleCaisseRetraitEtDeces(revenuService.findByLibelle("mutuelleCaisseRetraitEtDeces"));
+som -= salaireEmploye.getMutuelleCaisseRetraitEtDeces().getMontant();
+salaireEmploye.setCaisseMarocaineDeretrait(revenuService.findByLibelle("caisseMarocaineDeretrait"));
+som -= salaireEmploye.getCaisseMarocaineDeretrait().getMontant();
+salaireEmploye.setMonatntModifie(salaireEmploye.getSalaireNet() + som);
+// save salaire employe
+salaireEmployeService.save(salaireEmploye);
 employeDao.save(employe);
 	return 1;
 }
 
+//get salaire par grade
+public static Double getSalaireParGrade(Grade grade) {
+	Double salaire = null;
+	switch (grade.getLibelle()) {
+	case "grade1":
+		salaire = 4000.00;
+		break;
+	case "grade2":
+		salaire = 4500.00;
+		break;
+	case "grade3":
+		salaire = 5000.00;
+		break;
+	case "grade4":
+		salaire = 5500.00;
+		break;
+	case "grade5":
+		salaire = 6000.00;
+		break;
+	case "grade6":
+		salaire = 6500.00;
+		break;
+	case "grade7":
+		salaire = 7000.00;
+		break;
+	case "grade8":
+		salaire = 7500.00;
+		break;
+	case "grade9":
+		salaire = 8000.00;
+		break;
+	case "grade10":
+		salaire = 8500.00;
+		break;
+	}
+	return salaire;
+}
 @Override
 public int update(GradeEmploye grade) {
 	Employe employe = employeService.findByDoti(grade.getDoti());
@@ -238,7 +314,7 @@ public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentEx
 }
 	Employe employe = employeService.findByDoti(doti);
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "listeDeGrade.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFirstName() + employe.getLastName() + "listeDeGrade.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -254,7 +330,7 @@ public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentEx
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des grades " + employe.getFullName() + " \n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des grades " + employe.getFirstName() + employe.getLastName() + " \n\r\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
@@ -293,25 +369,38 @@ document.add(table);
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }	
-public void getDateEvaluation() {
+public int getDateEvaluation() {
 	List<Employe> employes = employeService.findAll();
-	List<NoteGeneralDeAnnee> notes = new ArrayList<NoteGeneralDeAnnee>();
 	for (Employe employe : employes) {
 		if(employe.getDateProchainEvaluation() != null) {
-		if(DateUlils.verifierDateSup(new Date(), employe.getDateProchainEvaluation())) {
-			employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)))));
-			employe.setDateProchainEvaluation(null);
-			employeDao.save(employe);
+		if(DateUlils.verifierDateSup(employe.getDateProchainEvaluation(),new Date())) {
+			if(noteGeneraleService.findNoteDeEmploye(employe) != null) {
+			System.out.println(DateUlils.verifierDateSup(new Date(), employe.getDateProchainEvaluation()));
+			System.out.println(noteGeneraleService.findNoteDeEmploye(employe).size());
+			System.out.println(employe.getFirstName());
+			System.out.println("ha moyen:" + getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+			System.out.println(DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe))));
+				employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)))));
+				employe.setDateProchainEvaluation(null);
+				employeDao.save(employe);
+				NotificationEmploye notificationEmploye = new NotificationEmploye();
+				notificationEmploye.setDateDeNotification(new Date());
+				notificationEmploye.setEmploye(employe);
+				notificationEmploye.setLibelle("avanement non traite est créé");
+				notificationEmploye.setNotification(notificationService.findByType("avancement aujourd'hui"));
+				return 1;
+		}
 		}
 		}
 	}
+	return -1;
 }
-public void getDateAvancement() {
+public int getDateAvancement() {
 	List<Employe> employes = employeService.findAll();
 	List<NoteGeneralDeAnnee> notes = new ArrayList<NoteGeneralDeAnnee>();
 	for (Employe employe : employes) {
 		if(employe.getDateAvancementPrevue() != null) {
-		if(DateUlils.verifierDateSup(new Date(), employe.getDateAvancementPrevue())) {
+		if(DateUlils.verifierDateSup(employe.getDateAvancementPrevue(),new Date())) {
 			GradeEmploye gradeEmploye = new GradeEmploye();
 				gradeEmploye.setDoti(employe.getDoti());
 				gradeEmploye.setGrade(gradeService.findByLibelle(DateUlils.getNouvauGrade(employe.getDernierGrade().getGrade())));
@@ -340,8 +429,16 @@ public void getDateAvancement() {
 					rapportDeEvaluationDao.save(rapportDeEvaluation);
 					employe.setDateAvancementPrevue(null);
 					employeDao.save(employe);
+					NotificationEmploye notificationEmploye = new NotificationEmploye();
+					notificationEmploye.setDateDeNotification(new Date());
+					notificationEmploye.setEmploye(employe);
+					notificationEmploye.setLibelle("avanement non traite est créé");
+					notificationEmploye.setNotification(notificationService.findByType("avancement aujourd'hui"));
+					
 		}
 		}
 	}
+	return 1;
 }
+
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.CongeDao;
+import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Congé;
 import com.example.stock.bean.Employe;
@@ -42,6 +43,8 @@ private CongeDao congeDao;
 @Autowired
 private EmployeService employeService;
 @Autowired
+private EmployeDao employeDao;
+@Autowired
 private TypeCongeeService typeCongeeService;
 @Autowired
 private NotificationService notificationService;
@@ -64,8 +67,10 @@ return -1;
 	}else {
 		employe.setSoldeRestantesCongeExceptionnel(employe.getSoldeRestantesCongeExceptionnel() - congé.getPeriode());
 	}
-	if(congé.getCongee().getLibelle().equals("certificat court duree") && congé.getPeriode() > 84) {
-		// modifier salaire
+	if(congé.getCongee().getLibelle().equals("certificat court duree 3 mois") && congé.getPeriode() > 90) {
+		return -5;
+	} else if(congé.getCongee().getLibelle().equals("certificat court duree 6 mois") && congé.getPeriode() > 180) {
+		return -6;
 	}
 	congé.setCongee(congé2);
 	congé.setEmploye(employe);
@@ -168,7 +173,7 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
 		 employe = congé.getEmploye();
 	}
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(employe.getFullName() + "ListeCongé.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(employe.getFirstName() + employe.getLastName() + "ListeCongé.pdf")); 
 	
 	document.open();
 	Image img,img1;
@@ -184,7 +189,7 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
 	}
 	
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des conge de"+ employe.getFullName() +" \n\r\n" , font);
+	Paragraph p1 = new Paragraph("\n\t liste des conge de"+ employe.getFirstName() + employe.getLastName() +" \n\r\n" , font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
@@ -202,7 +207,7 @@ public int listeDesCongéPdf(List<Congé> conges) throws DocumentException, File
     table.addCell(cell4);
 
 	for (Congé congé : conges) {
-	    PdfPCell cell10 = new PdfPCell(new Paragraph(congé.getEmploye().getFullName()));
+	    PdfPCell cell10 = new PdfPCell(new Paragraph(congé.getEmploye().getFirstName() + congé.getEmploye().getLastName()));
 	    PdfPCell cell11 = new PdfPCell(new Paragraph(congé.getCongee().getLibelle()));
 	    PdfPCell cell12 = new PdfPCell(new Paragraph(congé.getDateDeDebut().toString()));
 	    PdfPCell cell13 = new PdfPCell(new Paragraph(congé.getPeriode().toString()));
@@ -263,7 +268,22 @@ public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date)
 public List<Congé> findByEmployeDotiAndCongeeLibelle(String matricule, String libelle) {
 	return congeDao.findByEmployeDotiAndCongeeLibelle(matricule, libelle);
 }
-
+public void resetSoldeCongéEmploye() {
+	List<Employe> employes = employeService.findAll();
+	employes.forEach(employe ->{
+		employe.setSoldeRestantesCongeExceptionnel(10);
+		employeDao.save(employe);
+	});
+}
+public int AutoRestSoldeCongeEmplye() {
+	Date date = new Date();
+    System.out.println("ha month :" + ((DateUlils.getMonth(date)+1)));
+	System.out.println("ha day :" + (DateUlils.getDay(date)));
+	if(((DateUlils.getMonth(date)+1) == 9 ) && ((DateUlils.getDay(date) == 1 || DateUlils.getDay(date) == 2 || DateUlils.getDay(date) == 3 || DateUlils.getDay(date) == 4) || DateUlils.getDay(date) == 5 || DateUlils.getDay(date) == 6 || DateUlils.getDay(date) == 7)) {
+		resetSoldeCongéEmploye();
+	}
+	return 1;
+}
 
 
 }

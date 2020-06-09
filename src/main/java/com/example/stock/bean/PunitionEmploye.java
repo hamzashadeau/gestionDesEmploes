@@ -20,6 +20,7 @@ private Long id;
 private Punition punition;
 @Temporal(TemporalType.DATE)
 private Date dateObtenation;
+private String remarque;
 public Long getId() {
 	return id;
 }
@@ -48,16 +49,25 @@ public Date getDateObtenation() {
 public void setDateObtenation(Date dateObtenation) {
 	this.dateObtenation = dateObtenation;
 }
-public PunitionEmploye(Employe employe, Punition punition, Date dateObtenation) {
+public String getRemarque() {
+	return remarque;
+}
+public void setRemarque(String remarque) {
+	this.remarque = remarque;
+}
+public PunitionEmploye(Long id, Employe employe, Punition punition, Date dateObtenation, String remarque) {
 	super();
+	this.id = id;
 	this.employe = employe;
 	this.punition = punition;
 	this.dateObtenation = dateObtenation;
+	this.remarque = remarque;
 }
 @Override
 public String toString() {
 	return "PunitionEmploye [id=" + id + ", employe=" + employe + ", punition=" + punition + ", dateObtenation="
-			+ dateObtenation + "]";
+			+ dateObtenation + ", remarque=" + remarque + "]";
 }
+
 
 }

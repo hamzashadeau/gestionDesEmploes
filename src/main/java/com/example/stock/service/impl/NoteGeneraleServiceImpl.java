@@ -57,8 +57,7 @@ public int save(NoteGeneralDeAnnee noteGeneralDeAnnee) {
 //}else {
 	Double somme = 0.0;
 	Employe employe = employeService.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
-	noteGeneralDeAnnee.setFuulName(employe.getFullName());
-	noteGeneralDeAnnee.setDate(new Date());
+	noteGeneralDeAnnee.setFuulName(employe.getFirstName() + employe.getLastName());
 	//noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().setLibelle("NoteDeAffectationDesTachesLieeAuTravail"+ employe.getDoti() + noteGeneralDeAnnee.getDate().toString() );	
 	noteService.save(noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail());
 	somme += noteGeneralDeAnnee.getNoteDeAffectationDesTachesLieeAuTravail().getMention();

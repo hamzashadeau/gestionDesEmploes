@@ -35,4 +35,5 @@ public interface EmployeService {
 	public int listeDesEmployePdf() throws DocumentException, FileNotFoundException;
 	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
 	public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
+	public List<Employe> getProchaineAvancement();
 }

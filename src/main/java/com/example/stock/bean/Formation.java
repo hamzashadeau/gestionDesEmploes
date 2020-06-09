@@ -14,9 +14,9 @@ public class Formation {
 	@Id
 	@GeneratedValue(strategy =GenerationType.AUTO )
 	private Long id;
-private String 	attestation ; 
+private String 	attestation; 
 private String	domaine; 
-private String	etablissement ;
+private String	etablissement;
 private String	ville;
 @Temporal(TemporalType.DATE)
 private Date annee;

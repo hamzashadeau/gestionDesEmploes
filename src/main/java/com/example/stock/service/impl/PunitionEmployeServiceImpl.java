@@ -157,7 +157,7 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 			throws DocumentException, FileNotFoundException {
 		String fullName = null;
 		for (PunitionEmploye punitionEmploye : punitionEmployes) {
-			fullName = punitionEmploye.getEmploye().getFullName();
+			fullName = punitionEmploye.getEmploye().getFirstName() + punitionEmploye.getEmploye().getLastName();
 		}
 		Document document = new Document();
 		PdfWriter.getInstance(document, new FileOutputStream("listePunitionsEmploye.pdf"));
@@ -191,7 +191,7 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 		table.addCell(cell3);
 
 		for (PunitionEmploye punitionEmploye : punitionEmployes) {
-			PdfPCell cell10 = new PdfPCell(new Paragraph(punitionEmploye.getEmploye().getFullName()));
+			PdfPCell cell10 = new PdfPCell(new Paragraph(punitionEmploye.getEmploye().getFirstName() + punitionEmploye.getEmploye().getLastName()));
 			PdfPCell cell11 = new PdfPCell(new Paragraph(punitionEmploye.getPunition().getLibelle()));
 			PdfPCell cell12 = new PdfPCell(new Paragraph(punitionEmploye.getDateObtenation().toString()));
 
