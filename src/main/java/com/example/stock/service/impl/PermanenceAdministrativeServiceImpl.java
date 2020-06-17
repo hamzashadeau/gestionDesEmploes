@@ -11,7 +11,7 @@ import com.example.stock.Dao.PermanenceAdministrativeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.Utilis.HashUtil;
 import com.example.stock.bean.Employe;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.service.facade.EmployeService;
@@ -38,8 +38,8 @@ public int save(PermanenceAdministrative permanenceAdministrative) {
 	}else 	if(permanenceAdministrative.getId() !=  null) {
 return -1;
 }else {
-	Notification notification = notificationService.findByType("save");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save permanence");
+	TypeNotification typeNotification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "save permanence");
 	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrative.setEmploye(employe);
 	permanenceAdministrativeDao.save(permanenceAdministrative);
@@ -54,8 +54,8 @@ public int update(PermanenceAdministrative permanenceAdministrative) {
 	}else 	if(permanenceAdministrative.getId() ==  null) {
 return -1;
 }else {
-	Notification notification = notificationService.findByType("update");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update permanence");
+	TypeNotification typeNotification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "update permanence");
 	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrative.setEmploye(employe);
 	permanenceAdministrativeDao.save(permanenceAdministrative);
@@ -74,8 +74,8 @@ public PermanenceAdministrative findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	PermanenceAdministrative permanenceAdministrative = findByid(id);
-	Notification notification = notificationService.findByType("delete");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, permanenceAdministrative.getEmploye(), new Date(), "save permanence");
+	TypeNotification typeNotification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, permanenceAdministrative.getEmploye(), new Date(), "save permanence");
 	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrativeDao.deleteById(id);
 	if (findByid(id) == null) {

@@ -16,11 +16,11 @@ public interface NotificationEmployeService {
 	List<NotificationEmploye> findByDateDeNotification(Date dateDeObtenation);
 
 	List<NotificationEmploye> findAll();
-
+	List<NotificationEmploye> findNotificationAujourdhui();
 	int save(NotificationEmploye notificationEmploye);
 
 	int deleteById(Long id);
-
+	public List<NotificationEmploye> findNotificationPaDate(Date date);
 	public NotificationEmploye findByid(Long id);
 	public int sendmail(String email, String subject,String content) throws AddressException, MessagingException, IOException;
 	}

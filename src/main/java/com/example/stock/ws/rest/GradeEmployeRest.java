@@ -26,13 +26,23 @@ public class GradeEmployeRest {
 @Autowired
 private GradeEmployeService gradeService;
 
+@GetMapping("getGradeNonTraiteByType/type/{type}")
+public List<GradeEmploye> getGradeNonTraiteByType(@PathVariable String type) {
+	return gradeService.getGradeNonTraiteByType(type);
+}
+
+@PostMapping("listeDesGradesEmployesExcel")
+public int listeDesGradesEmployesExcel(@RequestBody List<GradeEmploye> gradeEmployes) {
+	return gradeService.listeDesGradesEmployesExcel(gradeEmployes);
+}
+
 @GetMapping("getDateEvaluation")
-public int getDateEvaluation() {
+public List<Employe> getDateEvaluation() {
 	return gradeService.getDateEvaluation();
 }
 
 @GetMapping("getDateAvancement")
-public int getDateAvancement() {
+public List<Employe> getDateAvancement() {
 	return gradeService.getDateAvancement();
 }
 

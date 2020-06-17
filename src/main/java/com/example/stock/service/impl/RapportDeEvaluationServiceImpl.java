@@ -11,7 +11,7 @@ import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
 import com.example.stock.bean.NoteGeneralDeAnnee;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.bean.PrixEmploye;
@@ -48,15 +48,15 @@ public int save(RapportDeEvaluation rapportDeEvaluation) {
 	if(rapportDeEvaluation.getId() != null) {
 return -1;
 }else {
-	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
 	rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
 	rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 	rapportDeEvaluationDao.save(rapportDeEvaluation);
-	Notification notification = notificationService.findByType("save");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
+	TypeNotification typeNotification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 		}
@@ -66,15 +66,15 @@ public int update(RapportDeEvaluation rapportDeEvaluation) {
 	if(rapportDeEvaluation.getId() == null) {
 return -1;
 }else {
-	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye()));
-	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye()));
+	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
 	rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
 	rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 	rapportDeEvaluationDao.save(rapportDeEvaluation);
-	Notification notification = notificationService.findByType("save");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
+	TypeNotification typeNotification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 		}
@@ -101,8 +101,8 @@ public RapportDeEvaluation findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	RapportDeEvaluation rapportDeEvaluation = findByid(id);
-	Notification notification = notificationService.findByType("delete");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, rapportDeEvaluation.getEmploye(), new Date(), "delete rapport ");
+	TypeNotification typeNotification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, rapportDeEvaluation.getEmploye(), new Date(), "delete rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	rapportDeEvaluationDao.deleteById(id);
 	if (findByid(id) == null) {

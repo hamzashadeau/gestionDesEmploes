@@ -4,10 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +21,7 @@ import com.example.stock.Dao.PrixEmployeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.Prix;
 import com.example.stock.bean.PrixEmploye;
@@ -26,6 +31,7 @@ import com.example.stock.service.facade.NotificationService;
 import com.example.stock.service.facade.PrixEmployeService;
 import com.example.stock.service.facade.PrixService;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -65,8 +71,8 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 			prixEmploye.setEmploye(employe);
 			prixEmploye.setPrix(prix);
 			prixEmployeDao.save(prixEmploye);
-			Notification notification = notificationService.findByType("save");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "save prix employe");
+			TypeNotification typeNotification = notificationService.findByType("save");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "save prix employe");
 			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
@@ -85,8 +91,8 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 			prixEmploye.setEmploye(employe);
 			prixEmploye.setPrix(prix);
 			prixEmployeDao.save(prixEmploye);
-			Notification notification = notificationService.findByType("update");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "update prix employe");
+			TypeNotification typeNotification = notificationService.findByType("update");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "update prix employe");
 			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
@@ -103,8 +109,8 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	@Override
 	public int deleteById(Long id) {
 		PrixEmploye prixEmploye = findByid(id);
-		Notification notification = notificationService.findByType("delete");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, prixEmploye.getEmploye(), new Date(), "delete prix employe");
+		TypeNotification typeNotification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, prixEmploye.getEmploye(), new Date(), "delete prix employe");
 		notificationEmployeService.save(notificationEmploye);
 		prixEmployeDao.deleteById(id);
 		if (findByid(id) == null) {
@@ -124,7 +130,8 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	}
 
 	@Override
-	public List<PrixEmploye> findPrixDeEmploye(Employe employe) {
+	public List<PrixEmploye> findPrixDeEmploye(String doti) {
+		Employe employe = employeService.findByDoti(doti);
 		List<PrixEmploye> punitionEmployes = findByEmployeDoti(employe.getDoti());
 		List<PrixEmploye> resultat = new ArrayList<PrixEmploye>();
 		for (PrixEmploye punitionEmploye : punitionEmployes) {
@@ -139,49 +146,81 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	public List<PrixEmploye> findByEmployeDoti(String doti) {
 		return prixEmployeDao.findByEmployeDoti(doti);
 	}
+	public int listeDesPrixExcel(List<PrixEmploye> prixEmployes) {
+		String pattern = "yyyy-MM-dd";
+		 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		Workbook workbook = new XSSFWorkbook();
+		Employe employe = null;
+		for (PrixEmploye prixEmploye  : prixEmployes) {
+			employe = prixEmploye.getEmploye();
+		}
+	      Sheet sheet = workbook.createSheet("Liste des prix");
+		Row header = sheet.createRow(0);
+	      header.createCell(0).setCellValue("Prix");
+	      header.createCell(1).setCellValue("Date de Prix");
 
+	      int rowNum = 1;
+			for (PrixEmploye prixEmploye  : prixEmployes) {
+	         Row row = sheet.createRow(rowNum++);
+	         row.createCell(0).setCellValue(prixEmploye.getPrix().getLibelle());
+	         row.createCell(1).setCellValue(simpleDateFormat.format(prixEmploye.getDateDeObtenation()));
+		}
+	     String fileLocation = "C:/Users/hp/Desktop/";
+	     try {
+		     FileOutputStream outputStream = new FileOutputStream(fileLocation + employe.getFirstName() + " " + employe.getLastName() + "Liste formations.xlsx");
+			workbook.write(outputStream);
+		     workbook.close();
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	     return 1;
+	}
 	public int listeDesPrixPdf(ArrayList<PrixEmploye> prixEmployes) throws DocumentException, FileNotFoundException {
+		 String pattern = "yyyy-MM-dd";
+		 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	     String fileLocation = "C:/Users/hp/Desktop/";
 		Employe employe = null;
 		for (PrixEmploye prixEmploye : prixEmployes) {
 			employe = prixEmploye.getEmploye();
 		}
 		Document document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream("listePrixEmploye.pdf"));
+		PdfWriter.getInstance(document, new FileOutputStream(fileLocation +employe.getFirstName() +" "+ employe.getLastName() +"listePrixEmploye.pdf"));
 
 		document.open();
-		Image img, img1;
-		try {
-			img = Image.getInstance("fstgIcone.png");
-			img.setAlignment(Element.ALIGN_TOP);
-			img.setAlignment(Element.ALIGN_LEFT);
-			document.add(img);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+		Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+		"Faculté des Sciences et Techniques"
+						+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+		p0.setAlignment(Element.ALIGN_LEFT);
+		document.add(p0);
+		Font font2 = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
 
 		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Paragraph p1 = new Paragraph("\n\t liste des prix" + employe.getFirstName() + employe.getLastName() + " \n\r\n", font);
+		Paragraph p1 = new Paragraph("\n\t liste des prix : " + employe.getFirstName() + employe.getLastName() + " \n\r\n", font2);
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 
-		PdfPTable table = new PdfPTable(3); // 3 columns.
+		PdfPTable table = new PdfPTable(2); // 3 columns.
+	    table.setWidthPercentage(100);
 
-		PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
 		PdfPCell cell2 = new PdfPCell(new Paragraph("prix"));
+	    cell2.setBackgroundColor(BaseColor.GRAY);
+	    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
 		PdfPCell cell3 = new PdfPCell(new Paragraph("date Obtenation"));
-
-		table.addCell(cell1);
-		table.addCell(cell2);
+	    cell3.setBackgroundColor(BaseColor.GRAY);
+	    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+		
+	    table.addCell(cell2);
 		table.addCell(cell3);
 
 		for (PrixEmploye prixEmploye : prixEmployes) {
-			PdfPCell cell10 = new PdfPCell(new Paragraph(prixEmploye.getEmploye().getFirstName() + prixEmploye.getEmploye().getLastName()));
 			PdfPCell cell11 = new PdfPCell(new Paragraph(prixEmploye.getPrix().getLibelle()));
-			PdfPCell cell12 = new PdfPCell(new Paragraph(prixEmploye.getDateDeObtenation().toString()));
+		    cell11.setHorizontalAlignment(Element.ALIGN_CENTER);
+			PdfPCell cell12 = new PdfPCell(new Paragraph(simpleDateFormat.format(prixEmploye.getDateDeObtenation())));
+		    cell12.setHorizontalAlignment(Element.ALIGN_CENTER);
 
-			table.addCell(cell10);
 			table.addCell(cell11);
 			table.addCell(cell12);
 		}
@@ -195,13 +234,13 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 		Paragraph p4 = new Paragraph("\n \r\r\r\r signer :", f);
 		p4.setAlignment(Element.ALIGN_RIGHT);
 		document.add(p4);
-
+		document.add(Chunk.NEWLINE);
 		Paragraph p20 = new Paragraph("\n \r\r\r\r marakech  le :" + new Date().toString(), f);
 		p20.setAlignment(Element.ALIGN_LEFT);
 		document.add(p20);
 		document.close();
-		Notification notification = notificationService.findByType("imprimer");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification, employe, new Date(), "imprimer liste prix employe");
+		TypeNotification typeNotification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "imprimer liste prix employe");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}

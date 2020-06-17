@@ -2,18 +2,18 @@ package com.example.stock.service.facade;
 
 import java.util.List;
 
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 
 public interface NotificationService {
-	Notification findByType(String type);
+	TypeNotification findByType(String type);
 
 
-	List<Notification> findAll();
+	List<TypeNotification> findAll();
 
-	int save(Notification notification);
+	int save(TypeNotification typeNotification);
 
 	int deleteById(Long id);
 
-	public Notification findByid(Long id);
+	public TypeNotification findByid(Long id);
 
 }

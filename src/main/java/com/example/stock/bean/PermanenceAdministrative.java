@@ -16,7 +16,7 @@ public class PermanenceAdministrative {
 @GeneratedValue(strategy =GenerationType.AUTO )
 private Long id;
 private Integer periode;
-private Boolean recuperation;
+private String recuperation;
 private Integer periodeDeRecuperation;
 @ManyToOne()
 private Employe employe;
@@ -28,10 +28,10 @@ public Integer getPeriode() {
 public void setPeriode(Integer periode) {
 	this.periode = periode;
 }
-public Boolean getRecuperation() {
+public String getRecuperation() {
 	return recuperation;
 }
-public void setRecuperation(Boolean recuperation) {
+public void setRecuperation(String recuperation) {
 	this.recuperation = recuperation;
 }
 public Integer getPeriodeDeRecuperation() {
@@ -63,7 +63,7 @@ public Date getDate() {
 public void setDate(Date date) {
 	this.date = date;
 }
-public PermanenceAdministrative(Long id, Integer periode, Boolean recuperation, Integer periodeDeRecuperation,
+public PermanenceAdministrative(Long id, Integer periode, String recuperation, Integer periodeDeRecuperation,
 		Employe employe, Date date) {
 	super();
 	this.id = id;

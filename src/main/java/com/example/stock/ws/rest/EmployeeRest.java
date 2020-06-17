@@ -26,6 +26,37 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+@PostMapping("listeDesEmployeParGradeExcel")
+public int listeDesEmployeParGradeExcel(@RequestBody List<Employe> employes) {
+	return employeService.listeDesEmployeParGradeExcel(employes);
+}
+@PostMapping("listeDesEmployeParDepartementExcel")
+public int listeDesEmployeParDepartementExcel(@RequestBody List<Employe> employes) {
+	return employeService.listeDesEmployeParDepartementExcel(employes);
+}
+@PostMapping("listeDesEmployeAvecSoldeDonneePdf")
+public int listeDesEmployeAvecSoldeDonneePdf(@RequestBody List<Employe> employes) throws DocumentException, FileNotFoundException {
+	return employeService.listeDesEmployeAvecSoldeDonneePdf(employes);
+}
+@PostMapping("listeDesEmployeAvecSoldeCongéDonneeExcel")
+public int listeDesEmployeAvecSoldeCongéDonneeExcel(@RequestBody List<Employe> employes) {
+	return employeService.listeDesEmployeAvecSoldeCongéDonneeExcel(employes);
+}
+
+@GetMapping("listeDesEmployeAvecSoldeCongéExcel")
+public int listeDesEmployeAvecSoldeCongéExcel() {
+	return employeService.listeDesEmployeAvecSoldeCongéExcel();
+}
+
+@GetMapping("listeDesEmployeAvecSoldePdf")
+public int listeDesEmployeAvecSoldePdf() throws DocumentException, FileNotFoundException {
+	return employeService.listeDesEmployeAvecSoldePdf();
+}
+
+@GetMapping("listeDesEmployeExcel")
+public int listeDesEmployeExcel() {
+	return employeService.listeDesEmployeExcel();
+}
 
 @GetMapping("getProchaineAvancement")
 public List<Employe> getProchaineAvancement() {

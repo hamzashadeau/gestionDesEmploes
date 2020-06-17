@@ -22,6 +22,13 @@ import com.itextpdf.text.DocumentException;
 public class DepartementRest {
 @Autowired
 private DepartementService departementService;
+
+
+@GetMapping("listeDesGradesEmployesExcel")
+public int listeDesGradesEmployesExcel() {
+	return departementService.listeDesGradesEmployesExcel();
+}
+
 @PostMapping("update")
 public int update(@RequestBody Departement departement) {
 	return departementService.update(departement);

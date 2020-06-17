@@ -23,7 +23,6 @@ import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.service.facade.DemandeDeDocumentService;
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 @RestController
 @CrossOrigin("http://localhost:4200")
@@ -32,7 +31,10 @@ public class DemandeDeDocumentRest {
 @Autowired
 private DemandeDeDocumentService demandeDeDocumentService;
 
-
+@PostMapping("listeDesDemandesExcel")
+public int listeDesDemandesExcel(@RequestBody List<DemaneDeDocument> demandes) {
+	return demandeDeDocumentService.listeDesDemandesExcel(demandes);
+}
 @GetMapping("sendmail/email/{email}/subject/{subject}/ String/content/{content}")
 public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestBody File file)throws AddressException, MessagingException, IOException, TransformerException {
 	return demandeDeDocumentService.sendmail(email, subject, content, file);

@@ -25,6 +25,10 @@ public class PrixEmployeRest {
 @Autowired
 private PrixEmployeService prixEmployeService;
 
+@PostMapping("listeDesPrixExcel")
+public int listeDesPrixExcel(@RequestBody List<PrixEmploye> prixEmployes) {
+	return prixEmployeService.listeDesPrixExcel(prixEmployes);
+}
 
 @PostMapping("update")
 public int update(@RequestBody PrixEmploye prixEmploye) {
@@ -36,9 +40,9 @@ public int listeDesPrixPdf(@RequestBody ArrayList<PrixEmploye> prixEmployes) thr
 	return prixEmployeService.listeDesPrixPdf(prixEmployes);
 }
 
-@GetMapping("findPrixDeEmploye")
-public List<PrixEmploye> findPrixDeEmploye(@RequestBody Employe employe) {
-	return prixEmployeService.findPrixDeEmploye(employe);
+@GetMapping("findPrixDeEmploye/doti/{doti}")
+public List<PrixEmploye> findPrixDeEmploye(@PathVariable String doti) {
+	return prixEmployeService.findPrixDeEmploye(doti);
 }
 
 @GetMapping("findByEmployeDoti/doti/{doti}")

@@ -24,6 +24,21 @@ public class CongeRest {
 @Autowired
 private CongeService congeService;
 
+@PostMapping("listeDesCertificatsPdf")
+public int listeDesCertificatsPdf(@RequestBody List<Congé> conges) throws DocumentException, FileNotFoundException {
+	return congeService.listeDesCertificatsPdf(conges);
+}
+
+@PostMapping("listeDesCertificatsExcel")
+public int listeDesCertificatsExcel(@RequestBody List<Congé> conges) {
+	return congeService.listeDesCertificatsExcel(conges);
+}
+
+@PostMapping("listeDesCongesExcel")
+public int listeDesCongesExcel(@RequestBody List<Congé> conges) {
+	return congeService.listeDesCongesExcel(conges);
+}
+
 @GetMapping("AutoRestSoldeCongeEmplye")
 public int AutoRestSoldeCongeEmplye() {
 	return congeService.AutoRestSoldeCongeEmplye();

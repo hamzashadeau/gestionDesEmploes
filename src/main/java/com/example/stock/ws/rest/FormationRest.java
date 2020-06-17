@@ -25,6 +25,11 @@ public class FormationRest {
 @Autowired
 private FormationService formationService;
 
+@PostMapping("listeDesFormationsExcels")
+public int listeDesFormationsExcel(@RequestBody List<Formation> formations) {
+	return formationService.listeDesFormationsExcel(formations);
+}
+
 @PostMapping("update")
 public int update(@RequestBody Formation formation) {
 	return formationService.update(formation);
@@ -35,9 +40,9 @@ public int listeDesFormationsPdf(@RequestBody ArrayList<Formation> formations) t
 	return formationService.listeDesFormationsPdf(formations);
 }
 
-@GetMapping("findFormationDeEmploye")
-public List<Formation> findFormationDeEmploye(@RequestBody Employe employe) {
-	return formationService.findFormationDeEmploye(employe);
+@GetMapping("findFormationDeEmploye/doti/{doti}")
+public List<Formation> findFormationDeEmploye(@PathVariable String doti) {
+	return formationService.findFormationDeEmploye(doti);
 }
 
 @GetMapping("findByemployeId/id/{id}")

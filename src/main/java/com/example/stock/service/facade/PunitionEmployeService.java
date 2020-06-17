@@ -24,11 +24,15 @@ public interface PunitionEmployeService {
 	List<PunitionEmploye> findAll();
 
 	int save(PunitionEmploye punitionEmploye);
+
 	int update(PunitionEmploye punitionEmploye);
 
 	int deleteById(Long id);
 
-	public List<PunitionEmploye> findPunitionDeEmploye(Employe employe);
+	public List<PunitionEmploye> findPunitionDeEmploye(String doti);
 
-	public int listeDespunitionsPdf(ArrayList<PunitionEmploye> punitionEmployes) throws DocumentException, FileNotFoundException;
+	public int listeDesPunitionsExcel(List<PunitionEmploye> punitionEmployes);
+
+	public int listeDespunitionsPdf(ArrayList<PunitionEmploye> punitionEmployes)
+			throws DocumentException, FileNotFoundException;
 }

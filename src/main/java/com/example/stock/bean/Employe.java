@@ -46,7 +46,6 @@ private Date dateEntree;
 private Date dateSortie;
 @ManyToOne()
 private GradeEmploye dernierGrade;
-private Integer compteBancaireRib;
 @ManyToOne
 private NoteGeneralDeAnnee dernierNote;
 @Temporal(TemporalType.DATE)
@@ -187,12 +186,7 @@ public String getSituationFamiliale() {
 public void setSituationFamiliale(String situationFamiliale) {
 	this.situationFamiliale = situationFamiliale;
 }
-public Integer getCompteBancaireRib() {
-	return compteBancaireRib;
-}
-public void setCompteBancaireRib(Integer compteBancaireRib) {
-	this.compteBancaireRib = compteBancaireRib;
-}
+
 public Integer getSoldeRestantesCongeExceptionnel() {
 	return soldeRestantesCongeExceptionnel;
 }
@@ -233,7 +227,7 @@ public void setLieuDeResedence(String lieuDeResedence) {
 public Employe(Long id, String firstName, String lastName, String email, String gender, String cin, String doti,
 		Integer enfants, String adresse, String pays, String situationFamiliale, Date dateDeNaissance,
 		String lieuDeNaissance, String lieuDeResedence, Integer tel, Employe sup, Fonction fonction, Departement dep,
-		Date dateEntree, Date dateSortie, GradeEmploye dernierGrade, Integer compteBancaireRib,
+		Date dateEntree, Date dateSortie, GradeEmploye dernierGrade,
 		NoteGeneralDeAnnee dernierNote, Date dateProchainEvaluation, Date dateDeProchainNote, Date dateAvancementPrevue,
 		Integer soldeRestantesCongeExceptionnel) {
 	super();
@@ -258,7 +252,6 @@ public Employe(Long id, String firstName, String lastName, String email, String 
 	this.dateEntree = dateEntree;
 	this.dateSortie = dateSortie;
 	this.dernierGrade = dernierGrade;
-	this.compteBancaireRib = compteBancaireRib;
 	this.dernierNote = dernierNote;
 	this.dateProchainEvaluation = dateProchainEvaluation;
 	this.dateDeProchainNote = dateDeProchainNote;
@@ -272,8 +265,7 @@ public String toString() {
 			+ ", pays=" + pays + ", situationFamiliale=" + situationFamiliale + ", dateDeNaissance=" + dateDeNaissance
 			+ ", lieuDeNaissance=" + lieuDeNaissance + ", lieuDeResedence=" + lieuDeResedence + ", tel=" + tel
 			+ ", sup=" + sup + ", fonction=" + fonction + ", dep=" + dep + ", dateEntree=" + dateEntree
-			+ ", dateSortie=" + dateSortie + ", dernierGrade=" + dernierGrade + ", compteBancaireRib="
-			+ compteBancaireRib + ", dernierNote=" + dernierNote + ", dateProchainEvaluation=" + dateProchainEvaluation
+			+ ", dateSortie=" + dateSortie + ", dernierGrade=" + dernierGrade  + ", dernierNote=" + dernierNote + ", dateProchainEvaluation=" + dateProchainEvaluation
 			+ ", dateDeProchainNote=" + dateDeProchainNote + ", dateAvancementPrevue=" + dateAvancementPrevue
 			+ ", soldeRestantesCongeExceptionnel=" + soldeRestantesCongeExceptionnel + "]";
 }

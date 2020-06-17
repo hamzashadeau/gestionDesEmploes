@@ -26,6 +26,7 @@ public class DateUlils {
 		return c.get(Calendar.DAY_OF_MONTH);
 	}
 	
+	
 	public static boolean VerifieDateSup(Date date1) {
 		Date date2;
 		Date date = new Date();
@@ -59,7 +60,7 @@ public class DateUlils {
 		return calendar.getTime();
 	 }
 	public static Date getDateFin(Date date, Integer periode) {
-		long milliSeconde = date.getTime() + periode * 86400000;
+		long milliSeconde = date.getTime() + (periode * 24*60*60*1000);
 		return new Date(milliSeconde);
 	 }
 	public static Long getDateDiff(Date date1, Date date2) {
@@ -122,6 +123,9 @@ public class DateUlils {
 			case "grade10":
 				nombreAnnee =   2 * big.longValue();
 				break;
+			case "gradeExceptionnel":
+				nombreAnnee =   3 * big.longValue();
+				break;
 			}
 			return DateUlils.getDateEvaluation(new Date(), nombreAnnee);
 		}	
@@ -157,6 +161,9 @@ public class DateUlils {
 			nouveauGrade = "grade10";
 			break;
 		case "grade10":
+			nouveauGrade = "gradeExceptionnel";
+			break;
+		case "gradeExceptionnel":
 			nouveauGrade = "hors echelle";
 			break;
 		}
@@ -267,9 +274,6 @@ public class DateUlils {
 				nombreAnnee =  (long) (5.5* big.longValue());
 				break;
 			}
-		case "grade10":
-			nombreAnnee =  2* big.longValue();
-			break;
 		}
 		return getDateEvaluation(grade.getDateDeAffectation(), nombreAnnee);
 	}
@@ -286,8 +290,6 @@ public class DateUlils {
 		return milliSeconde1 < milliSeconde2 ? true : false;
 	}
 	public static boolean verifierDateSup(Date date1,Date date2) {
-		System.out.println(" ha date 1" + date1);
-		System.out.println(" ha date 2" + date2);
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
 		return milliSeconde1 <= milliSeconde2 ? true : false;

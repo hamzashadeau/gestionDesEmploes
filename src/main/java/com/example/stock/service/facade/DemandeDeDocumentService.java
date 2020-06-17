@@ -23,6 +23,7 @@ public interface DemandeDeDocumentService {
 	List<DemaneDeDocument> findAll();
 	public int update(DemaneDeDocument demaneDeDocument);
 	int save(DemaneDeDocument demaneDeDocument);
+	public int listeDesDemandesExcel(List<DemaneDeDocument> demandes);
 	int deleteById(Long id);
 	public int attestationDeTravail(DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException;
 	DemaneDeDocument findByid(Long id);

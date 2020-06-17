@@ -4,10 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +20,12 @@ import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Dao.RapportDeEvaluationDao;
 import com.example.stock.Utilis.DateUlils;
+import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.NoteGeneralDeAnnee;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.bean.SalaireEmploye;
@@ -46,6 +52,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
@@ -103,24 +110,34 @@ return -1;
 	rapportDeEvaluation.setEmploye(employe);
 	rapportDeEvaluation.setNouveauGrade(gradeEmploye);
 				// notes 
-rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe.getDoti()));
 				//formation
-rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));
+rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe.getDoti()));
 				//Punition
-rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));
+rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe.getDoti()));
 				//prix
-rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));
+rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe.getDoti()));
 				//moyen
-rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
 //moyen
 rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 rapportDeEvaluationService.save(rapportDeEvaluation);
-Notification notification = notificationService.findByType("save");
-NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "save grade employe");
+TypeNotification typeNotification = notificationService.findByType("save");
+NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "save grade employe");
 notificationEmployeService.save(notificationEmploye);
 		return 1;
 }
 	}
+public List<GradeEmploye> getGradeNonTraiteByType(String type){
+	List<GradeEmploye> gradeEmployes = findGradeNonTraite();
+	List<GradeEmploye> resultat = new ArrayList<GradeEmploye>();
+	for (GradeEmploye gradeEmploye : gradeEmployes) {
+		if(gradeEmploye.getGrade().getLibelle().equals(type)) {
+			resultat.add(gradeEmploye);
+		}
+	}
+	return resultat;
+}
 public int  creeUnGradeNonTraite(String doti) {
 GradeEmploye gradeEmploye = new GradeEmploye();
 Employe employe = employeService.findByDoti(doti);
@@ -132,24 +149,26 @@ Employe employe = employeService.findByDoti(doti);
 	RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
 	rapportDeEvaluation.setEmploye(employe);
 	rapportDeEvaluation.setNouveauGrade(gradeEmploye);
-	if(noteGeneraleService.findNoteDeEmploye(employe)!= null) {
+	if(noteGeneraleService.findNoteDeEmploye(employe.getDoti())!= null) {
 		//note
-		rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+		rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe.getDoti()));
 		//moyen
-rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
 //moyen
 rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 
-	} if(formationService.findFormationDeEmploye(employe)!= null) {
+	} if(formationService.findFormationDeEmploye(employe.getDoti())!= null) {
 		//formation
-		rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));
-	}	if(punitionEmployeService.findPunitionDeEmploye(employe)!= null) {
+		rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe.getDoti()));
+	}	if(punitionEmployeService.findPunitionDeEmploye(employe.getDoti())!= null) {
 		//punition
-		rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));
-	}	if(prixEmployeService.findPrixDeEmploye(employe)!= null) {
+		rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe.getDoti()));
+	}	if(prixEmployeService.findPrixDeEmploye(employe.getDoti())!= null) {
 		//prix
-		rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));
+		rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe.getDoti()));
 	}
+	employe.setDateProchainEvaluation(null);
+	employeDao.save(employe);
 rapportDeEvaluationDao.save(rapportDeEvaluation);
 	return 1;
 }
@@ -179,8 +198,8 @@ public int deleteById(Long id) {
 		 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
 		 
 	 }
-		Notification notification = notificationService.findByType("delete");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "delete grade employe");
+		TypeNotification typeNotification = notificationService.findByType("delete");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "delete grade employe");
 		notificationEmployeService.save(notificationEmploye);
 	 gradeDao.deleteById(id);
 	if (findByid(id) == null) {
@@ -188,7 +207,6 @@ public int deleteById(Long id) {
 	} else
 		return -1;
 }
-
 
 @Override
 public List<GradeEmploye> findAll() {
@@ -255,7 +273,6 @@ employeDao.save(employe);
 	return 1;
 }
 
-//get salaire par grade
 public static Double getSalaireParGrade(Grade grade) {
 	Double salaire = null;
 	switch (grade.getLibelle()) {
@@ -298,89 +315,134 @@ public int update(GradeEmploye grade) {
 	Grade grade2 = gradeService.findByLibelle(grade.getGrade().getLibelle());
 	grade.setGrade(grade2);
 	grade.setDoti(employe.getDoti());
-	Notification notification = notificationService.findByType("update");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "update grade employe");
+	TypeNotification typeNotification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "update grade employe");
 	notificationEmployeService.save(notificationEmploye);
 	// ncriw rapport evaluation
 	gradeDao.save(grade);
 	return 1;
 }
+public int listeDesGradesEmployesExcel(List<GradeEmploye> gradeEmployes) {
+	String pattern = "yyyy-MM-dd";
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	Workbook workbook = new XSSFWorkbook();
+	Employe employe = null;
+	for (GradeEmploye gradeEmploye : gradeEmployes) {
+		employe = employeDao.findByDoti(gradeEmploye.getDoti());
+	}
+	Sheet sheet = workbook.createSheet("Liste grades");
+	Row header = sheet.createRow(0);
+	header.createCell(0).setCellValue("grade");
+	header.createCell(1).setCellValue("date Affecatation");
 
-//liste Des grades de Employe Pdf
+
+	int rowNum = 1;
+	for (GradeEmploye gradeEmploye : gradeEmployes) {
+		Row row = sheet.createRow(rowNum++);
+		row.createCell(0).setCellValue(gradeEmploye.getGrade().getLibelle());
+		row.createCell(1).setCellValue(simpleDateFormat.format(gradeEmploye.getDateDeAffectation()));
+	}
+	String fileLocation = "C:/Users/hp/Desktop/";
+	try {
+		FileOutputStream outputStream = new FileOutputStream(
+				fileLocation + employe.getFirstName() + " " + employe.getLastName() + "Liste grades.xlsx");
+		workbook.write(outputStream);
+		workbook.close();
+
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	return 1;
+}
+
 public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentException, FileNotFoundException {
 	String doti = null;
+	String pattern = "yyyy-MM-dd";
+	SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	String fileLocation = "C:/Users/hp/Desktop/";
 	for (GradeEmploye gradeEmploye : grades) {
 	doti = gradeEmploye.getDoti();
 }
 	Employe employe = employeService.findByDoti(doti);
 	Document document = new Document();
-	PdfWriter.getInstance(document, new FileOutputStream(employe.getFirstName() + employe.getLastName() + "listeDeGrade.pdf")); 
+	PdfWriter.getInstance(document, new FileOutputStream(fileLocation + employe.getFirstName() + employe.getLastName() + "listeDeGrade.pdf")); 
 	
 	document.open();
-	Image img,img1;
-	try {
-		img = Image.getInstance("fstgIcone.png");
-		img.setAlignment(Element.ALIGN_TOP);
-		img.setAlignment(Element.ALIGN_LEFT);
-		document.add(img);
-	} catch (MalformedURLException e) {
-		e.printStackTrace();
-	} catch (IOException e) {
-		e.printStackTrace();
-	}
-	
+//	Image img,img1;
+	//try {
+		//img = Image.getInstance("fstgIcone.png");
+		//img.setAlignment(Element.ALIGN_TOP);
+	//	img.setAlignment(Element.ALIGN_LEFT);
+	//	document.add(img);
+	//} catch (MalformedURLException e) {
+		//e.printStackTrace();
+	//} catch (IOException e) {
+		//e.printStackTrace();
+	//}
+	Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+	Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+	"Faculté des Sciences et Techniques"
+					+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+	p0.setAlignment(Element.ALIGN_LEFT);
+	document.add(p0);
 	Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-	Paragraph p1 = new Paragraph("\n\t liste des grades " + employe.getFirstName() + employe.getLastName() + " \n\r\n", font);
+	Paragraph p1 = new Paragraph("\n\t liste des grades de : " + employe.getFirstName() + employe.getLastName() + " \n\n", font);
 	p1.setAlignment(Element.ALIGN_CENTER);
 	document.add(p1);
 
   
   PdfPTable table = new PdfPTable(2); // 3 columns.
-
+table.setWidthPercentage(100);
   PdfPCell cell1 = new PdfPCell(new Paragraph("grade"));
+  cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+  cell1.setBackgroundColor(BaseColor.GRAY);
   PdfPCell cell2 = new PdfPCell(new Paragraph("date Affectation"));
-
+  cell2.setBackgroundColor(BaseColor.GRAY);
+  cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
   table.addCell(cell1);
   table.addCell(cell2);
 
 	for (GradeEmploye gradeEmploye : grades) {
 	    PdfPCell cell10 = new PdfPCell(new Paragraph(gradeEmploye.getGrade().getLibelle()));
-	    PdfPCell cell11 = new PdfPCell(new Paragraph(gradeEmploye.getDateDeAffectation().toString()));
+	    cell10.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell11 = new PdfPCell(new Paragraph(simpleDateFormat.format(gradeEmploye.getDateDeAffectation())));
+	    cell11.setHorizontalAlignment(Element.ALIGN_CENTER);
+
 	    table.addCell(cell10);
 	    table.addCell(cell11);
 	}
 
 document.add(table);
- 
  Font f = new Font();
  f.setStyle(Font.BOLD);
  f.setSize(8);
  
- Paragraph p4 = new Paragraph( "\n \r\r\r\r signer :",f);
+ Paragraph p4 = new Paragraph( "\n  signer :",f);
  p4.setAlignment(Element.ALIGN_RIGHT);
  document.add(p4);
 
- Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
- p20.setAlignment(Element.ALIGN_LEFT);
+ Paragraph p20 = new Paragraph( "\n  marakech  le :"+ simpleDateFormat.format(new  Date()),f);
+ p20.setAlignment(Element.ALIGN_RIGHT);
  document.add(p20);
   document.close();
-	Notification notification = notificationService.findByType("imprimer");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "imprimer liste grade employe");
+	TypeNotification typeNotification = notificationService.findByType("imprimer");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "imprimer liste grade employe");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 }	
-public int getDateEvaluation() {
+public List<Employe> getDateEvaluation() {
 	List<Employe> employes = employeService.findAll();
+	List<Employe> resultats = new ArrayList<Employe>();
 	for (Employe employe : employes) {
 		if(employe.getDateProchainEvaluation() != null) {
 		if(DateUlils.verifierDateSup(employe.getDateProchainEvaluation(),new Date())) {
-			if(noteGeneraleService.findNoteDeEmploye(employe) != null) {
-			System.out.println(DateUlils.verifierDateSup(new Date(), employe.getDateProchainEvaluation()));
-			System.out.println(noteGeneraleService.findNoteDeEmploye(employe).size());
-			System.out.println(employe.getFirstName());
-			System.out.println("ha moyen:" + getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
-			System.out.println(DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe))));
-				employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)))));
+			if(employe.getDernierGrade().getGrade().getLibelle().equals("grade10") || employe.getDernierGrade().getGrade().getLibelle().equals("gradeExceptionnel")) {
+				creeUnGradeNonTraite(employe.getDoti());
+			}else {
+			if(DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti()))) != null) {
+				employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())))));
+			}
 				employe.setDateProchainEvaluation(null);
 				employeDao.save(employe);
 				NotificationEmploye notificationEmploye = new NotificationEmploye();
@@ -388,57 +450,70 @@ public int getDateEvaluation() {
 				notificationEmploye.setEmploye(employe);
 				notificationEmploye.setLibelle("avanement non traite est créé");
 				notificationEmploye.setNotification(notificationService.findByType("avancement aujourd'hui"));
-				return 1;
+				resultats.add(employe);
 		}
 		}
 		}
 	}
-	return -1;
+	return resultats;
 }
-public int getDateAvancement() {
+boolean disponible;
+public List<Employe> getDateAvancement() {
 	List<Employe> employes = employeService.findAll();
+	List<Employe> resultats = new ArrayList<Employe>();
 	List<NoteGeneralDeAnnee> notes = new ArrayList<NoteGeneralDeAnnee>();
+	this.disponible = false;
 	for (Employe employe : employes) {
-		if(employe.getDateAvancementPrevue() != null) {
+		 disponible = false;
+		if(employe.getDateAvancementPrevue() != null && !employe.getDernierGrade().getGrade().getLibelle().equals("grade10")) {
 		if(DateUlils.verifierDateSup(employe.getDateAvancementPrevue(),new Date())) {
 			GradeEmploye gradeEmploye = new GradeEmploye();
 				gradeEmploye.setDoti(employe.getDoti());
 				gradeEmploye.setGrade(gradeService.findByLibelle(DateUlils.getNouvauGrade(employe.getDernierGrade().getGrade())));
 				gradeEmploye.setEtat("en traitement");
+				gradeEmployeService.findGradeNonTraite().forEach(grade->{
+					if(grade.getGrade().getLibelle() == gradeEmploye.getGrade().getLibelle() && grade.getDoti() == gradeEmploye.getDoti()) {
+						this.disponible = true;
+						}
+				});
+				if(this.disponible == false) {
 				gradeDao.save(gradeEmploye);
 				//rapport evaluation
 				RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
 				rapportDeEvaluation.setEmploye(employe);
 				rapportDeEvaluation.setNouveauGrade(gradeEmploye);
-				if(noteGeneraleService.findNoteDeEmploye(employe)!= null) {
+				if(noteGeneraleService.findNoteDeEmploye(employe.getDoti())!= null) {
 					//note
-					rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+					rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe.getDoti()));
 					//moyen
-					rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+					rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
 					//moyen
 					rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));}
-					if(formationService.findFormationDeEmploye(employe)!= null) {
+					if(formationService.findFormationDeEmploye(employe.getDoti())!= null) {
 					//formation
-					rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));}
-					if(punitionEmployeService.findPunitionDeEmploye(employe)!= null) {
+					rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe.getDoti()));}
+					if(punitionEmployeService.findPunitionDeEmploye(employe.getDoti())!= null) {
 					//punition
-					rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));}
-					if(prixEmployeService.findPrixDeEmploye(employe)!= null) {
+					rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe.getDoti()));}
+					if(prixEmployeService.findPrixDeEmploye(employe.getDoti())!= null) {
 					//prix
-					rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));}
+					rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe.getDoti()));}
 					rapportDeEvaluationDao.save(rapportDeEvaluation);
 					employe.setDateAvancementPrevue(null);
+					employe.setDateProchainEvaluation(null);
+					//employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(rapportDeEvaluation.getNouveauGrade()));
 					employeDao.save(employe);
 					NotificationEmploye notificationEmploye = new NotificationEmploye();
 					notificationEmploye.setDateDeNotification(new Date());
 					notificationEmploye.setEmploye(employe);
 					notificationEmploye.setLibelle("avanement non traite est créé");
 					notificationEmploye.setNotification(notificationService.findByType("avancement aujourd'hui"));
-					
+					resultats.add(employe);
+		}
 		}
 		}
 	}
-	return 1;
+	return resultats;
 }
 
 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 01 juin 2020 à 09:58
+-- Généré le :  mer. 17 juin 2020 à 18:44
 -- Version du serveur :  5.7.26
 -- Version de PHP :  7.2.18
 
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `congé` (
   `congee` bigint(20) DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `raison` varchar(255) DEFAULT NULL,
+  `date_de_fin` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKhqbqod7o6xw5axoiuvp1sonn4` (`congee`),
   KEY `FK6dovv0gq9mk1mjhmrrkvaetjd` (`employe`)
@@ -45,14 +46,11 @@ CREATE TABLE IF NOT EXISTS `congé` (
 -- Déchargement des données de la table `congé`
 --
 
-INSERT INTO `congé` (`id`, `date_de_debut`, `periode`, `congee`, `employe`, `raison`) VALUES
-(1, '2017-05-19', 20, 1, 2, NULL),
-(2, '2020-05-12', 15, 2, 2, NULL),
-(59, '2020-05-23', 9, 3, 2, NULL),
-(60, '2020-05-23', 9, 4, 2, NULL),
-(119, '2019-05-20', 11, 2, 2, NULL),
-(123, '2020-05-21', 9, 1, 120, NULL),
-(124, '2020-05-20', 7, 3, 120, NULL);
+INSERT INTO `congé` (`id`, `date_de_debut`, `periode`, `congee`, `employe`, `raison`, `date_de_fin`) VALUES
+(257, '2020-06-11', 4, 3, 247, 'voyage', '2020-06-15'),
+(261, '2020-06-04', 60, 2, 220, NULL, '2020-06-14'),
+(265, '2020-06-11', 6, 3, 247, 'voyage', '2020-06-17'),
+(267, '2020-06-04', 90, 4, 247, NULL, '2020-05-25');
 
 -- --------------------------------------------------------
 
@@ -65,9 +63,10 @@ CREATE TABLE IF NOT EXISTS `demane_de_document` (
   `id` bigint(20) NOT NULL,
   `date_demande` date DEFAULT NULL,
   `etat` varchar(255) DEFAULT NULL,
-  `maniere_de_retrait` varchar(255) DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `type_de_document` bigint(20) DEFAULT NULL,
+  `nbr_de_document` int(11) NOT NULL,
+  `copie_email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKcke1pv0x3ef0c7llv9vtws3sv` (`employe`),
   KEY `FKow6xx98e6vsrqi15xf1rx8dke` (`type_de_document`)
@@ -77,13 +76,9 @@ CREATE TABLE IF NOT EXISTS `demane_de_document` (
 -- Déchargement des données de la table `demane_de_document`
 --
 
-INSERT INTO `demane_de_document` (`id`, `date_demande`, `etat`, `maniere_de_retrait`, `employe`, `type_de_document`) VALUES
-(1, '2020-05-13', 'non traité', 'par email', 2, 1),
-(3, '2020-05-20', 'non traité', 'par guichet', 2, 2),
-(67, '2020-05-22', 'non traité', 'papier', 2, 1),
-(125, '2020-05-28', 'non traité', 'gmail', 120, 1),
-(126, '2020-05-28', 'non traité', 'gmail', 120, 2),
-(141, '2020-05-29', 'traité', 'gmail', 116, 1);
+INSERT INTO `demane_de_document` (`id`, `date_demande`, `etat`, `employe`, `type_de_document`, `nbr_de_document`, `copie_email`) VALUES
+(269, '2020-06-17', 'non traité', 247, 1, 3, 'oui'),
+(271, '2020-06-17', 'traité', 247, 2, 4, 'oui');
 
 -- --------------------------------------------------------
 
@@ -105,11 +100,13 @@ CREATE TABLE IF NOT EXISTS `departement` (
 --
 
 INSERT INTO `departement` (`id`, `nom`, `chefdoti`, `fullname`) VALUES
-(1, 'mathematique', 1628, 'nabila morabiti'),
-(2, 'physique', 1628, 'nabila morabiti'),
-(25, 'informatique', 1628, 'nabila morabiti'),
-(27, 'tec', 1628, 'nabila morabiti'),
-(96, 'biologie', 1628, 'nabila morabiti');
+(1, 'Mathémathique', 132456, 'Ayoub Bendrimo'),
+(2, 'physique', 162811, 'nabila morabiti'),
+(25, 'Informatique', 739140, 'rachid bouigrouane'),
+(27, 'TEC', 749430, 'yossef el Aziri'),
+(96, 'Biologie', 741845, 'abd el karim ait ouzo'),
+(7, 'Chimie', 132456, 'Ayoub Bendrimo'),
+(8, 'Géologie', 132456, 'Ayoub Bendrimo');
 
 -- --------------------------------------------------------
 
@@ -135,13 +132,15 @@ INSERT INTO `dep_fonction` (`id`, `departemant`, `fonction`) VALUES
 (1, 1, 1),
 (2, 2, 31),
 (30, 1, 2),
-(99, 1, 97),
 (100, 2, 97),
-(103, 2, 101),
-(104, 25, 97),
 (106, 25, 105),
 (108, 25, 107),
-(112, 25, 111);
+(212, 27, 211),
+(214, 27, 213),
+(240, 96, 239),
+(242, 96, 241),
+(244, 7, 243),
+(246, 7, 245);
 
 -- --------------------------------------------------------
 
@@ -178,7 +177,6 @@ CREATE TABLE IF NOT EXISTS `employe` (
   `id` bigint(20) NOT NULL,
   `adresse` varchar(255) DEFAULT NULL,
   `cin` varchar(22) DEFAULT NULL,
-  `compte_bancaire_rib` int(11) DEFAULT NULL,
   `date_avancement_prevue` date DEFAULT NULL,
   `date_de_naissance` date DEFAULT NULL,
   `date_de_prochain_note` date DEFAULT NULL,
@@ -188,7 +186,6 @@ CREATE TABLE IF NOT EXISTS `employe` (
   `doti` varchar(22) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `enfants` int(11) DEFAULT NULL,
-  `full_name` varchar(255) DEFAULT NULL,
   `gender` varchar(255) DEFAULT NULL,
   `lieu_de_naissance` varchar(255) DEFAULT NULL,
   `pays` varchar(255) DEFAULT NULL,
@@ -200,6 +197,9 @@ CREATE TABLE IF NOT EXISTS `employe` (
   `sup` bigint(20) DEFAULT NULL,
   `fonction` bigint(20) DEFAULT NULL,
   `solde_restantes_conge_exceptionnel` int(11) DEFAULT NULL,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `lieu_de_resedence` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKmcsf3mebmnyuacokv52ul95dk` (`dep`),
   KEY `FKr8eud0mtpur1eng2bo2fc1mh1` (`dernier_grade`),
@@ -212,13 +212,12 @@ CREATE TABLE IF NOT EXISTS `employe` (
 -- Déchargement des données de la table `employe`
 --
 
-INSERT INTO `employe` (`id`, `adresse`, `cin`, `compte_bancaire_rib`, `date_avancement_prevue`, `date_de_naissance`, `date_de_prochain_note`, `date_entree`, `date_prochain_evaluation`, `date_sortie`, `doti`, `email`, `enfants`, `full_name`, `gender`, `lieu_de_naissance`, `pays`, `situation_familiale`, `tel`, `dep`, `dernier_grade`, `dernier_note`, `sup`, `fonction`, `solde_restantes_conge_exceptionnel`) VALUES
-(2, 'N252 sokoma askejour', '1628', NULL, '2020-05-24', '2020-05-28', '2020-05-24', '2020-05-27', '2020-05-24', NULL, '1628', 'abiabiya10042003@gmail.com\r\n', 3, 'nabila morabiti', 'Homme', NULL, 'Marrakech', 'Celebataire', 706019991, 1, 3, 2, NULL, 1, 0),
-(19, 'N252 sokoma askejour', '987', NULL, '2020-05-24', '2020-05-28', '2020-05-24', '2020-05-14', '2020-05-24', NULL, '1627', 'hamza@gmail.com', 2, 'hamza shadeau', 'Femme', NULL, 'Marrakech', 'Celebataire', 706019991, 1, 23, 1, 2, 1, 5),
-(53, 'N252 sokoma askejour', '1200', 56788, NULL, '2020-05-08', '2021-05-24', '2020-05-16', '2021-05-19', NULL, '1299', 'hamza@gmail.com', NULL, 'hamza', 'Homme', 'marrakech', 'Marrakech', 'Celebataire', 5678, 1, 54, NULL, 2, 1, 4),
-(56, 'N252 sokoma askejour', '1234', 123456, NULL, '2020-05-08', '2021-05-24', '2020-05-08', '2020-05-24', NULL, '1333', 'ayoub@gmail.com', NULL, 'ayoub', 'Homme', 'marrakech', 'Marrakech', 'Celebataire', 123456, 1, 5, NULL, 2, 1, 10),
-(116, 'N252 sokoma askejour', 'EE4527', 12345, NULL, '1977-05-10', '2021-05-19', '2020-05-18', '2023-05-28', NULL, '99EE4527', 'abiabiya10042003@gmail.com', 3, 'rachid bouigrouane', 'Homme', 'marrakech', 'Marrakech', 'Marie', 7868564, 1, 117, NULL, 2, 1, 10),
-(120, 'N252 sokoma askejour', '12435', 12349875, NULL, '1996-06-12', '2021-05-28', '2020-05-05', '2022-05-29', NULL, 'fstg12435', 'bendrimou@gmail.com', 11, 'ayoub bendrimoU', 'Homme', 'marrakech', 'Marrakech', 'Marie', 67676433, 25, 139, 138, 2, 111, 3);
+INSERT INTO `employe` (`id`, `adresse`, `cin`, `date_avancement_prevue`, `date_de_naissance`, `date_de_prochain_note`, `date_entree`, `date_prochain_evaluation`, `date_sortie`, `doti`, `email`, `enfants`, `gender`, `lieu_de_naissance`, `pays`, `situation_familiale`, `tel`, `dep`, `dernier_grade`, `dernier_note`, `sup`, `fonction`, `solde_restantes_conge_exceptionnel`, `first_name`, `last_name`, `lieu_de_resedence`) VALUES
+(2, 'N252 sokoma askejour', 'EE1628', NULL, '2020-05-28', '2020-05-24', '2020-05-27', NULL, NULL, '162811', 'nabilaMorabiti@gmail.com\r\n', 3, 'Homme', NULL, 'Marrakech', 'Celebataire', 706019991, 1, 3, 2, NULL, 1, 10, 'nabila', 'morabiti', 'marrakech'),
+(220, 'tranche1 tamansourt marrakech', 'EE1627', NULL, '1943-02-04', '2021-06-04', '2017-06-11', NULL, NULL, '132456', 'bendrimou@gmail.com', 3, 'Homme', 'Marakechr', NULL, 'Marie', 613430719, 1, 221, 230, NULL, 2, 10, 'Ayoub', 'Bendrimo', 'Marrakech'),
+(234, 'j55 tranche1 tamansourt', 'EE7494', NULL, '1969-02-04', '2020-02-01', NULL, '2022-06-18', NULL, '749430', 'youssef74@gmail.com', 0, 'Homme', 'Marrakech', NULL, 'Celebataire', 634345465, 27, 235, NULL, NULL, 211, 10, 'yossef', 'el Aziri', 'marrakech'),
+(247, 'j66 tranche1 tamansourt', '739140', NULL, '1970-03-05', '2021-01-06', '2016-02-02', '2022-06-18', NULL, '739140', 'abiabiya10042003@gmail.com', 3, 'Homme', 'Marrakech', NULL, 'Marie', 654324675, 25, 248, NULL, NULL, 107, 0, 'rachid', 'bouigrouane', 'marrakech'),
+(252, 'J77 tranche1 tamansourt', 'EE7418', NULL, '2006-07-13', '2021-02-03', '1978-02-04', '2024-06-17', NULL, '741845', 'aitouzo99@gmail.com', 3, 'Homme', 'marrakech', NULL, 'Marie', 653453658, 96, 253, NULL, NULL, 239, 10, 'abd el karim', 'ait ouzo', 'marrakech');
 
 -- --------------------------------------------------------
 
@@ -238,14 +237,18 @@ CREATE TABLE IF NOT EXISTS `fonction` (
 --
 
 INSERT INTO `fonction` (`id`, `libelle`) VALUES
-(1, 'prof analyse'),
-(2, 'prof algebre'),
-(31, 'prof mecanique'),
-(97, 'chef departement'),
-(101, 'prof optique'),
-(105, 'prof java'),
-(107, 'prof language c'),
-(111, 'paython');
+(1, 'prof Mathématique'),
+(2, 'chef departement Mathématique'),
+(31, 'prof physique'),
+(97, 'chef departement physiue'),
+(105, 'prof informatique'),
+(107, 'chef departement informatique'),
+(211, 'chef deparatement tec'),
+(213, 'prof tec'),
+(239, 'chef departement biologie'),
+(241, 'prof Biologie'),
+(243, 'chef departement chimie'),
+(245, 'prof chimie');
 
 -- --------------------------------------------------------
 
@@ -261,7 +264,6 @@ CREATE TABLE IF NOT EXISTS `formation` (
   `domaine` varchar(255) DEFAULT NULL,
   `mention` varchar(255) DEFAULT NULL,
   `ville` varchar(255) DEFAULT NULL,
-  `établissement` varchar(255) DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `etablissement` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -272,14 +274,8 @@ CREATE TABLE IF NOT EXISTS `formation` (
 -- Déchargement des données de la table `formation`
 --
 
-INSERT INTO `formation` (`id`, `annee`, `attestation`, `domaine`, `mention`, `ville`, `établissement`, `employe`, `etablissement`) VALUES
-(1, '2020-05-13', 'attestation1', 'domaine1', 'mention1', 'marrakech', '', 2, 'etablissement1'),
-(2, '2020-05-14', 'attestation2', 'domaine2', 'mention2', 'marrakech', '', 2, 'etablissment2'),
-(68, '2020-05-20', 'developpement', 'info', 'très bien', 'marrakech', NULL, 2, 'termidi'),
-(5, '2020-05-20', 'attestation5', 'domaine5', 'mention5', 'ville5', NULL, 19, 'etablissement5'),
-(7, '2020-05-20', 'attestaion6', 'domaine6', 'mention6', 'ville6', '', 19, 'etablissement6'),
-(127, '2020-05-19', 'coaching', 'informatique', 'très bien', 'marrakech', NULL, 120, 'fstg'),
-(128, '2020-05-20', 'developpement', 'info2', 'bien', 'tanger', NULL, 120, 'fstg2');
+INSERT INTO `formation` (`id`, `annee`, `attestation`, `domaine`, `mention`, `ville`, `employe`, `etablissement`) VALUES
+(275, '2020-06-03', 'developpement', 'domaine1', 'ention1', 'ville1', 220, 'etabliseement');
 
 -- --------------------------------------------------------
 
@@ -291,7 +287,6 @@ DROP TABLE IF EXISTS `grade`;
 CREATE TABLE IF NOT EXISTS `grade` (
   `id` bigint(20) NOT NULL,
   `libelle` varchar(255) DEFAULT NULL,
-  `nombre_de_poste_non_occupe` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
 
@@ -299,17 +294,19 @@ CREATE TABLE IF NOT EXISTS `grade` (
 -- Déchargement des données de la table `grade`
 --
 
-INSERT INTO `grade` (`id`, `libelle`, `nombre_de_poste_non_occupe`) VALUES
-(1, 'grade1', 10),
-(2, 'grade2', 10),
-(5, 'grade5', 10),
-(3, 'grade3', 10),
-(26, 'grade4', 20),
-(6, 'grade6', 10),
-(7, 'grade7', 10),
-(8, 'grade8', 10),
-(109, 'grade9', 10),
-(110, 'grade10', 20);
+INSERT INTO `grade` (`id`, `libelle`) VALUES
+(1, 'grade1'),
+(2, 'grade2'),
+(5, 'grade5'),
+(3, 'grade3'),
+(26, 'grade4'),
+(6, 'grade6'),
+(7, 'grade7'),
+(8, 'grade8'),
+(109, 'grade9'),
+(110, 'grade10'),
+(11, 'gradeExceptionnel'),
+(12, 'hors echelle');
 
 -- --------------------------------------------------------
 
@@ -333,17 +330,12 @@ CREATE TABLE IF NOT EXISTS `grade_employe` (
 --
 
 INSERT INTO `grade_employe` (`id`, `date_de_affectation`, `grade`, `etat`, `doti`) VALUES
-(18, '2020-05-27', 1, 'en traitement', '1628'),
-(20, '2020-05-14', 1, 'en traitement', '1627'),
-(3, '2020-05-19', 1, 'traité', '1628'),
-(22, '2020-05-27', 1, 'en traitement', '1628'),
-(23, '2020-05-14', 1, 'traité', '1627'),
-(54, '2020-05-08', 2, NULL, '1299'),
-(5, '2020-05-12', 3, NULL, '1333'),
-(94, NULL, 26, 'en traitement', '1333'),
-(117, '2020-05-19', 109, NULL, '99EE4527'),
-(121, '2020-05-13', 26, NULL, 'fstg12435'),
-(139, '2020-05-28', 5, 'traité', 'fstg12435');
+(3, '2020-05-19', 1, 'traité', '162811'),
+(221, '2019-03-07', 110, 'traité', '132456'),
+(232, NULL, 11, 'en traitement', '132456'),
+(235, '2019-02-01', 110, 'traité', '749430'),
+(248, '2020-01-07', 110, 'traité', '739140'),
+(253, '2020-02-04', 109, 'traité', '741845');
 
 -- --------------------------------------------------------
 
@@ -361,31 +353,31 @@ CREATE TABLE IF NOT EXISTS `hibernate_sequence` (
 --
 
 INSERT INTO `hibernate_sequence` (`next_val`) VALUES
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
-(142),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
+(276),
 (1),
 (1),
 (1),
@@ -421,7 +413,6 @@ INSERT INTO `hibernate_sequence` (`next_val`) VALUES
 DROP TABLE IF EXISTS `note`;
 CREATE TABLE IF NOT EXISTS `note` (
   `id` bigint(20) NOT NULL,
-  `libelle` varchar(255) DEFAULT NULL,
   `mention` double DEFAULT NULL,
   `remarque` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -431,22 +422,17 @@ CREATE TABLE IF NOT EXISTS `note` (
 -- Déchargement des données de la table `note`
 --
 
-INSERT INTO `note` (`id`, `libelle`, `mention`, `remarque`) VALUES
-(1, 'noteDeAffectationDesTachesLiéeAuTravail', 17.5, 'remarque1'),
-(2, 'noteDeRentabilite', 20, 'remarque2'),
-(3, 'noteDeCapacitéDeOrganisation', 13, 'remarque3'),
-(4, 'noteDeCompotement', 16.4, 'remarque4'),
-(5, 'noteDeRechercheEtDeInnovation', 15, 'remarque5'),
-(78, NULL, 17.5, 'assez bien'),
-(79, NULL, 16, 'bien'),
-(80, NULL, 12, 'assez bien'),
-(81, NULL, 10, 'passable'),
-(82, NULL, 19, 'tres bien'),
-(133, NULL, 18, 'remarque6'),
-(134, NULL, 16, 'bien'),
-(135, NULL, 15, 'assez bien'),
-(136, NULL, 19, 'remaque2'),
-(137, NULL, 20, 'remarque1');
+INSERT INTO `note` (`id`, `mention`, `remarque`) VALUES
+(1, 17.5, 'remarque1'),
+(2, 20, 'remarque2'),
+(3, 13, 'remarque3'),
+(4, 16.4, 'remarque4'),
+(5, 15, 'remarque5'),
+(229, 19, 'super'),
+(228, 18, 'tres bien'),
+(227, 15, 'assez bien'),
+(226, 12, 'bien'),
+(225, 10, 'passable');
 
 -- --------------------------------------------------------
 
@@ -481,12 +467,9 @@ CREATE TABLE IF NOT EXISTS `note_general_de_annee` (
 --
 
 INSERT INTO `note_general_de_annee` (`id`, `date`, `mention`, `moyen_general`, `note_de_affectation_des_taches_liee_au_travail`, `note_de_capacite_de_organisation`, `note_de_compotement`, `note_de_recherche_et_de_innovation`, `note_de_rentabilite`, `etat`, `employe_doti`, `fuul_name`) VALUES
-(1, '2020-05-21', 'mention1', 18.5, 1, 3, 4, 5, 2, 'non traite', '1628', 'hamza bouigrouane'),
-(2, '2020-05-15', 'mention2', 17.5, 1, 3, 4, 5, 2, 'non traite', '1628', 'hamza bouigrouane'),
-(5, '2020-05-16', 'mention5', 16.380000000000003, 1, 3, 4, 5, 2, NULL, '1627', 'hamza shadeau'),
-(6, '2020-05-21', 'mention7', 16.380000000000003, 1, 3, 4, 5, 2, NULL, '1627', 'hamza shadeau'),
-(83, '2020-05-20', NULL, 14.9, 78, 79, 80, 81, 82, 'non traite', '1627', 'hamza shadeau'),
-(138, '2020-05-26', NULL, 17.6, 133, 134, 135, 136, 137, NULL, 'fstg12435', 'ayoub bendrimoU');
+(1, '2020-05-21', 'mention1', 18.5, 1, 3, 4, 5, 2, 'non traite', '162811', 'nabila morabiti'),
+(2, '2020-05-15', 'mention2', 17.5, 1, 3, 4, 5, 2, 'non traite', '162811', 'nabila morabiti'),
+(230, '2020-06-04', 'moyen', 14.8, 225, 226, 227, 228, 229, NULL, '132456', 'Ayoub Bendrimo');
 
 -- --------------------------------------------------------
 
@@ -524,18 +507,37 @@ CREATE TABLE IF NOT EXISTS `notification_employe` (
   `libelle` varchar(255) DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `notification` bigint(20) DEFAULT NULL,
+  `type_notification` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKquie4di0s61lb135uhh85pl53` (`employe`),
-  KEY `FK6eonh5263ksu3s63aj9q8hjhs` (`notification`)
+  KEY `FK6eonh5263ksu3s63aj9q8hjhs` (`notification`),
+  KEY `FK8vb6myrt31ge38mt5cmh7fapf` (`type_notification`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
 
 --
 -- Déchargement des données de la table `notification_employe`
 --
 
-INSERT INTO `notification_employe` (`id`, `date_de_notification`, `libelle`, `employe`, `notification`) VALUES
-(1, '2020-05-14 02:03:06', 'save employe', 2, 1),
-(2, '2020-05-21 03:13:13', 'save note', 2, 1);
+INSERT INTO `notification_employe` (`id`, `date_de_notification`, `libelle`, `employe`, `notification`, `type_notification`) VALUES
+(222, '2020-06-16 19:31:55', 'save salaire employe ', 220, NULL, 1),
+(224, '2020-06-16 19:31:55', 'save employe', 220, NULL, 1),
+(231, '2020-06-16 19:34:26', 'save note', 220, NULL, 1),
+(236, '2020-06-17 14:11:53', 'save salaire employe ', 234, NULL, 1),
+(238, '2020-06-17 14:11:53', 'save employe', 234, NULL, 1),
+(249, '2020-06-17 14:33:58', 'save salaire employe ', 247, NULL, 1),
+(251, '2020-06-17 14:33:58', 'save employe', 247, NULL, 1),
+(254, '2020-06-17 14:38:29', 'save salaire employe ', 252, NULL, 1),
+(256, '2020-06-17 14:38:29', 'save employe', 252, NULL, 1),
+(258, '2020-06-17 14:42:00', 'update conge', 247, NULL, 1),
+(260, '2020-06-17 14:42:41', 'update conge', 234, NULL, 1),
+(262, '2020-06-17 14:53:19', 'update conge', 220, NULL, 1),
+(264, '2020-06-17 14:54:01', 'update conge', 234, NULL, 1),
+(266, '2020-06-17 15:18:10', 'update conge', 247, NULL, 1),
+(268, '2020-06-17 15:29:24', 'update conge', 247, NULL, 1),
+(270, '2020-06-17 16:09:53', 'save demande', 247, NULL, 1),
+(272, '2020-06-17 17:29:30', 'save demande', 247, NULL, 1),
+(273, '2020-06-17 17:31:08', 'imprimer attestation de travail', 247, NULL, 4),
+(274, '2020-06-17 18:02:12', 'save formation', 220, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -548,9 +550,9 @@ CREATE TABLE IF NOT EXISTS `permanence_administrative` (
   `id` bigint(20) NOT NULL,
   `periode` int(11) DEFAULT NULL,
   `periode_de_recuperation` int(11) DEFAULT NULL,
-  `recuperation` bit(1) DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `date` date DEFAULT NULL,
+  `recuperation` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKj511f80de92poew8npmcj6852` (`employe`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
@@ -559,9 +561,8 @@ CREATE TABLE IF NOT EXISTS `permanence_administrative` (
 -- Déchargement des données de la table `permanence_administrative`
 --
 
-INSERT INTO `permanence_administrative` (`id`, `periode`, `periode_de_recuperation`, `recuperation`, `employe`, `date`) VALUES
-(1, 20, 30, b'0', 2, '2020-05-12'),
-(2, 15, 10, b'0', 19, '2020-05-08');
+INSERT INTO `permanence_administrative` (`id`, `periode`, `periode_de_recuperation`, `employe`, `date`, `recuperation`) VALUES
+(1, 20, 30, 2, '2020-05-12', 'oui');
 
 -- --------------------------------------------------------
 
@@ -596,24 +597,11 @@ CREATE TABLE IF NOT EXISTS `prix_employe` (
   `date_de_obtenation` date DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `prix` bigint(20) DEFAULT NULL,
+  `remarque` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKohq70aidpp77w6y6f553v9ro` (`employe`),
   KEY `FK9vp0qil39i0hyarsl1mxbw5ue` (`prix`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
-
---
--- Déchargement des données de la table `prix_employe`
---
-
-INSERT INTO `prix_employe` (`id`, `date_de_obtenation`, `employe`, `prix`) VALUES
-(1, '2020-05-13', 2, 1),
-(2, '2020-05-07', 2, 2),
-(69, '2020-05-06', 2, 1),
-(5, '2020-05-15', 19, 1),
-(6, '2020-05-17', 19, 2),
-(77, '2020-05-16', 19, 1),
-(129, '2020-05-27', 120, 1),
-(130, '2020-05-26', 120, 2);
 
 -- --------------------------------------------------------
 
@@ -649,22 +637,11 @@ CREATE TABLE IF NOT EXISTS `punition_employe` (
   `date_obtenation` date DEFAULT NULL,
   `employe` bigint(20) DEFAULT NULL,
   `punition` bigint(20) DEFAULT NULL,
+  `remarque` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKpej5xp47xku0yd4iv1j9gynug` (`employe`),
   KEY `FKrf9p9v19jckk2f91p2mqbq5q1` (`punition`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
-
---
--- Déchargement des données de la table `punition_employe`
---
-
-INSERT INTO `punition_employe` (`id`, `date_obtenation`, `employe`, `punition`) VALUES
-(1, '2020-05-14', 2, 1),
-(2, '2020-05-08', 2, 2),
-(5, '2020-05-18', 19, 1),
-(6, '2020-05-19', 19, 2),
-(131, '2020-05-19', 120, 1),
-(132, '2020-05-25', 120, 2);
 
 -- --------------------------------------------------------
 
@@ -691,9 +668,7 @@ CREATE TABLE IF NOT EXISTS `rapport_de_evaluation` (
 
 INSERT INTO `rapport_de_evaluation` (`id`, `mention`, `moyen`, `remarques`, `nouveau_grade`, `employe`) VALUES
 (1, 'mention1', 18.5, 'remarque1', 3, 2),
-(75, 'rapide', 18.5, NULL, 74, 19),
-(95, NULL, NULL, NULL, 94, 56),
-(140, 'rapide', 17.6, NULL, 139, 120);
+(233, 'moyen', 14.8, NULL, 232, 220);
 
 -- --------------------------------------------------------
 
@@ -708,18 +683,6 @@ CREATE TABLE IF NOT EXISTS `rapport_de_evaluation_formation` (
   UNIQUE KEY `UK_1ycsc7lim6qiqv7jyv9hx6oqy` (`formation`),
   KEY `FKrkc6txg4vxyupijk4hn9ryarf` (`rapport_de_evaluation_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
-
---
--- Déchargement des données de la table `rapport_de_evaluation_formation`
---
-
-INSERT INTO `rapport_de_evaluation_formation` (`rapport_de_evaluation_id`, `formation`) VALUES
-(1, 1),
-(1, 2),
-(75, 5),
-(75, 7),
-(140, 127),
-(140, 128);
 
 -- --------------------------------------------------------
 
@@ -740,11 +703,7 @@ CREATE TABLE IF NOT EXISTS `rapport_de_evaluation_note_generale` (
 --
 
 INSERT INTO `rapport_de_evaluation_note_generale` (`rapport_de_evaluation_id`, `note_generale`) VALUES
-(1, 1),
-(1, 2),
-(75, 5),
-(75, 6),
-(140, 138);
+(233, 230);
 
 -- --------------------------------------------------------
 
@@ -760,18 +719,6 @@ CREATE TABLE IF NOT EXISTS `rapport_de_evaluation_prix` (
   KEY `FKcv8scksd2e6pforpge73fcm6p` (`rapport_de_evaluation_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
 
---
--- Déchargement des données de la table `rapport_de_evaluation_prix`
---
-
-INSERT INTO `rapport_de_evaluation_prix` (`rapport_de_evaluation_id`, `prix`) VALUES
-(1, 1),
-(1, 2),
-(75, 6),
-(75, 77),
-(140, 129),
-(140, 130);
-
 -- --------------------------------------------------------
 
 --
@@ -785,18 +732,6 @@ CREATE TABLE IF NOT EXISTS `rapport_de_evaluation_punition` (
   UNIQUE KEY `UK_r7j0ek2wpagmswoa1yxe9lw49` (`punition`),
   KEY `FK2yb24apv7slp55jqgce2aopwo` (`rapport_de_evaluation_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf16;
-
---
--- Déchargement des données de la table `rapport_de_evaluation_punition`
---
-
-INSERT INTO `rapport_de_evaluation_punition` (`rapport_de_evaluation_id`, `punition`) VALUES
-(1, 1),
-(1, 2),
-(75, 6),
-(75, 5),
-(140, 131),
-(140, 132);
 
 -- --------------------------------------------------------
 
@@ -860,10 +795,11 @@ CREATE TABLE IF NOT EXISTS `salaire_employe` (
 
 INSERT INTO `salaire_employe` (`id`, `monatnt_modifie`, `salaire_net`, `allocation_de_encadrement`, `allocation_de_enseignement`, `assurance_maladie_obligatoire`, `caisse_marocaine_deretrait`, `employe`, `idem_de_la_residence`, `idem_famialiele_marocaine`, `impot_sur_le_revenu`, `mutuelle_caisse_retrait_et_deces`) VALUES
 (1, 2400, 1300, 3, 4, 3, 4, 2, 2, 1, 2, 1),
-(55, 4500, 4500, 3, 4, 3, 4, 53, 2, 1, 2, 1),
-(58, 5000, 5000, 3, 4, 3, 4, 56, 2, 1, 2, 1),
-(118, 8000, 8000, 3, 4, 3, 4, 116, 2, 1, 2, 1),
-(122, 5500, 5500, 3, 4, 3, 4, 120, 2, 1, 2, 1);
+(218, 9200, 8500, 3, 4, 3, 4, 215, 2, 1, 2, 1),
+(223, 9200, 8500, 3, 4, 3, 4, 220, 2, 1, 2, 1),
+(237, 8000, 8500, 3, 4, 3, 4, 234, 2, 1, 2, 1),
+(250, 9200, 8500, 3, 4, 3, 4, 247, 2, 1, 2, 1),
+(255, 8700, 8000, 3, 4, 3, 4, 252, 2, 1, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -884,9 +820,9 @@ CREATE TABLE IF NOT EXISTS `type_congee` (
 
 INSERT INTO `type_congee` (`id`, `libelle`) VALUES
 (1, 'certificat long duree'),
-(2, 'certificat court duree'),
+(2, 'certificat court duree 3 mois'),
 (3, 'conge exceptionnel'),
-(4, 'sans solde');
+(4, 'certificat court duree 6 mois');
 
 -- --------------------------------------------------------
 
@@ -912,6 +848,32 @@ INSERT INTO `type_document` (`id`, `libelle`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `type_notification`
+--
+
+DROP TABLE IF EXISTS `type_notification`;
+CREATE TABLE IF NOT EXISTS `type_notification` (
+  `id` bigint(20) NOT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf16;
+
+--
+-- Déchargement des données de la table `type_notification`
+--
+
+INSERT INTO `type_notification` (`id`, `type`) VALUES
+(1, 'save'),
+(2, 'update'),
+(3, 'delete'),
+(4, 'imprimer'),
+(6, 'note aujourdhui'),
+(7, 'avancement aujourdhui'),
+(8, 'évaluation aujourdhui');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `user`
 --
 
@@ -932,7 +894,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 --
 
 INSERT INTO `user` (`id`, `login`, `password`, `bloqued`, `date_bloquage`, `nbr_tentatif_restant`, `pwd`) VALUES
-(1, 'bendrimou@gmail.com', '683ddff5d298e8540a4e15e12ee56b67c3822c3a80d25e8fc9c647983028cbd1', b'0', '2020-05-07 16:09:32', 1, '385dc06b15cfcb8250bc2968d70ba6f6ae5889859199fa8b927dfa972d0d97dc');
+(1, 'shadeau99@gmail.com', '683ddff5d298e8540a4e15e12ee56b67c3822c3a80d25e8fc9c647983028cbd1', b'0', '2020-06-02 14:28:55', 3, 'e2666660bfa5e9fff544956ad7b2f8af80dc94b31ae44dbd13e0531b62e5519c');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

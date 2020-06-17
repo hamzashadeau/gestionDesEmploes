@@ -25,6 +25,11 @@ public class PunitionEmployeRest {
 @Autowired
 private PunitionEmployeService punitionEmployeService;
 
+@PostMapping("listeDesPunitionsExcel")
+public int listeDesPunitionsExcel(@RequestBody List<PunitionEmploye> punitionEmployes) {
+	return punitionEmployeService.listeDesPunitionsExcel(punitionEmployes);
+}
+
 @PostMapping("update")
 public int update(@RequestBody PunitionEmploye punitionEmploye) {
 	return punitionEmployeService.update(punitionEmploye);
@@ -35,9 +40,9 @@ public int listeDespunitionsPdf(@RequestBody ArrayList<PunitionEmploye> punition
 	return punitionEmployeService.listeDespunitionsPdf(punitionEmployes);
 }
 
-@GetMapping("findPunitionDeEmploye")
-public List<PunitionEmploye> findPunitionDeEmploye(@RequestBody Employe employe) {
-	return punitionEmployeService.findPunitionDeEmploye(employe);
+@GetMapping("findPunitionDeEmploye/doti/{doti}")
+public List<PunitionEmploye> findPunitionDeEmploye(@PathVariable String doti) {
+	return punitionEmployeService.findPunitionDeEmploye(doti);
 }
 
 @GetMapping("findByPunitionType/type/{type}")

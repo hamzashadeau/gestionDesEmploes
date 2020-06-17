@@ -15,8 +15,10 @@ public interface NoteGeneraleService {
 	List<NoteGeneralDeAnnee> findAll();
 	int save(NoteGeneralDeAnnee noteGeneralDeAnnee);
 	int deleteById(Long id);
-	public List<NoteGeneralDeAnnee> findNoteDeEmploye(Employe employe);
+	public List<NoteGeneralDeAnnee> findNoteDeEmploye(String doti);
 	List<NoteGeneralDeAnnee> findByEtat(String etat);
 	List<NoteGeneralDeAnnee> findNoteNonTraite(String etat);
 	public int RapportDesNoteePdf(NoteGeneralDeAnnee note) throws DocumentException, FileNotFoundException;
+	public int listeDeEmployeAyantBesoinDUneNoteExcel(List<Employe> employes);
+	public int listeDeEmployeAyantBesoinDUneNotePDF(List<Employe> employes ) throws FileNotFoundException, DocumentException;
 }

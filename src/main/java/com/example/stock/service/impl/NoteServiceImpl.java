@@ -53,10 +53,7 @@ public List<Note> findByMention(Double metion) {
 	return noteDao.findByMention(metion);
 }
 
-@Override
-public List<Note> findByLibelle(String libelle) {
-	return noteDao.findByLibelle(libelle);
-}
+
 
 
 }

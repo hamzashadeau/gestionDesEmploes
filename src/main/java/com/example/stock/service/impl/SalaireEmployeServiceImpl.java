@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.SalaireEmployeDao;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.SalaireEmploye;
 import com.example.stock.service.facade.NotificationEmployeService;
@@ -28,8 +28,8 @@ public int save(SalaireEmploye salaireEmploye) {
 	if(salaireEmploye.getId()!= null) {
 return -1;
 }else {
-	Notification notification = notificationService.findByType("save");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "save salaire employe ");
+	TypeNotification typeNotification = notificationService.findByType("save");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, salaireEmploye.getEmploye(), new Date(), "save salaire employe ");
 	notificationEmployeService.save(notificationEmploye);
 	salaireEmployeDao.save(salaireEmploye);
 		return 1;
@@ -40,8 +40,8 @@ public int update(SalaireEmploye salaireEmploye) {
 	if(salaireEmploye.getId() == null) {
 return -1;
 }else {
-	Notification notification = notificationService.findByType("update");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "update salaire employe ");
+	TypeNotification typeNotification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, salaireEmploye.getEmploye(), new Date(), "update salaire employe ");
 	notificationEmployeService.save(notificationEmploye);
 	salaireEmployeDao.save(salaireEmploye);
 		return 1;
@@ -59,8 +59,8 @@ public SalaireEmploye findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	SalaireEmploye salaireEmploye = findByid(id);
-	Notification notification = notificationService.findByType("delete");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(notification, salaireEmploye.getEmploye(), new Date(), "delete salaire employe ");
+	TypeNotification typeNotification = notificationService.findByType("delete");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, salaireEmploye.getEmploye(), new Date(), "delete salaire employe ");
 	notificationEmployeService.save(notificationEmploye);
 	salaireEmployeDao.deleteById(id);
 	if (findByid(id) == null) {

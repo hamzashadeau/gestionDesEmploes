@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.service.facade.NotificationService;
 @RestController
 @CrossOrigin("http://localhost:4200")
@@ -22,20 +22,20 @@ public class NotificationRest {
 private NotificationService notificationService;
 
 @GetMapping("findByid/id/{id}")
-public Notification findByid(@PathVariable Long id) {
+public TypeNotification findByid(@PathVariable Long id) {
 	return notificationService.findByid(id);
 }
 @GetMapping("findByLibelle/type/{type}")
-public Notification findByType(@PathVariable String libelle) {
+public TypeNotification findByType(@PathVariable String libelle) {
 	return notificationService.findByType(libelle);
 }
 
 @GetMapping("findAll")
-public List<Notification> findAll() {
+public List<TypeNotification> findAll() {
 	return notificationService.findAll();
 }
 @PostMapping("save")
-public int save(@RequestBody Notification fonction) {
+public int save(@RequestBody TypeNotification fonction) {
 	return notificationService.save(fonction);
 }
 @DeleteMapping("deleteById/id/{id}")

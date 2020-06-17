@@ -26,6 +26,20 @@ public class NoteGeneraleRest {
 @Autowired
 private NoteGeneraleService noteGeneralDeAnneeService;
 
+
+@PostMapping("listeDeEmployeAyantBesoinDUneNoteExcel")
+public int listeDeEmployeAyantBesoinDUneNoteExcel(@RequestBody List<Employe> employes) {
+	return noteGeneralDeAnneeService.listeDeEmployeAyantBesoinDUneNoteExcel(employes);
+}
+
+
+@PostMapping("listeDeEmployeAyantBesoinDUneNotePDF")
+public int listeDeEmployeAyantBesoinDUneNotePDF(@RequestBody List<Employe> employes)
+		throws FileNotFoundException, DocumentException {
+	return noteGeneralDeAnneeService.listeDeEmployeAyantBesoinDUneNotePDF(employes);
+}
+
+
 @PostMapping("RapportDesNoteePdf")
 public int RapportDesNoteePdf(@RequestBody NoteGeneralDeAnnee note) throws DocumentException, FileNotFoundException {
 	return noteGeneralDeAnneeService.RapportDesNoteePdf(note);
@@ -38,9 +52,9 @@ public List<NoteGeneralDeAnnee> findNoteNonTraite(String etat) {
 }
 
 
-@PostMapping("findNoteDeEmploye")
-public List<NoteGeneralDeAnnee> findNoteDeEmploye(@RequestBody Employe employe) {
-	return noteGeneralDeAnneeService.findNoteDeEmploye(employe);
+@GetMapping("findNoteDeEmploye/doti/{doti}")
+public List<NoteGeneralDeAnnee> findNoteDeEmploye(@PathVariable String doti) {
+	return noteGeneralDeAnneeService.findNoteDeEmploye(doti);
 }
 
 

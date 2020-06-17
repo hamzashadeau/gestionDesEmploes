@@ -21,10 +21,6 @@ public class NoteRest {
 @Autowired
 private NoteService noteService;
 
-@GetMapping("findByLibelle/libelle/{libelle}")
-public List<Note> findByLibelle(@PathVariable String libelle) {
-	return noteService.findByLibelle(libelle);
-}
 
 
 @GetMapping("findByMention/metion/{metion}")

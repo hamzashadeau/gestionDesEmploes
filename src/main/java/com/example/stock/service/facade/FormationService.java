@@ -23,9 +23,10 @@ public interface FormationService {
 
 	public Formation findByid(Long id);
 
-	public List<Formation> findFormationDeEmploye(Employe employe);
+	public List<Formation> findFormationDeEmploye(String doti);
 
 	public int listeDesFormationsPdf(ArrayList<Formation> formations) throws DocumentException, FileNotFoundException;
 
 	public int update(Formation formation);
+	public int listeDesFormationsExcel(List<Formation> formations);
 }

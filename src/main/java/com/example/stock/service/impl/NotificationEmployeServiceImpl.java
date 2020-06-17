@@ -1,6 +1,8 @@
 package com.example.stock.service.impl;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -21,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.NotificationEmployeDao;
+import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.service.facade.NotificationEmployeService;
 
@@ -83,6 +86,7 @@ public List<NotificationEmploye> findByemployeDoti(String doti) {
 public List<NotificationEmploye> findByDateDeNotification(Date dateDeObtenation) {
 	return notificationEmployeDao.findByDateDeNotification(dateDeObtenation);
 }
+
 @Override
 public int sendmail(String email, String subject,String content) throws AddressException, MessagingException, IOException {
 	   Properties props = new Properties();
@@ -117,4 +121,32 @@ public int sendmail(String email, String subject,String content) throws AddressE
 	   Transport.send(msg);  
 	   return 1;
 	}
+
+@Override
+public List<NotificationEmploye> findNotificationAujourdhui() {
+	String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	List<NotificationEmploye> notificationEmployes = findAll();
+	List<NotificationEmploye> resultat = new ArrayList<NotificationEmploye>();
+	notificationEmployes.forEach( not ->{
+		
+		if(simpleDateFormat.format(not.getDateDeNotification()).equals(simpleDateFormat.format(new Date()))) {
+			resultat.add(not);
+		}
+	});
+	return resultat;
+}
+@Override
+public List<NotificationEmploye> findNotificationPaDate(Date date) {
+	String pattern = "yyyy-MM-dd";
+	 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+	List<NotificationEmploye> notificationEmployes = findAll();
+	List<NotificationEmploye> resultat = new ArrayList<NotificationEmploye>();
+	notificationEmployes.forEach( not ->{
+		if(simpleDateFormat.format(not.getDateDeNotification()).equals(simpleDateFormat.format(date))) {
+			resultat.add(not);
+		}
+	});
+	return resultat;
+}
 }

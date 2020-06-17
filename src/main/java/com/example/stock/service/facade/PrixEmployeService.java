@@ -23,7 +23,9 @@ public interface PrixEmployeService {
 
 	int deleteById(Long id);
 
-	public List<PrixEmploye> findPrixDeEmploye(Employe employe);
+	public List<PrixEmploye> findPrixDeEmploye(String doti);
+
+	public int listeDesPrixExcel(List<PrixEmploye> prixEmployes);
 
 	public int listeDesPrixPdf(ArrayList<PrixEmploye> prixEmployes) throws DocumentException, FileNotFoundException;
 }

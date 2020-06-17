@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.stock.Dao.NotificationDao;
-import com.example.stock.bean.Notification;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.service.facade.NotificationService;
 
 @Service
@@ -16,17 +16,17 @@ private NotificationDao notificationDao;
 
 
 @Override
-public int save(Notification notification) {
-	if(findByid(notification.getId())!= null) {
+public int save(TypeNotification typeNotification) {
+	if(findByid(typeNotification.getId())!= null) {
 return -1;
 }else {
-	notificationDao.save(notification);
+	notificationDao.save(typeNotification);
 		return 1;
 }
 	}
 
 @Override
-public Notification findByid(Long id) {
+public TypeNotification findByid(Long id) {
 	if (notificationDao.findById(id).isPresent()) {
 		return notificationDao.findById(id).get();
 	} else
@@ -43,12 +43,12 @@ public int deleteById(Long id) {
 }
 
 @Override
-public Notification findByType(String type) {
+public TypeNotification findByType(String type) {
 	return notificationDao.findByType(type);
 }
 
 @Override
-public List<Notification> findAll() {
+public List<TypeNotification> findAll() {
 	return notificationDao.findAll();
 }
 

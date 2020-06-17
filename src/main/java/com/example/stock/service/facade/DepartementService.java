@@ -16,4 +16,5 @@ public interface DepartementService {
 	int nombreDesDepartements();
 	public int listedepartementPdf() throws DocumentException, FileNotFoundException;
 	public int update(Departement departement);
+	public int listeDesGradesEmployesExcel();
 }

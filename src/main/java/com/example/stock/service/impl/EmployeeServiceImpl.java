@@ -1,5 +1,6 @@
 package com.example.stock.service.impl;
 
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,11 +11,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.soap.SAAJMetaFactory;
-
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.stock.Dao.DepartementDao;
 import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Utilis.DateUlils;
@@ -26,12 +30,12 @@ import com.example.stock.bean.Formation;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.NoteGeneralDeAnnee;
-import com.example.stock.bean.Notification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.service.facade.CongeService;
 import com.example.stock.service.facade.DepartementService;
 import com.example.stock.service.facade.EmolumentsService;
@@ -49,6 +53,7 @@ import com.example.stock.service.facade.RapportDeEvaluationService;
 import com.example.stock.service.facade.RevenuService;
 import com.example.stock.service.facade.SalaireEmployeService;
 import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -59,8 +64,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-
-import javafx.scene.control.Label;
 
 @Service
 public class EmployeeServiceImpl implements EmployeService {
@@ -98,6 +101,8 @@ public class EmployeeServiceImpl implements EmployeService {
 	private CongeService congeService;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private DepartementDao departementDao;
 	@Override
 	public List<Employe> findAll() {
 		return employeDao.findAll();
@@ -115,7 +120,7 @@ public class EmployeeServiceImpl implements EmployeService {
 
 	@Override
 	public int save(Employe employe) {
-		if ((!validate(employe.getFirstName(), "[a-zA-Z]*")) || (!validate(employe.getLastName(), "[a-zA-Z]*"))){
+		if ((!validate(employe.getFirstName(), "[a-zA-Z ]*")) || (!validate(employe.getLastName(), "[a-zA-Z ]*"))){
 			return -1;
 		} else if(!validate(employe.getEmail(),"[a-zA-Z0-9][a-zA-Z0-9._]*@[a-zA-Z0-9]+([.][a-zA-Z]+)+")) {
 			return -2;
@@ -138,8 +143,12 @@ public class EmployeeServiceImpl implements EmployeService {
 		gradeEmploye.setDoti(employe.getDoti());
 		employe.setDateAvancementPrevue(null);
 		//sup employe
-		if(employe.getFonction().getLibelle().startsWith("chef département")) {
+		if(employe.getFonction().getLibelle().startsWith("chef")) {
+			System.out.println("ha howa chef");
 			employe.setSup(null);
+			dep.setChefdoti(employe.getDoti());
+			dep.setFullname(employe.getFirstName() +" "+ employe.getLastName());
+			departementDao.save(dep);
 		}else {
 			employe.setSup(employeDao.findByDoti(dep.getChefdoti()));
 		}
@@ -187,8 +196,8 @@ public class EmployeeServiceImpl implements EmployeService {
 		salaireEmployeService.save(salaireEmploye);
 		// save employe
 		employeDao.save(employe);
-		Notification notification = notificationService.findByType("save");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "save employe");
+		TypeNotification typeNotification = notificationService.findByType("save");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "save employe");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
@@ -239,8 +248,8 @@ public class EmployeeServiceImpl implements EmployeService {
 			}			
 			employe.setSup(findByDoti(dep.getChefdoti()));
 			employeDao.save(employe);
-			Notification notification = notificationService.findByType("update");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "update employe");
+			TypeNotification typeNotification = notificationService.findByType("update");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe , new Date(), "update employe");
 			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}
@@ -259,9 +268,6 @@ public class EmployeeServiceImpl implements EmployeService {
 		if (employe.getSup() == null) {
 			return -2;
 		} else {
-			Notification notification = notificationService.findByType("delete");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe , new Date(), "delete employe");
-			notificationEmployeService.save(notificationEmploye);
 			List<GradeEmploye> gradeEmployes = gradeEmployeService.findByDoti(employe.getDoti());
 			gradeEmployes.forEach(grade -> {
 				gradeEmployeService.deleteById(grade.getId());
@@ -389,7 +395,7 @@ public class EmployeeServiceImpl implements EmployeService {
 	public List<Employe> findLesEmployeAyantEvaluationAujourdHui() {
 		Date dateAujourdHui = new Date();
 		List<Employe> employes = findAll();
-		Notification notification = new Notification("evaluation est ahjourd'ui");
+		TypeNotification typeNotification = new TypeNotification("evaluation est ahjourd'ui");
 		List<Employe> resultat = new ArrayList<Employe>();
 		for (Employe employe : employes) {
 			if (employe.getDateProchainEvaluation() == dateAujourdHui) {
@@ -397,7 +403,7 @@ public class EmployeeServiceImpl implements EmployeService {
 				NotificationEmploye notificationEmploye = new NotificationEmploye();
 				notificationEmploye.setDateDeNotification(dateAujourdHui);
 				notificationEmploye.setEmploye(employe);
-				notificationEmploye.setNotification(notification);
+				notificationEmploye.setNotification(typeNotification);
 				notificationEmploye.setLibelle("non lus");
 			}
 		}
@@ -408,7 +414,7 @@ public class EmployeeServiceImpl implements EmployeService {
 	public List<Employe> findLesEmployeAyantAvancementAujourdHui() {
 		Date dateAujourdHui = new Date();
 		List<Employe> employes = findAll();
-		Notification notification = new Notification("avancement est Anjourd'hui");
+		TypeNotification typeNotification = new TypeNotification("avancement est Anjourd'hui");
 		List<Employe> resultat = new ArrayList<Employe>();
 		for (Employe employe : employes) {
 			if (employe.getDateProchainEvaluation() != null && DateUlils.VerifieDate(employe.getDateProchainEvaluation())) {
@@ -417,7 +423,7 @@ public class EmployeeServiceImpl implements EmployeService {
 				NotificationEmploye notificationEmploye = new NotificationEmploye();
 				notificationEmploye.setDateDeNotification(dateAujourdHui);
 				notificationEmploye.setEmploye(employe);
-				notificationEmploye.setNotification(notification);
+				notificationEmploye.setNotification(typeNotification);
 				notificationEmploye.setLibelle("non lus");
 				//grade emplye
 				GradeEmploye gradeEmploye = new GradeEmploye();
@@ -429,15 +435,15 @@ public class EmployeeServiceImpl implements EmployeService {
 				RapportDeEvaluation rapportDeEvaluation = new RapportDeEvaluation();
 				rapportDeEvaluation.setEmploye(employe);
 							// notes 
-			rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe));
+			rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe.getDoti()));
 							//formation
-			rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe));
+			rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(employe.getDoti()));
 							//Punition
-			rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe));
+			rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(employe.getDoti()));
 							//prix
-			rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe));
+			rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(employe.getDoti()));
 							//moyen
-			rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe)));
+			rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
 			//moyen
 			rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 			rapportDeEvaluationService.save(rapportDeEvaluation);
@@ -447,8 +453,7 @@ public class EmployeeServiceImpl implements EmployeService {
 		}
 		return resultat;
 	}
-	//getMoyenNote
-public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
+	public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	Double somme = null;
 	for (NoteGeneralDeAnnee noteGeneralDeAnnee : notes) {
 		somme += noteGeneralDeAnnee.getMoyenGeneral();
@@ -487,7 +492,6 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	public List<Employe> findByDernierGradeGradeLibelle(String libelle) {
 		return employeDao.findByDernierGradeGradeLibelle(libelle);
 	}
-	//get salaire par grade
 	public static Double getSalaireParGrade(Grade grade) {
 		Double salaire = null;
 		switch (grade.getLibelle()) {
@@ -521,10 +525,46 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		case "grade10":
 			salaire = 8500.00;
 			break;
+		case "gradeExceptionnel":
+			salaire = 9000.00;
+			break;
+		case "hors echelle":
+			salaire = 10000.00;
+			break;
 		}
 		return salaire;
 	}
-	
+	public int listeDesEmployeParGradeExcel(List<Employe> employes) {
+		Workbook workbook = new XSSFWorkbook();
+	      Sheet sheet = workbook.createSheet("Liste employes Par Grade");
+		Row header = sheet.createRow(0);
+	      header.createCell(0).setCellValue("Cin");
+	      header.createCell(1).setCellValue("Numero");
+	      header.createCell(2).setCellValue("Prenom");
+	      header.createCell(3).setCellValue("Nom");
+	      header.createCell(4).setCellValue("Email");
+
+	      int rowNum = 1;
+	     for (Employe employe : employes) {
+	         Row row = sheet.createRow(rowNum++);
+	         row.createCell(0).setCellValue(employe.getCin());
+	         row.createCell(1).setCellValue(employe.getDoti());
+	         row.createCell(2).setCellValue(employe.getFirstName());
+	         row.createCell(3).setCellValue(employe.getLastName());
+	         row.createCell(4).setCellValue(employe.getEmail());
+		}
+	     String fileLocation = "C:/Users/hp/Desktop/";
+	     try {
+		     FileOutputStream outputStream = new FileOutputStream(fileLocation + "Liste employes Par Grade.xlsx");
+			workbook.write(outputStream);
+		     workbook.close();
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	     return 1;
+	}
 	//liste Des Employe De grade Pdf
 		public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
 			String grade= null;
@@ -533,67 +573,59 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 				grade = employe.getDernierGrade().getGrade().getLibelle();
 				employe2= employe;
 			}
+		     String fileLocation = "C:/Users/hp/Desktop/";
+
 				Document document = new Document();
-			PdfWriter.getInstance(document, new FileOutputStream(grade + "listeEmployes.pdf")); 
+			PdfWriter.getInstance(document, new FileOutputStream(fileLocation + grade + "listeEmployes.pdf")); 
 			
 			document.open();
-			Image img,img1;
-			try {
-				img = Image.getInstance("fstgIcone.png");
-				img.setAlignment(Element.ALIGN_TOP);
-				img.setAlignment(Element.ALIGN_LEFT);
-				document.add(img);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
-			Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-			Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + grade + " \n\r\n", font);
+			Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+			Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+			"Faculté des Sciences et Techniques"
+							+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+			p0.setAlignment(Element.ALIGN_LEFT);
+			document.add(p0);
+			Font font2 = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
+			Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + grade + " \n\r\n", font2);
 			p1.setAlignment(Element.ALIGN_CENTER);
 			document.add(p1);
 
 		    
-		    PdfPTable table = new PdfPTable(9); // 3 columns.
+		    PdfPTable table = new PdfPTable(new float[] { 15,15,15,15, 40}); // 3 columns.
+		    table.setWidthPercentage(100);
 
-		    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
-		    PdfPCell cell2 = new PdfPCell(new Paragraph("cin"));
-		    PdfPCell cell3 = new PdfPCell(new Paragraph("doti"));
-		    PdfPCell cell4 = new PdfPCell(new Paragraph("email"));
-		    PdfPCell cell5 = new PdfPCell(new Paragraph("adress"));
-		    PdfPCell cell6 = new PdfPCell(new Paragraph("tel"));
-		    PdfPCell cell7 = new PdfPCell(new Paragraph("departement"));
-		    PdfPCell cell8 = new PdfPCell(new Paragraph("fonction"));
-		    PdfPCell cell9 = new PdfPCell(new Paragraph("grade"));
+
+		    PdfPCell cell1 = new PdfPCell(new Paragraph("Cin"));
+		    cell1.setBackgroundColor(BaseColor.GRAY);
+		    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		    PdfPCell cell2 = new PdfPCell(new Paragraph("Numero"));
+		    cell2.setBackgroundColor(BaseColor.GRAY);
+		    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+		    PdfPCell cell3 = new PdfPCell(new Paragraph("Prenom"));
+		    cell3.setBackgroundColor(BaseColor.GRAY);
+		    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+		    PdfPCell cell4 = new PdfPCell(new Paragraph("Nom"));
+		    cell4.setBackgroundColor(BaseColor.GRAY);
+		    cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+		    PdfPCell cell5 = new PdfPCell(new Paragraph("email"));
+		    cell5.setBackgroundColor(BaseColor.GRAY);
+		    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
 		    table.addCell(cell1);
 		    table.addCell(cell2);
 		    table.addCell(cell3);
 		    table.addCell(cell4);
 		    table.addCell(cell5);
-		    table.addCell(cell6);
-		    table.addCell(cell7);
-		    table.addCell(cell8);
-		    table.addCell(cell9);
 		    for (Employe employe : employes) {
-			    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
-			    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
-			    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+			    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+			    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+			    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getFirstName()));
+			    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getLastName()));
 			    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
-			    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getAdresse()));
-			    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getTel().toString()));
-			    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getDep().getNom()));
-			    PdfPCell cell17 = new PdfPCell(new Paragraph(employe.getFonction().getLibelle()));
-			    PdfPCell cell18 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));		
 			    table.addCell(cell10);
 			    table.addCell(cell11);
-			    table.addCell(cell12);
-			    table.addCell(cell13);
 			    table.addCell(cell14);
 			    table.addCell(cell15);
-			    table.addCell(cell16);
-			    table.addCell(cell17);
-			    table.addCell(cell18);
+			    table.addCell(cell13);
 			}
 
 		  document.add(table);
@@ -610,17 +642,46 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 		   p20.setAlignment(Element.ALIGN_LEFT);
 		   document.add(p20);
 		    document.close();
-			Notification notification = notificationService.findByType("imprimer");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe2 , new Date(), "imprimer grade employe");
+			TypeNotification typeNotification = notificationService.findByType("imprimer");
+			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe2 , new Date(), "imprimer grade employe");
 			notificationEmployeService.save(notificationEmploye);
 			return 1;
 		}	
+		public int listeDesEmployeParDepartementExcel(List<Employe> employes) {
+			Workbook workbook = new XSSFWorkbook();
+		      Sheet sheet = workbook.createSheet("Liste employes Par Departement");
+			Row header = sheet.createRow(0);
+		      header.createCell(0).setCellValue("Cin");
+		      header.createCell(1).setCellValue("Numero");
+		      header.createCell(2).setCellValue("Prenom");
+		      header.createCell(3).setCellValue("Nom");
+		      header.createCell(4).setCellValue("Email");
 
+		      int rowNum = 1;
+		     for (Employe employe : employes) {
+		         Row row = sheet.createRow(rowNum++);
+		         row.createCell(0).setCellValue(employe.getCin());
+		         row.createCell(1).setCellValue(employe.getDoti());
+		         row.createCell(2).setCellValue(employe.getFirstName());
+		         row.createCell(3).setCellValue(employe.getLastName());
+		         row.createCell(4).setCellValue(employe.getEmail());
+			}
+		     String fileLocation = "C:/Users/hp/Desktop/";
+		     try {
+			     FileOutputStream outputStream = new FileOutputStream(fileLocation + "Liste employes Par Departement.xlsx");
+				workbook.write(outputStream);
+			     workbook.close();
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		     return 1;
+		}
 	
 	
 	
 	
-	//liste Des Employe De Departement Pdf
 	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException {
 		String depatrement= null;
 		Employe employe2 = new Employe();
@@ -629,66 +690,60 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 			employe2 = employe;
 		}
 			Document document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream(depatrement + "listeEmployes.pdf")); 
+		     String fileLocation = "C:/Users/hp/Desktop/";
+
+		PdfWriter.getInstance(document, new FileOutputStream(fileLocation +depatrement + "listeEmployes.pdf")); 
 		
 		document.open();
-		Image img,img1;
-		try {
-			img = Image.getInstance("fstgIcone.png");
-			img.setAlignment(Element.ALIGN_TOP);
-			img.setAlignment(Element.ALIGN_LEFT);
-			document.add(img);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+		Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+		"Faculté des Sciences et Techniques"
+						+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+		p0.setAlignment(Element.ALIGN_LEFT);
+		document.add(p0);
+		Font font2 = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
 		
 		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + depatrement + " \n\r\n", font);
+		Paragraph p1 = new Paragraph("\n\t liste des employes de departement :" + depatrement + " \n\r\n", font2);
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
 
 	    
-	    PdfPTable table = new PdfPTable(9); // 3 columns.
+	    PdfPTable table = new PdfPTable(new float[] { 15,15,15,15, 40}); // 3 columns.
+	    table.setWidthPercentage(100);
 
-	    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
-	    PdfPCell cell2 = new PdfPCell(new Paragraph("cin"));
-	    PdfPCell cell3 = new PdfPCell(new Paragraph("doti"));
-	    PdfPCell cell4 = new PdfPCell(new Paragraph("email"));
-	    PdfPCell cell5 = new PdfPCell(new Paragraph("adress"));
-	    PdfPCell cell6 = new PdfPCell(new Paragraph("tel"));
-	    PdfPCell cell7 = new PdfPCell(new Paragraph("departement"));
-	    PdfPCell cell8 = new PdfPCell(new Paragraph("fonction"));
-	    PdfPCell cell9 = new PdfPCell(new Paragraph("grade"));
+
+	    PdfPCell cell1 = new PdfPCell(new Paragraph("Cin"));
+	    cell1.setBackgroundColor(BaseColor.GRAY);
+	    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell2 = new PdfPCell(new Paragraph("Numero"));
+	    cell2.setBackgroundColor(BaseColor.GRAY);
+	    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell3 = new PdfPCell(new Paragraph("Prenom"));
+	    cell3.setBackgroundColor(BaseColor.GRAY);
+	    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell4 = new PdfPCell(new Paragraph("Nom"));
+	    cell4.setBackgroundColor(BaseColor.GRAY);
+	    cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell5 = new PdfPCell(new Paragraph("email"));
+	    cell5.setBackgroundColor(BaseColor.GRAY);
+	    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    table.addCell(cell1);
 	    table.addCell(cell2);
 	    table.addCell(cell3);
 	    table.addCell(cell4);
 	    table.addCell(cell5);
-	    table.addCell(cell6);
-	    table.addCell(cell7);
-	    table.addCell(cell8);
-	    table.addCell(cell9);
 	    for (Employe employe : employes) {
-		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
-		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
-		    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getFirstName()));
+		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getLastName()));
 		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
-		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getAdresse()));
-		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getTel().toString()));
-		    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getDep().getNom()));
-		    PdfPCell cell17 = new PdfPCell(new Paragraph(employe.getFonction().getLibelle()));
-		    PdfPCell cell18 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));		
 		    table.addCell(cell10);
 		    table.addCell(cell11);
-		    table.addCell(cell12);
-		    table.addCell(cell13);
 		    table.addCell(cell14);
 		    table.addCell(cell15);
-		    table.addCell(cell16);
-		    table.addCell(cell17);
-		    table.addCell(cell18);
+		    table.addCell(cell13);
 		}
 
 	  document.add(table);
@@ -705,75 +760,98 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	   p20.setAlignment(Element.ALIGN_LEFT);
 	   document.add(p20);
 	    document.close();
-		Notification notification = notificationService.findByType("imprimer");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,employe2 , new Date(), "imprimer employe d'une departement");
+		TypeNotification typeNotification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe2 , new Date(), "imprimer employe d'une departement");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}	
+	public int listeDesEmployeExcel() {
+		Workbook workbook = new XSSFWorkbook();
+	      Sheet sheet = workbook.createSheet("Liste employes");
+		List<Employe> employes = findAll();
+		Row header = sheet.createRow(0);
+	      header.createCell(0).setCellValue("Cin");
+	      header.createCell(1).setCellValue("Numero");
+	      header.createCell(2).setCellValue("Prenom");
+	      header.createCell(3).setCellValue("Nom");
+	      header.createCell(4).setCellValue("Email");
+
+	      int rowNum = 1;
+	     for (Employe employe : employes) {
+	         Row row = sheet.createRow(rowNum++);
+	         row.createCell(0).setCellValue(employe.getCin());
+	         row.createCell(1).setCellValue(employe.getDoti());
+	         row.createCell(2).setCellValue(employe.getFirstName());
+	         row.createCell(3).setCellValue(employe.getLastName());
+	         row.createCell(4).setCellValue(employe.getEmail());
+		}
+	     String fileLocation = "C:/Users/hp/Desktop/";
+	     try {
+		     FileOutputStream outputStream = new FileOutputStream(fileLocation + "Liste employes.xlsx");
+			workbook.write(outputStream);
+		     workbook.close();
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	     return 1;
+	}
 	//liste des employes
 	public int listeDesEmployePdf() throws DocumentException, FileNotFoundException {
 		List<Employe> employes = findAll();
-			Document document = new Document();
-		PdfWriter.getInstance(document, new FileOutputStream("listeEmployes.pdf")); 
-		
+					Document document = new Document();
+				     String fileLocation = "C:/Users/hp/Desktop/";
+		PdfWriter.getInstance(document, new FileOutputStream(fileLocation + "listeEmployes.pdf")); 
 		document.open();
-		Image img,img1;
-		try {
-			img = Image.getInstance("fstgIcone.png");
-			img.setAlignment(Element.ALIGN_TOP);
-			img.setAlignment(Element.ALIGN_LEFT);
-			document.add(img);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+		Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+		"Faculté des Sciences et Techniques"
+						+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+		p0.setAlignment(Element.ALIGN_LEFT);
+		document.add(p0);
+		Font font = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
 		
-		Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-		Paragraph p1 = new Paragraph("\n\t liste des employes\n\r\n", font);
+		Paragraph p1 = new Paragraph("\n\t liste des employes \n\r\n", font);
 		p1.setAlignment(Element.ALIGN_CENTER);
 		document.add(p1);
-
+		document.add(Chunk.NEWLINE);
 	    
-	    PdfPTable table = new PdfPTable(9); // 3 columns.
+	    PdfPTable table = new PdfPTable(new float[] { 15,15,15,15, 40}); // 3 columns.
+	    table.setWidthPercentage(100);
 
-	    PdfPCell cell1 = new PdfPCell(new Paragraph("fullName"));
-	    PdfPCell cell2 = new PdfPCell(new Paragraph("cin"));
-	    PdfPCell cell3 = new PdfPCell(new Paragraph("doti"));
-	    PdfPCell cell4 = new PdfPCell(new Paragraph("email"));
-	    PdfPCell cell5 = new PdfPCell(new Paragraph("adress"));
-	    PdfPCell cell6 = new PdfPCell(new Paragraph("tel"));
-	    PdfPCell cell7 = new PdfPCell(new Paragraph("departement"));
-	    PdfPCell cell8 = new PdfPCell(new Paragraph("fonction"));
-	    PdfPCell cell9 = new PdfPCell(new Paragraph("grade"));
+
+	    PdfPCell cell1 = new PdfPCell(new Paragraph("Cin"));
+	    cell1.setBackgroundColor(BaseColor.GRAY);
+	    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell2 = new PdfPCell(new Paragraph("Numero"));
+	    cell2.setBackgroundColor(BaseColor.GRAY);
+	    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell3 = new PdfPCell(new Paragraph("Prenom"));
+	    cell3.setBackgroundColor(BaseColor.GRAY);
+	    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell4 = new PdfPCell(new Paragraph("Nom"));
+	    cell4.setBackgroundColor(BaseColor.GRAY);
+	    cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell5 = new PdfPCell(new Paragraph("email"));
+	    cell5.setBackgroundColor(BaseColor.GRAY);
+	    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
 	    table.addCell(cell1);
 	    table.addCell(cell2);
 	    table.addCell(cell3);
 	    table.addCell(cell4);
 	    table.addCell(cell5);
-	    table.addCell(cell6);
-	    table.addCell(cell7);
-	    table.addCell(cell8);
-	    table.addCell(cell9);
 	    for (Employe employe : employes) {
-		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getFirstName() + employe.getLastName()));
-		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getCin().toString()));
-		    PdfPCell cell12 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getFirstName()));
+		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getLastName()));
 		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
-		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getAdresse()));
-		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getTel().toString()));
-		    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getDep().getNom()));
-		    PdfPCell cell17 = new PdfPCell(new Paragraph(employe.getFonction().getLibelle()));
-		    PdfPCell cell18 = new PdfPCell(new Paragraph(employe.getDernierGrade().getGrade().getLibelle()));		
 		    table.addCell(cell10);
 		    table.addCell(cell11);
-		    table.addCell(cell12);
-		    table.addCell(cell13);
 		    table.addCell(cell14);
 		    table.addCell(cell15);
-		    table.addCell(cell16);
-		    table.addCell(cell17);
-		    table.addCell(cell18);
+		    table.addCell(cell13);
 		}
 
 	  document.add(table);
@@ -789,9 +867,129 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 	   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
 	   p20.setAlignment(Element.ALIGN_LEFT);
 	   document.add(p20);
+	   
 	    document.close();
-		Notification notification = notificationService.findByType("imprimer");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(notification,null , new Date(), "imprimer la liste employe");
+		TypeNotification typeNotification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,null , new Date(), "imprimer la liste employe");
+		notificationEmployeService.save(notificationEmploye);
+		return 1;
+	}
+	public int listeDesEmployeAvecSoldeCongéExcel() {
+		Workbook workbook = new XSSFWorkbook();
+	      Sheet sheet = workbook.createSheet("Liste employes Avec Solde Congé");
+		List<Employe> employes = findAll();
+		Row header = sheet.createRow(0);
+	      header.createCell(0).setCellValue("Cin");
+	      header.createCell(1).setCellValue("Numero");
+	      header.createCell(2).setCellValue("Prenom");
+	      header.createCell(3).setCellValue("Nom");
+	      header.createCell(4).setCellValue("Email");
+	      header.createCell(5).setCellValue("Solde Congé restantes");
+
+	      int rowNum = 1;
+	     for (Employe employe : employes) {
+	         Row row = sheet.createRow(rowNum++);
+	         row.createCell(0).setCellValue(employe.getCin());
+	         row.createCell(1).setCellValue(employe.getDoti());
+	         row.createCell(2).setCellValue(employe.getFirstName());
+	         row.createCell(3).setCellValue(employe.getLastName());
+	         row.createCell(4).setCellValue(employe.getEmail());
+	         row.createCell(5).setCellValue(employe.getSoldeRestantesCongeExceptionnel());
+
+		}
+	     String fileLocation = "C:/Users/hp/Desktop/";
+	     try {
+		     FileOutputStream outputStream = new FileOutputStream(fileLocation + "Liste employes Avec Solde Congé.xlsx");
+			workbook.write(outputStream);
+		     workbook.close();
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	     return 1;
+	}
+	public int listeDesEmployeAvecSoldePdf() throws DocumentException, FileNotFoundException {
+		List<Employe> employes = findAll();
+					Document document = new Document();
+				     String fileLocation = "C:/Users/hp/Desktop/";
+		PdfWriter.getInstance(document, new FileOutputStream(fileLocation + "listeEmployesَSoldeCongé.pdf")); 
+		document.open();
+		Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+		Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+		"Faculté des Sciences et Techniques"
+						+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+		p0.setAlignment(Element.ALIGN_LEFT);
+		document.add(p0);
+		Font font2 = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
+
+		
+		Font font = FontFactory.getFont(FontFactory.COURIER, 18, BaseColor.BLACK);
+		Paragraph p1 = new Paragraph("\n\t liste des employes :\n\r\n", font2);
+		p1.setAlignment(Element.ALIGN_CENTER);
+		document.add(p1);
+		document.add(Chunk.NEWLINE);
+	    
+	    PdfPTable table = new PdfPTable(new float[] { 15,15,10,15, 35,10}); // 3 columns.
+	    table.setWidthPercentage(100);
+
+
+	    PdfPCell cell1 = new PdfPCell(new Paragraph("Cin"));
+	    cell1.setBackgroundColor(BaseColor.GRAY);
+	    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell2 = new PdfPCell(new Paragraph("Numero"));
+	    cell2.setBackgroundColor(BaseColor.GRAY);
+	    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell3 = new PdfPCell(new Paragraph("Prenom"));
+	    cell3.setBackgroundColor(BaseColor.GRAY);
+	    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell4 = new PdfPCell(new Paragraph("Nom"));
+	    cell4.setBackgroundColor(BaseColor.GRAY);
+	    cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell5 = new PdfPCell(new Paragraph("email"));
+	    cell5.setBackgroundColor(BaseColor.GRAY);
+	    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell6 = new PdfPCell(new Paragraph("Solde"));
+	    cell6.setBackgroundColor(BaseColor.GRAY);
+	    cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    table.addCell(cell1);
+	    table.addCell(cell2);
+	    table.addCell(cell3);
+	    table.addCell(cell4);
+	    table.addCell(cell5);
+	    table.addCell(cell6);
+	    for (Employe employe : employes) {
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getFirstName()));
+		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getLastName()));
+		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
+		    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getSoldeRestantesCongeExceptionnel().toString()));
+		    table.addCell(cell10);
+		    table.addCell(cell11);
+		    table.addCell(cell14);
+		    table.addCell(cell15);
+		    table.addCell(cell13);
+		    table.addCell(cell16);
+		}
+
+	  document.add(table);
+	   
+	   Font f = new Font();
+	   f.setStyle(Font.BOLD);
+	   f.setSize(8);
+	   
+	   Paragraph p4 = new Paragraph( "\n \r\r\r\r signer :",f);
+	   p4.setAlignment(Element.ALIGN_RIGHT);
+	   document.add(p4);
+
+	   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
+	   p20.setAlignment(Element.ALIGN_LEFT);
+	   document.add(p20);
+	   
+	    document.close();
+		TypeNotification typeNotification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,null , new Date(), "imprimer la liste employe avec solde congé restantes");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
@@ -810,5 +1008,126 @@ public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
         	}
         }
         return resultat;
+	}
+	public int listeDesEmployeAvecSoldeCongéDonneeExcel(List<Employe> employes) {
+		Workbook workbook = new XSSFWorkbook();
+	      Sheet sheet = workbook.createSheet("Liste employes Avec Solde Congé");
+		Row header = sheet.createRow(0);
+	      header.createCell(0).setCellValue("Cin");
+	      header.createCell(1).setCellValue("Numero");
+	      header.createCell(2).setCellValue("Prenom");
+	      header.createCell(3).setCellValue("Nom");
+	      header.createCell(4).setCellValue("Email");
+	      header.createCell(5).setCellValue("Solde Congé restantes");
+
+	      int rowNum = 1;
+	     for (Employe employe : employes) {
+	         Row row = sheet.createRow(rowNum++);
+	         row.createCell(0).setCellValue(employe.getCin());
+	         row.createCell(1).setCellValue(employe.getDoti());
+	         row.createCell(2).setCellValue(employe.getFirstName());
+	         row.createCell(3).setCellValue(employe.getLastName());
+	         row.createCell(4).setCellValue(employe.getEmail());
+	         row.createCell(5).setCellValue(employe.getSoldeRestantesCongeExceptionnel());
+
+		}
+	     String fileLocation = "C:/Users/hp/Desktop/";
+	     try {
+		     FileOutputStream outputStream = new FileOutputStream(fileLocation + "Liste employes Avec Solde Congé.xlsx");
+			workbook.write(outputStream);
+		     workbook.close();
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	     return 1;
+	}
+	public int listeDesEmployeAvecSoldeDonneePdf(List<Employe> employes) throws DocumentException, FileNotFoundException {
+					Document document = new Document();
+				     String fileLocation = "C:/Users/hp/Desktop/";
+		PdfWriter.getInstance(document, new FileOutputStream(fileLocation + "listeEmployesَAvecSoldeCongé.pdf")); 
+		document.open();
+		Image img,img1;
+		Integer solde = null;
+		for (Employe employe : employes) {
+			solde = employe.getSoldeRestantesCongeExceptionnel();
+		}
+		Font font1 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
+		Paragraph p0 = new Paragraph("ROYAUME DU MAROC" + "\n" + "Université Cadi Ayyad." + "\n" +
+		"Faculté des Sciences et Techniques"
+						+ "\n" + "Gueliz-Marrakech" + "\n" + "\n" , font1);
+		p0.setAlignment(Element.ALIGN_LEFT);
+		document.add(p0);
+		Font font2 = FontFactory.getFont(FontFactory.TIMES, 18, Font.UNDERLINE);
+		
+		Font font = FontFactory.getFont(FontFactory.COURIER, 18, BaseColor.BLACK);
+		Paragraph p1 = new Paragraph("\n\t liste des employes ayant solde congé restantes: " + solde+ "\n\r\n", font2);
+		p1.setAlignment(Element.ALIGN_CENTER);
+		document.add(p1);
+		document.add(Chunk.NEWLINE);
+	    
+	    PdfPTable table = new PdfPTable(new float[] { 15,15,10,15, 35,10}); // 3 columns.
+	    table.setWidthPercentage(100);
+
+
+	    PdfPCell cell1 = new PdfPCell(new Paragraph("Cin"));
+	    cell1.setBackgroundColor(BaseColor.GRAY);
+	    cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell2 = new PdfPCell(new Paragraph("Numero"));
+	    cell2.setBackgroundColor(BaseColor.GRAY);
+	    cell2.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell3 = new PdfPCell(new Paragraph("Prenom"));
+	    cell3.setBackgroundColor(BaseColor.GRAY);
+	    cell3.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell4 = new PdfPCell(new Paragraph("Nom"));
+	    cell4.setBackgroundColor(BaseColor.GRAY);
+	    cell4.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell5 = new PdfPCell(new Paragraph("email"));
+	    cell5.setBackgroundColor(BaseColor.GRAY);
+	    cell5.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    PdfPCell cell6 = new PdfPCell(new Paragraph("Solde"));
+	    cell6.setBackgroundColor(BaseColor.GRAY);
+	    cell6.setHorizontalAlignment(Element.ALIGN_CENTER);
+	    table.addCell(cell1);
+	    table.addCell(cell2);
+	    table.addCell(cell3);
+	    table.addCell(cell4);
+	    table.addCell(cell5);
+	    table.addCell(cell6);
+	    for (Employe employe : employes) {
+		    PdfPCell cell10 = new PdfPCell(new Paragraph(employe.getCin().toString()));
+		    PdfPCell cell11 = new PdfPCell(new Paragraph(employe.getDoti().toString()));
+		    PdfPCell cell14 = new PdfPCell(new Paragraph(employe.getFirstName()));
+		    PdfPCell cell15 = new PdfPCell(new Paragraph(employe.getLastName()));
+		    PdfPCell cell13 = new PdfPCell(new Paragraph(employe.getEmail()));
+		    PdfPCell cell16 = new PdfPCell(new Paragraph(employe.getSoldeRestantesCongeExceptionnel().toString()));
+		    table.addCell(cell10);
+		    table.addCell(cell11);
+		    table.addCell(cell14);
+		    table.addCell(cell15);
+		    table.addCell(cell13);
+		    table.addCell(cell16);
+		}
+
+	  document.add(table);
+	   
+	   Font f = new Font();
+	   f.setStyle(Font.BOLD);
+	   f.setSize(8);
+	   
+	   Paragraph p4 = new Paragraph( "\n \r\r\r\r signer :",f);
+	   p4.setAlignment(Element.ALIGN_RIGHT);
+	   document.add(p4);
+
+	   Paragraph p20 = new Paragraph( "\n \r\r\r\r marakech  le :"+new  Date().toString(),f);
+	   p20.setAlignment(Element.ALIGN_LEFT);
+	   document.add(p20);
+	   
+	    document.close();
+		TypeNotification typeNotification = notificationService.findByType("imprimer");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,null , new Date(), "imprimer la liste employe avec solde congé restantes");
+		notificationEmployeService.save(notificationEmploye);
+		return 1;
 	}
 }

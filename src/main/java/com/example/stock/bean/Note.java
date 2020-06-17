@@ -12,7 +12,6 @@ public class Note {
 private Long id;
 private Double mention;
 private String remarque;
-private String libelle;
 public Note() {
 	super();
 	// TODO Auto-generated constructor stub
@@ -35,21 +34,15 @@ public String getRemarque() {
 public void setRemarque(String remarque) {
 	this.remarque = remarque;
 }
-public String getLibelle() {
-	return libelle;
-}
-public void setLibelle(String libelle) {
-	this.libelle = libelle;
-}
+
 public Note(Double mention, String remarque, String libelle) {
 	super();
 	this.mention = mention;
 	this.remarque = remarque;
-	this.libelle = libelle;
 }
 @Override
 public String toString() {
-	return "Note [id=" + id + ", mention=" + mention + ", remarque=" + remarque + ", libelle=" + libelle + "]";
+	return "Note [id=" + id + ", mention=" + mention + ", remarque=" + remarque + ", libelle=" + "]";
 }
 
 

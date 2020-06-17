@@ -24,17 +24,19 @@ public interface GradeEmployeService {
 
 	List<GradeEmploye> findByEtat(String etat);
 
-	public int getDateEvaluation();
+	public List<Employe> getDateEvaluation();
 
-	public int getDateAvancement();
+	public List<Employe> getDateAvancement();
 
 	public List<GradeEmploye> findGradeNonTraite();
 
 	public int creeUnGradeNonTraite(String doti);
+	public List<GradeEmploye> getGradeNonTraiteByType(String type);
 
 	public int accepterUnGrade(GradeEmploye gradeEmploye);
 
 	public int update(GradeEmploye gradeEmploye);
+	public int listeDesGradesEmployesExcel(List<GradeEmploye> gradeEmployes);
 
 	public int listeDeGradeDeEmployePdf(List<GradeEmploye> grades) throws DocumentException, FileNotFoundException;
 }

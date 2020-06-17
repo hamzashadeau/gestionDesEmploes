@@ -22,7 +22,7 @@ private Employe employe;
 private Date dateDemande;
 @ManyToOne
 private TypeDocument typeDeDocument;
-private String maniereDeRetrait;
+private String copieEmail;
 private String etat;
 private int nbrDeDocument;
 public DemaneDeDocument() {
@@ -69,11 +69,11 @@ public Date getDateDemande() {
 public void setDateDemande(Date dateDemande) {
 	this.dateDemande = dateDemande;
 }
-public String getManiereDeRetrait() {
-	return maniereDeRetrait;
+public String getCopieEmail() {
+	return copieEmail;
 }
-public void setManiereDeRetrait(String maniereDeRetrait) {
-	this.maniereDeRetrait = maniereDeRetrait;
+public void setCopieEmail(String copieEmail) {
+	this.copieEmail = copieEmail;
 }
 public String getEtat() {
 	return etat;
@@ -84,13 +84,13 @@ public void setEtat(String etat) {
 
 
 public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument typeDeDocument,
-		String maniereDeRetrait, String etat, int nbrDeDocument) {
+		String copieEmail, String etat, int nbrDeDocument) {
 	super();
 	this.id = id;
 	this.employe = employe;
 	this.dateDemande = dateDemande;
 	this.typeDeDocument = typeDeDocument;
-	this.maniereDeRetrait = maniereDeRetrait;
+	this.copieEmail = copieEmail;
 	this.etat = etat;
 	this.nbrDeDocument = nbrDeDocument;
 }
@@ -99,7 +99,7 @@ public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument
 @Override
 public String toString() {
 	return "DemaneDeDocument [id=" + id + ", employe=" + employe + ", dateDemande=" + dateDemande + ", typeDeDocument="
-			+ typeDeDocument + ", maniereDeRetrait=" + maniereDeRetrait + ", etat=" + etat + ", nbrDeDocument="
+			+ typeDeDocument + ", copieEmail=" + copieEmail + ", etat=" + etat + ", nbrDeDocument="
 			+ nbrDeDocument + "]";
 }
 

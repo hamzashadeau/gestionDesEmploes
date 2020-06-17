@@ -27,6 +27,16 @@ public class NotificationEmployeRest {
 @Autowired
 private NotificationEmployeService notificationEmployeService;
 
+@GetMapping("findNotificationPaDate/date/{date}")
+public List<NotificationEmploye> findNotificationPaDate(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
+	return notificationEmployeService.findNotificationPaDate(date);
+}
+
+@GetMapping("findNotificationAujourdhui")
+public List<NotificationEmploye> findNotificationAujourdhui() {
+	return notificationEmployeService.findNotificationAujourdhui();
+}
+
 @GetMapping("sendmail/email/{email}/subject/{subject}/content/{content}")
 public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content) throws AddressException, MessagingException, IOException {
 return	notificationEmployeService.sendmail(email, subject, content);
