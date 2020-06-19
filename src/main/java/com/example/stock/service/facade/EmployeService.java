@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.example.stock.bean.Congé;
 import com.example.stock.bean.Employe;
 import com.itextpdf.text.DocumentException;
 
@@ -43,4 +44,6 @@ public interface EmployeService {
 	public int listeDesEmployeDeDepartementPdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
 	public int listeDesEmployeDeGradePdf(ArrayList<Employe> employes) throws DocumentException, FileNotFoundException;
 	public List<Employe> getProchaineAvancement();
+	public List<Employe> getCongéActuelle();
+	public List<Employe> getCongeBetween(Date date1,Date date2);
 }

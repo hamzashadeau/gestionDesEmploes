@@ -7,8 +7,10 @@ import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -344,8 +346,15 @@ public class CongeServiceImpl implements CongeService {
 	}
 
 	@Override
-	public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date) {
-		return congeDao.findByCongeeLibelleAndDateDeDebut(libelle, date);
+	public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date1, Date date2) {
+		List<Congé> conges = congeDao.findByCongeeLibelle(libelle);
+		List<Congé> resultat = new ArrayList<Congé>();
+		for (Congé congé : conges) {
+			if(DateUlils.getDateBetween(date1, congé.getDateDeFin(), date2)==1) {
+				resultat.add(congé);
+			}
+		}
+		return resultat;
 	}
 
 	@Override
@@ -363,8 +372,6 @@ public class CongeServiceImpl implements CongeService {
 
 	public int AutoRestSoldeCongeEmplye() {
 		Date date = new Date();
-		System.out.println("ha month :" + ((DateUlils.getMonth(date) + 1)));
-		System.out.println("ha day :" + (DateUlils.getDay(date)));
 		if (((DateUlils.getMonth(date) + 1) == 9) && ((DateUlils.getDay(date) == 1 || DateUlils.getDay(date) == 2
 				|| DateUlils.getDay(date) == 3 || DateUlils.getDay(date) == 4) || DateUlils.getDay(date) == 5
 				|| DateUlils.getDay(date) == 6 || DateUlils.getDay(date) == 7)) {

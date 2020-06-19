@@ -25,7 +25,16 @@ public class DateUlils {
 		c.setTime(d);
 		return c.get(Calendar.DAY_OF_MONTH);
 	}
-	
+	public static int getDateBetween(Date date1,Date date2,Date date3) {
+		long milliSeconde1 = date1.getTime();
+		long milliSeconde2 = date2.getTime();
+		long milliSeconde3 = date3.getTime();
+		if(milliSeconde1 <= milliSeconde2 && milliSeconde2 <= milliSeconde3) {
+			return 1;
+		}else {
+			return -1;
+		}
+	}
 	
 	public static boolean VerifieDateSup(Date date1) {
 		Date date2;
@@ -287,7 +296,7 @@ public class DateUlils {
 		Date date2 = new Date();
 		long milliSeconde1 = date1.getTime();
 		long milliSeconde2 = date2.getTime();
-		return milliSeconde1 < milliSeconde2 ? true : false;
+		return milliSeconde2 <= milliSeconde1 ? true : false;
 	}
 	public static boolean verifierDateSup(Date date1,Date date2) {
 		long milliSeconde1 = date1.getTime();

@@ -132,8 +132,7 @@ public List<PermanenceAdministrative> findByAnneeAndemployeDoti(Integer annee, S
 List<PermanenceAdministrative> permanenceAdministratives = permanenceAdministrativeDao.findByemployeDoti(doti);
 List<PermanenceAdministrative> resultats = new ArrayList<PermanenceAdministrative>();
 permanenceAdministratives.forEach(per ->{
-	System.out.println(DateUlils.getYear(per.getDate()));
-	if(DateUlils.getYear(per.getDate()) == annee) {
+	if(DateUlils.getYear(per.getDate()).equals(annee)) {
 		resultats.add(per);
 	}
 });

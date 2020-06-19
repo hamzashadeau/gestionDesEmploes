@@ -1,6 +1,5 @@
 package com.example.stock.ws.rest;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -10,6 +9,7 @@ import javax.mail.internet.AddressException;
 import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
@@ -35,8 +38,9 @@ private DemandeDeDocumentService demandeDeDocumentService;
 public int listeDesDemandesExcel(@RequestBody List<DemaneDeDocument> demandes) {
 	return demandeDeDocumentService.listeDesDemandesExcel(demandes);
 }
-@GetMapping("sendmail/email/{email}/subject/{subject}/ String/content/{content}")
-public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestBody File file)throws AddressException, MessagingException, IOException, TransformerException {
+@RequestMapping(value = "sendmail/email/{email}/subject/{subject}/content/{content}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestParam("file") MultipartFile  file )throws AddressException, MessagingException, IOException, TransformerException {
+	System.out.println(file.getOriginalFilename());
 	return demandeDeDocumentService.sendmail(email, subject, content, file);
 }
 @GetMapping("findByTypeDeDocumentLibelleAndEmployeDoti/libelle/{libelle}/doti/{doti}")
@@ -68,7 +72,10 @@ public int rapportPdf(@RequestBody RapportDeEvaluation rapportDeEvaluation) thro
 public List<DemaneDeDocument> findDemandeNonTraite() {
 	return findByEtat("non traité");
 }
-
+@GetMapping("findDemandeNonSigne")
+public List<DemaneDeDocument> findDemandeNonSigne() {
+	return findByEtat("non signe");
+}
 @PostMapping("attestationDeTravail")
 public int attestationDeTravail(@RequestBody DemaneDeDocument demaneDeDocument) throws DocumentException, TransformerException, AddressException, MessagingException, IOException{
 	return demandeDeDocumentService.attestationDeTravail(demaneDeDocument);

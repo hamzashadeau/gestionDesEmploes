@@ -32,6 +32,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.mapping.Table;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.stock.Dao.DemaneDeDocumentDao;
 import com.example.stock.Dao.EmployeDao;
@@ -531,8 +532,17 @@ if(employe.getEnfants()== null) {
 		p4.setAlignment(Element.ALIGN_LEFT);
 		document.add(p4);
 		document.close();
-		demaneDeDocument.setEtat("traité");
-		demaneDeDocumentDao.save(demaneDeDocument);
+		System.out.println(demaneDeDocument.getCopieEmail());
+		if(demaneDeDocument.getCopieEmail().equals("oui")) {
+			demaneDeDocument.setEtat("non signe");
+			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+					"votre demande attestation de salaire est en traitement vous recevez une copie scanné dans votre mail dans un durée 24 heures au maximum");
+			
+		}else {
+			demaneDeDocument.setEtat("traité");
+			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+					"votre demande attestation de salaire est en traitement vous trouverez votre document dans le guichet de etablissement dans un durée 24 heures au maximum");
+		}demaneDeDocumentDao.save(demaneDeDocument);
 		TypeNotification typeNotification = notificationService.findByType("imprimer");
 		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(),
 				"imprimer attestation de salaire");
@@ -609,18 +619,34 @@ if(employe.getEnfants()== null) {
 		// e.printStackTrace();
 		// }
 		// }
-		demaneDeDocument.setEtat("traité");
+		if(demaneDeDocument.getCopieEmail().equals("oui")) {
+			demaneDeDocument.setEtat("non signe");
+			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+					"votre demande attestation de travail est en traitement vous recevez une copie scanné dans votre mail dans un durée 24 heures au maximum");
+			
+		}else {
+			demaneDeDocument.setEtat("traité");
+			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+					"votre demande attestation de travail est en traitement vous trouverez votre document dans le guichet de etablissementl dans un durée 24 heures au maximum");
+		}
 		demaneDeDocumentDao.save(demaneDeDocument);
 		TypeNotification typeNotification = notificationService.findByType("imprimer");
 		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(),
 				"imprimer attestation de travail");
 		notificationEmployeService.save(notificationEmploye);
-		HashUtil.sendmail(employe.getEmail(), "demande en traitement",
-				"votre demande attestation de travail est en traitement voua allez avoir le document  dans un durée 24 heures au maximum");
 		return 1;
 	}
 
-	public int sendmail(String email, String subject, String content, File file)
+	public File convert(MultipartFile file) throws IOException {
+		System.out.println(file.getOriginalFilename());
+        File convFile = new File(file.getOriginalFilename());
+        convFile.createNewFile();
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
+        return convFile;
+}
+	public int sendmail(String email, String subject, String content, MultipartFile file)
 			throws AddressException, MessagingException, IOException, TransformerException {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -647,7 +673,7 @@ if(employe.getEnfants()== null) {
 		Multipart multipart = new MimeMultipart();
 		multipart.addBodyPart(messageBodyPart);
 		MimeBodyPart attachPart = new MimeBodyPart();
-		attachPart.attachFile(file);
+		attachPart.attachFile(convert(file));
 		multipart.addBodyPart(attachPart);
 		// MimeBodyPart attachmentBodyPart = new MimeBodyPart();
 		// attachmentBodyPart.attachFile(new File("path/to/file"))

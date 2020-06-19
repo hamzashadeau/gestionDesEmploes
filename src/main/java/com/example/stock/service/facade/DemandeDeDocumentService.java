@@ -9,6 +9,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 import javax.xml.transform.TransformerException;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.stock.bean.DemaneDeDocument;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.RapportDeEvaluation;
@@ -32,6 +34,6 @@ public interface DemandeDeDocumentService {
 	public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoundException;
 	public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentException, FileNotFoundException;
 	List<DemaneDeDocument> findByTypeDeDocumentLibelleAndEmployeDoti(String libelle, String doti);
-	public int  sendmail(String email, String subject,String content,File file) throws AddressException, MessagingException, IOException, TransformerException;
+	public int  sendmail(String email, String subject,String content,MultipartFile file) throws AddressException, MessagingException, IOException, TransformerException;
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.stock.bean.Congé;
+import com.example.stock.bean.Employe;
 import com.example.stock.service.facade.CongeService;
 import com.itextpdf.text.DocumentException;
 @RestController
@@ -23,6 +24,7 @@ import com.itextpdf.text.DocumentException;
 public class CongeRest {
 @Autowired
 private CongeService congeService;
+
 
 @PostMapping("listeDesCertificatsPdf")
 public int listeDesCertificatsPdf(@RequestBody List<Congé> conges) throws DocumentException, FileNotFoundException {
@@ -62,9 +64,9 @@ public List<Congé> findCongeCertificat() {
 public List<Congé> findByEmployeDotiAndCongeeLibelle(@PathVariable String matricule,@PathVariable String libelle) {
 	return congeService.findByEmployeDotiAndCongeeLibelle(matricule, libelle);
 }
-@GetMapping("findByCongeeLibelleAndDateDeDebut/libelle/{libelle}/date/{date}")
-public List<Congé> findByCongeeLibelleAndDateDeDebut(@PathVariable String libelle,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date) {
-	return congeService.findByCongeeLibelleAndDateDeDebut(libelle, date);
+@GetMapping("findByCongeeLibelleAndDateDeDebut/libelle/{libelle}/date1/{date1}/date2/{date2}")
+public List<Congé> findByCongeeLibelleAndDateDeDebut(@PathVariable String libelle,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date1,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date2) {
+	return congeService.findByCongeeLibelleAndDateDeDebut(libelle, date1,date2);
 }
 @GetMapping("findCongeByAnne/annee/{annee}/type/{type}")
 public List<Congé> findCongeByAnne(@PathVariable Integer annee,@PathVariable String type) {

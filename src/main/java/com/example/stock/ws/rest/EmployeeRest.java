@@ -26,6 +26,14 @@ public class EmployeeRest {
 @Autowired
 private EmployeService employeService;
 
+@GetMapping("getCongeActuelle")
+public List<Employe> getCongeActuelle() {
+	return employeService.getCongéActuelle();
+}
+@GetMapping("getCongeBetween/date1/{date1}/date2/{date2}")
+public List<Employe> getCongeBetween(@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd") Date date1,@PathVariable @DateTimeFormat(pattern =  "yyyy-MM-dd")  Date date2) {
+	return employeService.getCongeBetween(date1, date2);
+}
 @PostMapping("listeDesEmployeParGradeExcel")
 public int listeDesEmployeParGradeExcel(@RequestBody List<Employe> employes) {
 	return employeService.listeDesEmployeParGradeExcel(employes);

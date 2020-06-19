@@ -14,7 +14,7 @@ public interface CongeService {
 	List<Congé> findByEmployeDotiAndCongeeLibelle(String matricule, String libelle);
 	//List<Congé> findByEtat(String etat);
 	List<Congé> findAll();
-	List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date);
+	public List<Congé> findByCongeeLibelleAndDateDeDebut(String libelle, Date date1, Date date2);
 	int save(Congé conge);
 	public int listeDesCongesExcel(List<Congé> conges);
 	int deleteById(Long id);
@@ -28,4 +28,5 @@ public interface CongeService {
 	public int AutoRestSoldeCongeEmplye();
 	public int listeDesCertificatsPdf(List<Congé> conges) throws DocumentException, FileNotFoundException;
 	public int listeDesCertificatsExcel(List<Congé> conges);
+
 }

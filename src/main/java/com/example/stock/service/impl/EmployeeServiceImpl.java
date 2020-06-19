@@ -1130,4 +1130,25 @@ public class EmployeeServiceImpl implements EmployeService {
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	}
+	public List<Employe> getCongeBetween(Date date1,Date date2) {
+		List<Congé> congés = congeService.findAll();
+		List<Employe> resultat = new ArrayList<Employe>();
+		for (Congé congé : congés) {
+			if(DateUlils.getDateBetween(date1, congé.getDateDeFin(), date2)==1) {
+				resultat.add(congé.getEmploye());
+			}
+		}
+		return resultat;
+	}
+	public List<Employe> getCongéActuelle(){
+		List<Congé> congés = congeService.findAll();
+		List<Employe> resultat = new ArrayList<Employe>();
+		Date date = new Date();
+		for (Congé congé : congés) {
+			if(DateUlils.VerifieDate(congé.getDateDeFin())) {
+				resultat.add(congé.getEmploye());
+			}
+		}
+		return resultat;
+	}
 }
