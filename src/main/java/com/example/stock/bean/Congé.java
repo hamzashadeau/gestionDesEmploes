@@ -2,12 +2,14 @@ package com.example.stock.bean;
 
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -22,10 +24,13 @@ private Date dateDeDebut;
 private Date dateDeFin;
 @ManyToOne
 private Employe employe;
+private String doti;
 @ManyToOne
 private TypeCongee congee;
 private Integer periode;
 private String raison;
+@OneToMany
+List<CongéEmployeSalaire> congéEmployeSalaires;
 public Long getId() {
 	return id;
 }
@@ -73,22 +78,39 @@ public Date getDateDeFin() {
 public void setDateDeFin(Date dateDeFin) {
 	this.dateDeFin = dateDeFin;
 }
-public Congé(Long id, Date dateDeDebut, Date dateDeFin, Employe employe, TypeCongee congee, Integer periode,
-		String raison) {
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
+public List<CongéEmployeSalaire> getCongéEmployeSalaires() {
+	return congéEmployeSalaires;
+}
+public void setCongéEmployeSalaires(List<CongéEmployeSalaire> congéEmployeSalaires) {
+	this.congéEmployeSalaires = congéEmployeSalaires;
+}
+public Congé(Long id, Date dateDeDebut, Date dateDeFin, Employe employe, String doti, TypeCongee congee,
+		Integer periode, String raison, List<CongéEmployeSalaire> congéEmployeSalaires) {
 	super();
 	this.id = id;
 	this.dateDeDebut = dateDeDebut;
 	this.dateDeFin = dateDeFin;
 	this.employe = employe;
+	this.doti = doti;
 	this.congee = congee;
 	this.periode = periode;
 	this.raison = raison;
+	this.congéEmployeSalaires = congéEmployeSalaires;
 }
 @Override
 public String toString() {
 	return "Congé [id=" + id + ", dateDeDebut=" + dateDeDebut + ", dateDeFin=" + dateDeFin + ", employe=" + employe
-			+ ", congee=" + congee + ", periode=" + periode + ", raison=" + raison + "]";
+			+ ", doti=" + doti + ", congee=" + congee + ", periode=" + periode + ", raison=" + raison
+			+ ", congéEmployeSalaires=" + congéEmployeSalaires + "]";
 }
+
+
 
 
 

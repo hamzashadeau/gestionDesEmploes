@@ -1,8 +1,13 @@
 package com.example.stock.ws.rest;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.xml.transform.TransformerException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -114,7 +119,7 @@ public List<Congé> findByEmployeDoti(@PathVariable String doti) {
 
 
 @PostMapping("save")
-public int save(@RequestBody Congé conge) {
+public int save(@RequestBody Congé conge) throws AddressException, MessagingException, IOException, TransformerException {
 	return congeService.save(conge);
 }
 

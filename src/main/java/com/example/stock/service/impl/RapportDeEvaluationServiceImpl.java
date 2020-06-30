@@ -17,6 +17,7 @@ import com.example.stock.bean.PermanenceAdministrative;
 import com.example.stock.bean.PrixEmploye;
 import com.example.stock.bean.PunitionEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
+import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
 import com.example.stock.service.facade.NoteGeneraleService;
 import com.example.stock.service.facade.NotificationEmployeService;
@@ -42,7 +43,8 @@ private NoteGeneraleService noteGeneraleService;
 private NotificationEmployeService notificationEmployeService;
 @Autowired
 private NotificationService notificationService;
-
+@Autowired
+private EmployeService employeService;
 @Override
 public int save(RapportDeEvaluation rapportDeEvaluation) {
 	if(rapportDeEvaluation.getId() != null) {
@@ -66,15 +68,20 @@ public int update(RapportDeEvaluation rapportDeEvaluation) {
 	if(rapportDeEvaluation.getId() == null) {
 return -1;
 }else {
-	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
-	rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
-	rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
-	rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
-	rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
-	rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+	//Employe employe = employeService.findByDoti(rapportDeEvaluation.getEmploye().getDoti());
+	//rapportDeEvaluation.setEmploye(employe);
+//	rapportDeEvaluation.setPrix(prixEmployeService.findPrixDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	//rapportDeEvaluation.setFormation(formationService.findFormationDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	//rapportDeEvaluation.setPunition(punitionEmployeService.findPunitionDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	//rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(rapportDeEvaluation.getEmploye().getDoti()));
+	//rapportDeEvaluation.setMoyen(getMoyenNote(rapportDeEvaluation.getNoteGenerale()));
+	//rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+	//rapportDeEvaluation.setDoti(null);
+	System.out.println(rapportDeEvaluation.getId());
+	System.out.println(rapportDeEvaluation);
 	rapportDeEvaluationDao.save(rapportDeEvaluation);
-	TypeNotification typeNotification = notificationService.findByType("save");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, rapportDeEvaluation.getEmploye(), new Date(), "save rapport ");
+	TypeNotification typeNotification = notificationService.findByType("update");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, rapportDeEvaluation.getEmploye(), new Date(), "update rapport ");
 	notificationEmployeService.save(notificationEmploye);
 	return 1;
 		}
@@ -84,7 +91,6 @@ return -1;
 public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 Double somme = 0.0;
 for (NoteGeneralDeAnnee noteGeneralDeAnnee : notes) {
-	System.out.println("ha note" + noteGeneralDeAnnee.getMoyenGeneral());
 	somme += noteGeneralDeAnnee.getMoyenGeneral();
 }
 return somme/notes.size();

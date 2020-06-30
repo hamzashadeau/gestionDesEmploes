@@ -23,6 +23,7 @@ private Date annee;
 private String mention;
 @ManyToOne()
 private Employe	employe;
+private String doti;
 public Long getId() {
 	return id;
 }
@@ -77,6 +78,12 @@ public String getEtablissement() {
 public void setEtablissement(String etablissement) {
 	this.etablissement = etablissement;
 }
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
 public Formation(Long id, String attestation, String domaine, String etablissement, String ville, Date annee,
 		String mention, Employe employe) {
 	super();
@@ -93,8 +100,9 @@ public Formation(Long id, String attestation, String domaine, String etablisseme
 public String toString() {
 	return "Formation [id=" + id + ", attestation=" + attestation + ", domaine=" + domaine + ", etablissement="
 			+ etablissement + ", ville=" + ville + ", annee=" + annee + ", mention=" + mention + ", employe=" + employe
-			+ "]";
+			+ ", doti=" + doti + "]";
 }
+
 
 
 }

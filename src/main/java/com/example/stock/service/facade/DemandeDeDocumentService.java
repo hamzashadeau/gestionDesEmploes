@@ -34,6 +34,6 @@ public interface DemandeDeDocumentService {
 	public int infoEmployePdf(Employe employe) throws DocumentException, FileNotFoundException;
 	public int listeDesDemandePdf(List<DemaneDeDocument> demandes) throws DocumentException, FileNotFoundException;
 	List<DemaneDeDocument> findByTypeDeDocumentLibelleAndEmployeDoti(String libelle, String doti);
-	public int  sendmail(String email, String subject,String content,MultipartFile file) throws AddressException, MessagingException, IOException, TransformerException;
+	public int  sendmail(Long id,String email, String subject,String content,MultipartFile file) throws AddressException, MessagingException, IOException, TransformerException;
 
 }

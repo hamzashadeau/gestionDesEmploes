@@ -18,6 +18,7 @@ public class DemaneDeDocument {
 private Long id;
 @ManyToOne
 private Employe employe;
+private String doti;
 @Temporal(TemporalType.DATE)
 private Date dateDemande;
 @ManyToOne
@@ -83,7 +84,17 @@ public void setEtat(String etat) {
 }
 
 
-public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument typeDeDocument,
+public String getDoti() {
+	return doti;
+}
+
+
+public void setDoti(String doti) {
+	this.doti = doti;
+}
+
+
+public DemaneDeDocument(Long id, Employe employe,  Date dateDemande, TypeDocument typeDeDocument,
 		String copieEmail, String etat, int nbrDeDocument) {
 	super();
 	this.id = id;
@@ -98,10 +109,11 @@ public DemaneDeDocument(Long id, Employe employe, Date dateDemande, TypeDocument
 
 @Override
 public String toString() {
-	return "DemaneDeDocument [id=" + id + ", employe=" + employe + ", dateDemande=" + dateDemande + ", typeDeDocument="
-			+ typeDeDocument + ", copieEmail=" + copieEmail + ", etat=" + etat + ", nbrDeDocument="
-			+ nbrDeDocument + "]";
+	return "DemaneDeDocument [id=" + id + ", employe=" + employe + ", doti=" + doti + ", dateDemande=" + dateDemande
+			+ ", typeDeDocument=" + typeDeDocument + ", copieEmail=" + copieEmail + ", etat=" + etat
+			+ ", nbrDeDocument=" + nbrDeDocument + "]";
 }
+
 
 
 }

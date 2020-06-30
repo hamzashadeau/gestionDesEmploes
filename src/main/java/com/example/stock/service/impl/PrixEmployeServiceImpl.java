@@ -109,8 +109,9 @@ public class PrixEmployeServiceImpl implements PrixEmployeService {
 	@Override
 	public int deleteById(Long id) {
 		PrixEmploye prixEmploye = findByid(id);
+		Employe employe = prixEmploye.getEmploye();
 		TypeNotification typeNotification = notificationService.findByType("delete");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, prixEmploye.getEmploye(), new Date(), "delete prix employe");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "delete prix employe");
 		notificationEmployeService.save(notificationEmploye);
 		prixEmployeDao.deleteById(id);
 		if (findByid(id) == null) {

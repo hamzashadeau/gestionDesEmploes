@@ -31,26 +31,10 @@ private Revenu caisseMarocaineDeretrait;
 private Double monatntModifie;
 @ManyToOne
 private Employe employe;
+private String doti;
 public SalaireEmploye() {
 	super();
 	// TODO Auto-generated constructor stub
-}
-public SalaireEmploye(Double salaireNet, Emoluments idemFamialieleMarocaine, Emoluments idemDeLaResidence,
-		Emoluments allocationDeEncadrement, Emoluments allocationDeEnseignement, Revenu mutuelleCaisseRetraitEtDeces,
-		Revenu impotSurLeRevenu, Revenu assuranceMaladieObligatoire, Revenu caisseMarocaineDeretrait,
-		Double monatntModifie, Employe employe) {
-	super();
-	this.salaireNet = salaireNet;
-	this.idemFamialieleMarocaine = idemFamialieleMarocaine;
-	this.idemDeLaResidence = idemDeLaResidence;
-	this.allocationDeEncadrement = allocationDeEncadrement;
-	this.allocationDeEnseignement = allocationDeEnseignement;
-	this.mutuelleCaisseRetraitEtDeces = mutuelleCaisseRetraitEtDeces;
-	this.impotSurLeRevenu = impotSurLeRevenu;
-	this.assuranceMaladieObligatoire = assuranceMaladieObligatoire;
-	this.caisseMarocaineDeretrait = caisseMarocaineDeretrait;
-	this.monatntModifie = monatntModifie;
-	this.employe = employe;
 }
 public Long getId() {
 	return id;
@@ -124,6 +108,31 @@ public Employe getEmploye() {
 public void setEmploye(Employe employe) {
 	this.employe = employe;
 }
+
+public SalaireEmploye(Long id, Double salaireNet, Emoluments idemFamialieleMarocaine, Emoluments idemDeLaResidence,
+		Emoluments allocationDeEncadrement, Emoluments allocationDeEnseignement, Revenu mutuelleCaisseRetraitEtDeces,
+		Revenu impotSurLeRevenu, Revenu assuranceMaladieObligatoire, Revenu caisseMarocaineDeretrait,
+		Double monatntModifie, Employe employe) {
+	super();
+	this.id = id;
+	this.salaireNet = salaireNet;
+	this.idemFamialieleMarocaine = idemFamialieleMarocaine;
+	this.idemDeLaResidence = idemDeLaResidence;
+	this.allocationDeEncadrement = allocationDeEncadrement;
+	this.allocationDeEnseignement = allocationDeEnseignement;
+	this.mutuelleCaisseRetraitEtDeces = mutuelleCaisseRetraitEtDeces;
+	this.impotSurLeRevenu = impotSurLeRevenu;
+	this.assuranceMaladieObligatoire = assuranceMaladieObligatoire;
+	this.caisseMarocaineDeretrait = caisseMarocaineDeretrait;
+	this.monatntModifie = monatntModifie;
+	this.employe = employe;
+}
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
 @Override
 public String toString() {
 	return "SalaireEmploye [id=" + id + ", salaireNet=" + salaireNet + ", idemFamialieleMarocaine="
@@ -132,8 +141,9 @@ public String toString() {
 			+ ", mutuelleCaisseRetraitEtDeces=" + mutuelleCaisseRetraitEtDeces + ", impotSurLeRevenu="
 			+ impotSurLeRevenu + ", assuranceMaladieObligatoire=" + assuranceMaladieObligatoire
 			+ ", caisseMarocaineDeretrait=" + caisseMarocaineDeretrait + ", monatntModifie=" + monatntModifie
-			+ ", employe=" + employe + "]";
+			+ ", employe=" + employe + ", doti=" + doti + "]";
 }
+
 
 
 }

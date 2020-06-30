@@ -22,6 +22,7 @@ private Employe employe;
 @Temporal(TemporalType.DATE)
 private Date dateDeObtenation;
 private String remarque;
+private String doti;
 public PrixEmploye() {
 	super();
 	// TODO Auto-generated constructor stub
@@ -56,6 +57,12 @@ public String getRemarque() {
 public void setRemarque(String remarque) {
 	this.remarque = remarque;
 }
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
 public PrixEmploye(Long id, Prix prix, Employe employe, Date dateDeObtenation, String remarque) {
 	super();
 	this.id = id;
@@ -67,8 +74,9 @@ public PrixEmploye(Long id, Prix prix, Employe employe, Date dateDeObtenation, S
 @Override
 public String toString() {
 	return "PrixEmploye [id=" + id + ", prix=" + prix + ", employe=" + employe + ", dateDeObtenation="
-			+ dateDeObtenation + ", remarque=" + remarque + "]";
+			+ dateDeObtenation + ", remarque=" + remarque + ", doti=" + doti + "]";
 }
+
 
 
 

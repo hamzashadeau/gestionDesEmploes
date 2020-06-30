@@ -74,8 +74,9 @@ public PermanenceAdministrative findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	PermanenceAdministrative permanenceAdministrative = findByid(id);
+	Employe employe = permanenceAdministrative.getEmploye();
 	TypeNotification typeNotification = notificationService.findByType("delete");
-	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, permanenceAdministrative.getEmploye(), new Date(), "save permanence");
+	NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification,employe, new Date(), "save permanence");
 	notificationEmployeService.save(notificationEmploye);
 	permanenceAdministrativeDao.deleteById(id);
 	if (findByid(id) == null) {

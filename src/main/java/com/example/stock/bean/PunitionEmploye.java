@@ -21,6 +21,7 @@ private Punition punition;
 @Temporal(TemporalType.DATE)
 private Date dateObtenation;
 private String remarque;
+private String doti;
 public Long getId() {
 	return id;
 }
@@ -55,6 +56,12 @@ public String getRemarque() {
 public void setRemarque(String remarque) {
 	this.remarque = remarque;
 }
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
 public PunitionEmploye(Long id, Employe employe, Punition punition, Date dateObtenation, String remarque) {
 	super();
 	this.id = id;
@@ -66,8 +73,9 @@ public PunitionEmploye(Long id, Employe employe, Punition punition, Date dateObt
 @Override
 public String toString() {
 	return "PunitionEmploye [id=" + id + ", employe=" + employe + ", punition=" + punition + ", dateObtenation="
-			+ dateObtenation + ", remarque=" + remarque + "]";
+			+ dateObtenation + ", remarque=" + remarque + ", doti=" + doti + "]";
 }
+
 
 
 }

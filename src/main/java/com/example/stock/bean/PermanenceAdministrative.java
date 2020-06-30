@@ -20,6 +20,7 @@ private String recuperation;
 private Integer periodeDeRecuperation;
 @ManyToOne()
 private Employe employe;
+private String doti;
 @Temporal(TemporalType.DATE)
 private Date date;
 public Integer getPeriode() {
@@ -63,6 +64,12 @@ public Date getDate() {
 public void setDate(Date date) {
 	this.date = date;
 }
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
 public PermanenceAdministrative(Long id, Integer periode, String recuperation, Integer periodeDeRecuperation,
 		Employe employe, Date date) {
 	super();
@@ -76,8 +83,10 @@ public PermanenceAdministrative(Long id, Integer periode, String recuperation, I
 @Override
 public String toString() {
 	return "PermanenceAdministrative [id=" + id + ", periode=" + periode + ", recuperation=" + recuperation
-			+ ", periodeDeRecuperation=" + periodeDeRecuperation + ", employe=" + employe + ", date=" + date + "]";
+			+ ", periodeDeRecuperation=" + periodeDeRecuperation + ", employe=" + employe + ", doti=" + doti + ", date="
+			+ date + "]";
 }
+
 
 
 }

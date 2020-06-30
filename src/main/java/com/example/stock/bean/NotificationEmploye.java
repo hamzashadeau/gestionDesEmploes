@@ -22,6 +22,7 @@ private Employe employe;
 @Temporal(TemporalType.TIMESTAMP)
 private Date dateDeNotification;
 private String libelle;
+private String doti;
 //private String etat;//lus ou 
 public NotificationEmploye() {
 	super();
@@ -58,7 +59,20 @@ public Date getDateDeNotification() {
 public void setDateDeNotification(Date dateDeNotification) {
 	this.dateDeNotification = dateDeNotification;
 }
-public NotificationEmploye(TypeNotification typeNotification, Employe employe, Date dateDeNotification, String libelle) {
+public String getDoti() {
+	return doti;
+}
+public void setDoti(String doti) {
+	this.doti = doti;
+}
+public TypeNotification getTypeNotification() {
+	return typeNotification;
+}
+public void setTypeNotification(TypeNotification typeNotification) {
+	this.typeNotification = typeNotification;
+}
+
+public NotificationEmploye(TypeNotification typeNotification, Employe employe, Date dateDeNotification,String libelle) {
 	super();
 	this.typeNotification = typeNotification;
 	this.employe = employe;
@@ -67,9 +81,10 @@ public NotificationEmploye(TypeNotification typeNotification, Employe employe, D
 }
 @Override
 public String toString() {
-	return "NotificationEmploye [id=" + id + ", notification=" + typeNotification + ", employe=" + employe
-			+ ", dateDeNotification=" + dateDeNotification + ", libelle=" + libelle + "]";
+	return "NotificationEmploye [id=" + id + ", typeNotification=" + typeNotification + ", employe=" + employe
+			+ ", dateDeNotification=" + dateDeNotification + ", libelle=" + libelle + ", doti=" + doti + "]";
 }
+
 
 
 }

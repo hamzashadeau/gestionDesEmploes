@@ -96,10 +96,11 @@ public Formation findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	Formation formation = findByid(id);
+	Employe employe = formation.getEmploye();
 	formationDao.deleteById(id);
 	if (findByid(id) == null) {
 		TypeNotification typeNotification = notificationService.findByType("delete");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, formation.getEmploye(), new Date(), "delete formation");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "delete formation");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;
 	} else

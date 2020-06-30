@@ -69,7 +69,7 @@ public class DateUlils {
 		return calendar.getTime();
 	 }
 	public static Date getDateFin(Date date, Integer periode) {
-		long milliSeconde = date.getTime() + (periode * 24*60*60*1000);
+		long milliSeconde = date.getTime() + (periode * (24 * 60 * 60 * 1000));
 		return new Date(milliSeconde);
 	 }
 	public static Long getDateDiff(Date date1, Date date2) {

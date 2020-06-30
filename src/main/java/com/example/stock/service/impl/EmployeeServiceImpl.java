@@ -18,9 +18,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.stock.Dao.CongeDao;
 import com.example.stock.Dao.DepartementDao;
 import com.example.stock.Dao.EmployeDao;
+import com.example.stock.Dao.FormationDao;
 import com.example.stock.Dao.GradeEmployeDao;
+import com.example.stock.Dao.NotificationEmployeDao;
+import com.example.stock.Dao.PrixEmployeDao;
+import com.example.stock.Dao.PunitionEmployeDao;
+import com.example.stock.Dao.RapportDeEvaluationDao;
+import com.example.stock.Dao.SalaireEmployeDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Congé;
 import com.example.stock.bean.Departement;
@@ -261,7 +268,20 @@ public class EmployeeServiceImpl implements EmployeService {
 		} else
 			return null;
 	}
-
+	@Autowired 
+	private  SalaireEmployeDao salaireEmployeDao;
+	@Autowired 
+	private  PrixEmployeDao prixEmployeDao;
+	@Autowired 
+	private  PunitionEmployeDao punitionEmployeDao;
+	@Autowired 
+	private  FormationDao formationDao;
+	@Autowired 
+	private  RapportDeEvaluationDao rapportDeEvaluationDao;
+	@Autowired 
+	private  NotificationEmployeDao notificationEmployeDao;
+	@Autowired 
+	private  CongeDao congeDao;
 	@Override
 	public int deleteById(Long id) {
 		Employe employe = findByid(id);
@@ -269,30 +289,61 @@ public class EmployeeServiceImpl implements EmployeService {
 			return -2;
 		} else {
 			List<GradeEmploye> gradeEmployes = gradeEmployeService.findByDoti(employe.getDoti());
-			gradeEmployes.forEach(grade -> {
-				gradeEmployeService.deleteById(grade.getId());
-//				rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(grade.getId(), employe.getDoti()).getId());
+			if(gradeEmployes != null) {
+				gradeEmployes.forEach(grade -> {
+					RapportDeEvaluation rapportDeEvaluation =rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(grade.getId(), employe.getDoti());
+if(rapportDeEvaluation!= null) {
+	rapportDeEvaluation.setDoti(employe.getDoti());
+	rapportDeEvaluation.setEmploye(null);
+	rapportDeEvaluationDao.save(rapportDeEvaluation);
+
+}
+				
 			});
-			salaireEmployeService.deleteById(salaireEmployeService.findByEmployeDoti(employe.getDoti()).getId());
+			}
+			List<NotificationEmploye> notificationEmployes = notificationEmployeService.findByemployeDoti(employe.getDoti());
+			for (NotificationEmploye notificationEmploye : notificationEmployes) {
+				notificationEmploye.setDoti(employe.getDoti());
+				notificationEmploye.setEmploye(null);
+				notificationEmployeDao.save(notificationEmploye);
+			}
+			SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
+			salaireEmploye.setDoti(employe.getDoti());
+			salaireEmploye.setEmploye(null);
+			salaireEmployeDao.save(salaireEmploye);
 			List<PrixEmploye> prixEmployes = prixEmployeService.findByEmployeDoti(employe.getDoti());
-			for (PrixEmploye prixEmploye : prixEmployes) {
-				prixEmployeService.deleteById(prixEmploye.getId());
+			if(prixEmployes!=null) {
+				for (PrixEmploye prixEmploye : prixEmployes) {
+					prixEmploye.setDoti(prixEmploye.getEmploye().getDoti());
+					prixEmploye.setEmploye(null);
+					prixEmployeDao.save(prixEmploye);
+				}
+				
 			}
 			List<Formation> formations = formationService.findByemployeDoti(employe.getDoti());
-			for (Formation formation : formations) {
-				formationService.deleteById(formation.getId());
+			if(formations!=null) {
+				for (Formation formation : formations) {
+					formation.setDoti(formation.getEmploye().getDoti());
+					formation.setEmploye(null);
+					formationDao.save(formation);
+				}
+				
 			}
+			
 			List<PunitionEmploye> punitionEmployes = punitionEmployeService.findByEmployeDoti(employe.getDoti());
-			for (PunitionEmploye punitionEmploye : punitionEmployes) {
-				punitionEmployeService.deleteById(punitionEmploye.getId());
+			if(punitionEmployes != null) {
+				for (PunitionEmploye punitionEmploye : punitionEmployes) {
+					punitionEmploye.setDoti(punitionEmploye.getEmploye().getDoti());
+					punitionEmploye.setEmploye(null);
+					punitionEmployeDao.save(punitionEmploye);
+				}
 			}
-			List<NoteGeneralDeAnnee> noteGeneralDeAnnees = noteGeneraleService.findByEmployeDoti(employe.getDoti());
-			for (NoteGeneralDeAnnee noteGeneralDeAnnee : noteGeneralDeAnnees) {
-				noteGeneraleService.deleteById(noteGeneralDeAnnee.getId());
-			}
+			
 			List<Congé> congés = congeService.findByEmployeDoti(employe.getDoti());
 			for (Congé congé : congés) {
-				congeService.deleteById(congé.getId());
+				congé.setDoti(employe.getDoti());
+				congé.setEmploye(null);
+				congeDao.save(congé);
 			}
 			employeDao.deleteById(id);
 			if (findByid(id) == null) {

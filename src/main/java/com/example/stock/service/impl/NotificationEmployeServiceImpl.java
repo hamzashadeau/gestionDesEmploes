@@ -42,6 +42,15 @@ return -1;
 		return 1;
 }
 	}
+@Override
+public int update(NotificationEmploye notificationEmploye) {
+	if(notificationEmploye.getId() == null) {
+return -1;
+}else {
+	notificationEmployeDao.save(notificationEmploye);
+		return 1;
+}
+	}
 
 @Override
 public NotificationEmploye findByid(Long id) {

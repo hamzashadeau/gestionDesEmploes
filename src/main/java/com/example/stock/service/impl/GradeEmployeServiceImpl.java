@@ -3,11 +3,13 @@ package com.example.stock.service.impl;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,15 +22,15 @@ import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Dao.GradeEmployeDao;
 import com.example.stock.Dao.RapportDeEvaluationDao;
 import com.example.stock.Utilis.DateUlils;
-import com.example.stock.bean.DemaneDeDocument;
+import com.example.stock.Utilis.HashUtil;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Grade;
 import com.example.stock.bean.GradeEmploye;
 import com.example.stock.bean.NoteGeneralDeAnnee;
-import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.RapportDeEvaluation;
 import com.example.stock.bean.SalaireEmploye;
+import com.example.stock.bean.TypeNotification;
 import com.example.stock.service.facade.EmolumentsService;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.FormationService;
@@ -48,11 +50,9 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
 import com.itextpdf.text.pdf.PdfWriter;
 
 @Service
@@ -153,9 +153,9 @@ Employe employe = employeService.findByDoti(doti);
 		//note
 		rapportDeEvaluation.setNoteGenerale(noteGeneraleService.findNoteDeEmploye(employe.getDoti()));
 		//moyen
-rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
-//moyen
-rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
+		rapportDeEvaluation.setMoyen(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())));
+		//moyen
+		rapportDeEvaluation.setMention(DateUlils.GetMention(rapportDeEvaluation.getMoyen()));
 
 	} if(formationService.findFormationDeEmploye(employe.getDoti())!= null) {
 		//formation
@@ -176,7 +176,6 @@ rapportDeEvaluationDao.save(rapportDeEvaluation);
 public Double getMoyenNote(List<NoteGeneralDeAnnee> notes) {
 Double somme = 0.0;
 for (NoteGeneralDeAnnee noteGeneralDeAnnee : notes) {
-	System.out.println("ha note" + noteGeneralDeAnnee.getMoyenGeneral());
 	somme += noteGeneralDeAnnee.getMoyenGeneral();
 }
 return somme/notes.size();
@@ -194,7 +193,7 @@ public GradeEmploye findByid(Long id) {
 public int deleteById(Long id) {
 	 GradeEmploye gradeEmploye = gradeEmployeService.findByid(id);
 	 Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
-	 if(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId() != null) {
+	 if(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()) != null) {
 		 rapportDeEvaluationService.deleteById(rapportDeEvaluationService.findByNouveauGradeIdAndEmployeDoti(id, gradeEmploye.getDoti()).getId());
 		 
 	 }
@@ -239,6 +238,12 @@ gradeEmploye.setEtat("traité");
 gradeEmploye.setDateDeAffectation(new Date());
 gradeDao.save(gradeEmploye);
 Employe employe = employeService.findByDoti(gradeEmploye.getDoti());
+try {
+	HashUtil.sendmail(employe.getEmail(), "Avancement de grade", "bonjour Mr" + employe.getFirstName() + " " + employe.getLastName() + "je voudrais bien vous annoncer que votre avancement pour le "+ gradeEmploye.getGrade().getLibelle()+" est bien effctuer");
+} catch (MessagingException | IOException | TransformerException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
 employe.setDernierGrade(gradeEmploye);
 employe.setDateProchainEvaluation(DateUlils.getDateEvaluationDeGrade(gradeEmploye));
 employe.setDateDeProchainNote(DateUlils.getDateDeNote(gradeEmploye.getDateDeAffectation()));
@@ -442,6 +447,12 @@ public List<Employe> getDateEvaluation() {
 			}else {
 			if(DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti()))) != null) {
 				employe.setDateAvancementPrevue(DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())))));
+				try {
+					HashUtil.sendmail(employe.getEmail(), "date évaluation", "voila votre date D'avancement prévue "+ DateUlils.getDateAvancementnDeGrade(employe.getDernierGrade(), DateUlils.GetMention(getMoyenNote(noteGeneraleService.findNoteDeEmploye(employe.getDoti())))));
+					} catch (MessagingException | IOException | TransformerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					}
 			}
 				employe.setDateProchainEvaluation(null);
 				employeDao.save(employe);
@@ -465,7 +476,7 @@ public List<Employe> getDateAvancement() {
 	this.disponible = false;
 	for (Employe employe : employes) {
 		 disponible = false;
-		if(employe.getDateAvancementPrevue() != null && !employe.getDernierGrade().getGrade().getLibelle().equals("grade10")) {
+		if(employe.getDateAvancementPrevue() != null && !employe.getDernierGrade().getGrade().getLibelle().equals("grade10") && !employe.getDernierGrade().getGrade().getLibelle().equals("gradeExceptionnel")) {
 		if(DateUlils.verifierDateSup(employe.getDateAvancementPrevue(),new Date())) {
 			GradeEmploye gradeEmploye = new GradeEmploye();
 				gradeEmploye.setDoti(employe.getDoti());

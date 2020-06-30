@@ -10,6 +10,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.xml.transform.TransformerException;
+
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -21,11 +25,14 @@ import org.springframework.stereotype.Service;
 import com.example.stock.Dao.CongeDao;
 import com.example.stock.Dao.EmployeDao;
 import com.example.stock.Utilis.DateUlils;
+import com.example.stock.Utilis.HashUtil;
 import com.example.stock.bean.Congé;
+import com.example.stock.bean.CongéEmployeSalaire;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
 import com.example.stock.bean.TypeCongee;
+import com.example.stock.service.facade.CongeEmployeService;
 import com.example.stock.service.facade.CongeService;
 import com.example.stock.service.facade.EmployeService;
 import com.example.stock.service.facade.NotificationEmployeService;
@@ -57,9 +64,11 @@ public class CongeServiceImpl implements CongeService {
 	private NotificationService notificationService;
 	@Autowired
 	private NotificationEmployeService notificationEmployeService;
+	@Autowired
+	private CongeEmployeService congeSalaireEmployeService; 
 
 	@Override
-	public int save(Congé congé) {
+	public int save(Congé congé) throws AddressException, MessagingException, IOException, TransformerException {
 		Employe employe = employeService.findByDoti(congé.getEmploye().getDoti());
 		TypeCongee congé2 = typeCongeeService.findByLibelle(congé.getCongee().getLibelle());
 		if (employe == null) {
@@ -80,9 +89,42 @@ public class CongeServiceImpl implements CongeService {
 			}
 			if (congé.getCongee().getLibelle().equals("certificat court duree 3 mois") && congé.getPeriode() > 90) {
 				return -5;
-			} else if (congé.getCongee().getLibelle().equals("certificat court duree 6 mois")&& (congé.getPeriode() > 180 || congé.getPeriode()<90)) {
+			} else if (congé.getCongee().getLibelle().equals("certificat court duree 6 mois")) {
+				if((congé.getPeriode() > 180 || congé.getPeriode()<90)) {
 				return -6;
+			} else {
+				congé.setCongee(congé2);
+				congé.setEmploye(employe);
+				congeDao.save(congé);
+				for (int i = 1; i <= 3; i++) {
+					CongéEmployeSalaire congéEmployeSalaire = new CongéEmployeSalaire();
+					congéEmployeSalaire.setConge(congé);
+					congéEmployeSalaire.setMois((DateUlils.getMonth(new Date())+i));
+					congéEmployeSalaire.setTypeDeSalaire("salaire complet");
+					congeSalaireEmployeService.save(congéEmployeSalaire);
+				}
+				Integer nbrmois = (int) Math.floor((congé.getPeriode()-90)/30);
+				System.out.println(nbrmois);
+				for (int i = 1; i < nbrmois+1; i++) {
+					CongéEmployeSalaire congéEmployeSalaire = new CongéEmployeSalaire();
+					congéEmployeSalaire.setConge(congé);
+					congéEmployeSalaire.setMois((DateUlils.getMonth(new Date())+3+i));
+					congéEmployeSalaire.setTypeDeSalaire("moitie de salaire");
+					congeSalaireEmployeService.save(congéEmployeSalaire);					
+				}
+				if(nbrmois == 1) {
+				HashUtil.sendmail(employe.getEmail(), "moitie de salaire", "bonjour Mr " + employe.getFirstName() + " "+ employe.getLastName()+ " je vous informe que a cause de votre certificat mediciale vous aurez un moitie de votre salaitre dans les mois"+ (DateUlils.getMonth(new Date())+4));
+				congé.setRaison("cette employé aura la moitié de salaire dans les mois:"+ (DateUlils.getMonth(new Date())+4));
+				} else if(nbrmois == 2) {
+					HashUtil.sendmail(employe.getEmail(), "moitie de salaire","bonjour Mr " + employe.getFirstName() + " "+ employe.getLastName()+ " je vous informe que a cause de votre certificat mediciale vous aurez un moitie de votre salaitre dans les mois"+ (DateUlils.getMonth(new Date())+4) +"et " +(DateUlils.getMonth(new Date())+5));
+					congé.setRaison("cette employé aura la moitié de salaire dans les mois:"+ (DateUlils.getMonth(new Date())+4) + (DateUlils.getMonth(new Date())+5));
+				} else if(nbrmois == 3) {
+					HashUtil.sendmail(employe.getEmail(), "moitie de salaire","bonjour Mr " + employe.getFirstName() + " "+ employe.getLastName()+ " je vous informe que a cause de votre certificat mediciale vous aurez un moitie de votre salaitre dans les mois"+ (DateUlils.getMonth(new Date())+4) +"et "+ (DateUlils.getMonth(new Date())+5)+ "et"+ (DateUlils.getMonth(new Date())+6));
+					congé.setRaison("cette employé aura la moitié de salaire dans les mois:"+ (DateUlils.getMonth(new Date())+4) + (DateUlils.getMonth(new Date())+5) + (DateUlils.getMonth(new Date())+6));
+				}
 			}
+			}
+			employeDao.save(employe);
 			congé.setCongee(congé2);
 			congé.setEmploye(employe);
 			congé.setDateDeFin(DateUlils.getDateFin(congé.getDateDeDebut(), congé.getPeriode()));
@@ -146,10 +188,11 @@ public class CongeServiceImpl implements CongeService {
 	@Override
 	public int deleteById(Long id) {
 		Congé congé = findByid(id);
+		Employe employe = congé.getEmploye();
 		congeDao.deleteById(id);
 		if (findByid(id) == null) {
 			TypeNotification typeNotification = notificationService.findByType("delete");
-			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, congé.getEmploye(),
+			NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe,
 					new Date(), "delete conge");
 			notificationEmployeService.save(notificationEmploye);
 			return 1;

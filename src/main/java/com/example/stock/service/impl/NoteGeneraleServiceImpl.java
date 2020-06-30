@@ -21,6 +21,7 @@ import com.example.stock.Dao.NoteGeneraleDao;
 import com.example.stock.Utilis.DateUlils;
 import com.example.stock.bean.Employe;
 import com.example.stock.bean.Formation;
+import com.example.stock.bean.Note;
 import com.example.stock.bean.NoteGeneralDeAnnee;
 import com.example.stock.bean.TypeNotification;
 import com.example.stock.bean.NotificationEmploye;
@@ -100,10 +101,10 @@ public NoteGeneralDeAnnee findByid(Long id) {
 @Override
 public int deleteById(Long id) {
 	NoteGeneralDeAnnee noteGeneralDeAnnee = findByid(id);
+	Employe employe =  employeDao.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
 	noteGeneraleDao.deleteById(id);
 	if (findByid(id) == null) {
 		TypeNotification typeNotification = notificationService.findByType("delete");
-		Employe employe =  employeDao.findByDoti(noteGeneralDeAnnee.getEmployeDoti());
 		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "delete note employe ");
 		notificationEmployeService.save(notificationEmploye);
 		return 1;

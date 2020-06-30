@@ -107,8 +107,9 @@ public class PunitionEmployeServiceImpl implements PunitionEmployeService {
 	@Override
 	public int deleteById(Long id) {
 		PunitionEmploye punitionEmploye = findByid(id);
+		Employe employe = punitionEmploye.getEmploye();
 		TypeNotification typeNotification = notificationService.findByType("delete");
-		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, punitionEmploye.getEmploye(), new Date(), "delete punition employe");
+		NotificationEmploye notificationEmploye = new NotificationEmploye(typeNotification, employe, new Date(), "delete punition employe");
 		notificationEmployeService.save(notificationEmploye);
 		punitionEmployeDao.deleteById(id);
 		if (findByid(id) == null) {

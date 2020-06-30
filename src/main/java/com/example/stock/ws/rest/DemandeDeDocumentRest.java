@@ -38,10 +38,10 @@ private DemandeDeDocumentService demandeDeDocumentService;
 public int listeDesDemandesExcel(@RequestBody List<DemaneDeDocument> demandes) {
 	return demandeDeDocumentService.listeDesDemandesExcel(demandes);
 }
-@RequestMapping(value = "sendmail/email/{email}/subject/{subject}/content/{content}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-public int sendmail(@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestParam("file") MultipartFile  file )throws AddressException, MessagingException, IOException, TransformerException {
+@RequestMapping(value = "sendmail/id/{id}/email/{email}/subject/{subject}/content/{content}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+public int sendmail(@PathVariable Long id,@PathVariable String email,@PathVariable String subject,@PathVariable String content,@RequestParam("file") MultipartFile  file )throws AddressException, MessagingException, IOException, TransformerException {
 	System.out.println(file.getOriginalFilename());
-	return demandeDeDocumentService.sendmail(email, subject, content, file);
+	return demandeDeDocumentService.sendmail(id,email, subject, content, file);
 }
 @GetMapping("findByTypeDeDocumentLibelleAndEmployeDoti/libelle/{libelle}/doti/{doti}")
 public List<DemaneDeDocument>  findByTypeDeDocumentLibelleAndEmployeDoti(@PathVariable String libelle,@PathVariable String doti) {

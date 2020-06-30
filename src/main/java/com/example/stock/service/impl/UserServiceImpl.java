@@ -47,7 +47,7 @@ public User findByid(Long id) {
 @Override
 public int sendCode(String email) throws AddressException, MessagingException, IOException, TransformerException {
 	  codeVerfication = HashUtil.generateRandomIntIntRange(1000, 9000); 
-	  HashUtil.sendCodeVerification(email, "verificationo de compte", "code de verification", codeVerfication);
+	  HashUtil.sendCodeVerification(email, "vérification de compte", "code de vérification", codeVerfication);
 	  return 1;
 }
 @Override

@@ -21,6 +21,7 @@ private GradeEmploye nouveauGrade;//nouveau Grade
 private Double moyen;
 private String mention;
 private String remarques;
+private String doti;
 @OneToMany
 private List<PrixEmploye> prix;
 @OneToMany
@@ -116,9 +117,17 @@ public void setNouveauGrade(GradeEmploye nouveauGrade) {
 	this.nouveauGrade = nouveauGrade;
 }
 
+public String getDoti() {
+	return doti;
+}
+
+public void setDoti(String doti) {
+	this.doti = doti;
+}
+
 public RapportDeEvaluation(Long id, Employe employe, GradeEmploye nouveauGrade, Double moyen, String mention,
-		String remarques, List<PrixEmploye> prix, List<PunitionEmploye> punition, List<Formation> formation,
-		List<NoteGeneralDeAnnee> noteGenerale) {
+		String remarques, List<PrixEmploye> prix, List<PunitionEmploye> punition,
+		List<Formation> formation, List<NoteGeneralDeAnnee> noteGenerale) {
 	super();
 	this.id = id;
 	this.employe = employe;
@@ -135,9 +144,11 @@ public RapportDeEvaluation(Long id, Employe employe, GradeEmploye nouveauGrade, 
 @Override
 public String toString() {
 	return "RapportDeEvaluation [id=" + id + ", employe=" + employe + ", nouveauGrade=" + nouveauGrade + ", moyen="
-			+ moyen + ", mention=" + mention + ", remarques=" + remarques + ", prix=" + prix + ", punition=" + punition
-			+ ", formation=" + formation + ", noteGenerale=" + noteGenerale + "]";
+			+ moyen + ", mention=" + mention + ", remarques=" + remarques + ", doti=" + doti + ", prix=" + prix
+			+ ", punition=" + punition + ", formation=" + formation + ", noteGenerale=" + noteGenerale + "]";
 }
+
+
 
 
 }

@@ -110,7 +110,7 @@ public class DemandeDeDocumentServiceImpl implements DemandeDeDocumentService {
 			notificationEmployeService.save(notificationEmploye);
 			try {
 				HashUtil.sendmail(employe.getEmail(), "sauvegarde de demande de document",
-						"votre demande de document est bien sauvegarder");
+						"votre demande de "+demaneDeDocument.getTypeDeDocument().getLibelle() +"est bien sauvegarder");
 			} catch (MessagingException | IOException | TransformerException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -174,11 +174,11 @@ if(employe.getEnfants()== null) {
 		Paragraph p3 = new Paragraph(" information personnel \n", font1);
 		p3.setAlignment(Element.ALIGN_CENTER);
 		document.add(p3);
-		p.add("*Nom Complet: " + employe.getFirstName() + " "+ employe.getLastName() +"                                 *Cin :"+ employe.getCin() +
-				" \r" + "*Numero:"+ employe.getDoti()+ "                                                     *Situation Familiale:"+ employe.getSituationFamiliale() +
-				"\r" + "*Enfant: "+ employe.getEnfants()+ "                                                                     *Email :"+ employe.getEmail() +
-				" " + "*Telephone: +212"+ employe.getTel()+ "                                      *ville de Residence:"+ employe.getLieuDeResedence() +
-				"\r" + "*Adresse: "+ employe.getAdresse()+ "                   *Fonction :"+ employe.getFonction().getLibelle() +"\r" + "");
+		p.add("*Nom Complet: " + employe.getFirstName() + " "+ employe.getLastName() +"                      *Cin :"+ employe.getCin() +
+				" \r" + "*Numero:"+ employe.getDoti()+ "                                                   *Situation Familiale:"+ employe.getSituationFamiliale() +
+				"\r" + "*Enfant: "+ employe.getEnfants()+ "                                                                *Email :"+ employe.getEmail() +
+				"\r" + " *Telephone: +212"+ employe.getTel()+ "                                 *ville de Residence:"+ employe.getLieuDeResedence() +
+				"\r" + "*Adresse: "+ employe.getAdresse()+ "                            *Fonction :"+ employe.getFonction().getLibelle() +"\r" + "");
 
 		document.add(p);
 		border.setActive(false);
@@ -196,17 +196,20 @@ if(employe.getEnfants()== null) {
 		border.setActive(false);
 		Paragraph p56 = new Paragraph("\n");
 		document.add(p56);
-		border.setActive(true);
-		Paragraph p22 = new Paragraph("Information sur la dernier note :", font1);
-		p22.setAlignment(Element.ALIGN_CENTER);
-		document.add(p22);
-		Paragraph p21 = new Paragraph();
-		p21.add("*moyen Génerale:" + employe.getDernierNote().getMoyenGeneral().toString()+ "                                               * Mention:"+  employe.getDernierNote().getMention()
-			+"\n                                              date de note:"+ simpleDateFormat.format(employe.getDernierNote().getDate()));
-		document.add(p21);
-		border.setActive(false);
-		Paragraph p57 = new Paragraph("\n");
-		document.add(p57);
+		if(employe.getDernierNote() != null) {
+			border.setActive(true);
+			Paragraph p22 = new Paragraph("Information sur la dernier note :", font1);
+			p22.setAlignment(Element.ALIGN_CENTER);
+			document.add(p22);
+			Paragraph p21 = new Paragraph();
+			p21.add("*moyen Génerale:" + employe.getDernierNote().getMoyenGeneral().toString()+ "                                               * Mention:"+  employe.getDernierNote().getMention()
+				+"\n                                              date de note:"+ simpleDateFormat.format(employe.getDernierNote().getDate()));
+			document.add(p21);
+			border.setActive(false);			
+			Paragraph p57 = new Paragraph("\n");
+			document.add(p57);
+		}
+		if(employe.getDernierGrade() != null) {
 		border.setActive(true);
 		Paragraph p27 = new Paragraph("Information sur la dernier grade :", font1);
 		p27.setAlignment(Element.ALIGN_CENTER);
@@ -215,7 +218,7 @@ if(employe.getEnfants()== null) {
 		p28.add("*Libelle:" + employe.getDernierGrade().getGrade().getLibelle()+ "                                               * Date affectation:"+  simpleDateFormat.format(employe.getDernierGrade().getDateDeAffectation()));
 		document.add(p28);
 		border.setActive(false);
-		
+		}
 		Font f = new Font();
 		f.setStyle(Font.BOLD);
 		f.setSize(8);
@@ -476,14 +479,14 @@ if(employe.getEnfants()== null) {
 	public int attestationDeSalaire(DemaneDeDocument demaneDeDocument)
 			throws DocumentException, TransformerException, AddressException, MessagingException, IOException {
 		String pattern = "yyyy-MM-dd";
-		String fileLocation = "C:/Users/hp/Desktop/";
+		String fileLocation = "C:/Users/hp/Desktop/documentNonSigne/";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		Employe employe = demaneDeDocument.getEmploye();
 		SalaireEmploye salaireEmploye = salaireEmployeService.findByEmployeDoti(employe.getDoti());
 
 		Document document = new Document();
 		PdfWriter.getInstance(document,
-				new FileOutputStream(fileLocation +	demaneDeDocument.getEmploye().getFirstName() + demaneDeDocument.getEmploye().getLastName()
+				new FileOutputStream(fileLocation +simpleDateFormat.format(demaneDeDocument.getDateDemande())
 								+ "attestationDeSalaire" + demaneDeDocument.getEmploye().getDoti() + ".pdf"));
 
 		document.open();
@@ -500,11 +503,11 @@ if(employe.getEnfants()== null) {
 		document.add(p1);
 
 		Paragraph p = new Paragraph();
-		p.add(" \r\n" + "le service RH de  l'etablissement de science et de technique ATTESTE PAR LA PRESENTE QUE MR "
-				+ employe.getFirstName() + employe.getLastName() + "TITULAIRE  DE LA CIN N°" + employe.getCin()
-				+ " ,TRAVAILLE EN QUALITE dans " + "la faculté de science et technique DEPUIS LE"
-				+ employe.getDateEntree() + ",ET PERCOIT UN SALAIRE ANNUEL NET DE :" + salaireEmploye.getSalaireNet()
-				+ "DHS,DONT LE DETAIL EST LE SUIVANT :\r\n" + "les emouluments:\n\r" + "Allocation De Encadrement:"
+		p.add(" \r\n" + "le service RH de  l'etablissement de science et de technique atteste par la persente que Mr  "
+				+ employe.getFirstName() +" "+ employe.getLastName() + "titulaire  De la cin N°" + employe.getCin()
+				+ " ,travaille en qualite dans " + "la faculté de science et technique depuis le"
+				+ employe.getDateEntree() + ",et percoit un salaire annuel net de :" + salaireEmploye.getSalaireNet()
+				+ "DHS,dont le detail est le suivant :\r\n" + "les emouluments:\n\r" + "Allocation De Encadrement:"
 				+ salaireEmploye.getAllocationDeEncadrement().getMontant() + "\n\r" + "Idem De La Residence:"
 				+ salaireEmploye.getIdemDeLaResidence().getMontant() + "\n\r" + "Idem Famialie le Marocaine:"
 				+ salaireEmploye.getIdemFamialieleMarocaine().getMontant() + "\n\r" + "Allocation De Enseignement:"
@@ -555,13 +558,12 @@ if(employe.getEnfants()== null) {
 	public int attestationDeTravail(DemaneDeDocument demaneDeDocument)
 			throws DocumentException, TransformerException, AddressException, MessagingException, IOException {
 		String pattern = "yyyy-MM-dd";
-		String fileLocation = "C:/Users/hp/Desktop/";
+		String fileLocation = "C:/Users/hp/Desktop/documentNonSigne/";
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 		Employe employe = demaneDeDocument.getEmploye();
 		Document document = new Document();
 		PdfWriter.getInstance(document,
-				new FileOutputStream(fileLocation + demaneDeDocument.getEmploye().getFirstName() + demaneDeDocument.getEmploye().getLastName()
-								+ "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf"));
+				new FileOutputStream(fileLocation + simpleDateFormat.format(demaneDeDocument.getDateDemande())+ "attestaionDeTravail" + demaneDeDocument.getEmploye().getDoti() + ".pdf"));
 
 		document.open();
 		Font font2 = FontFactory.getFont(FontFactory.TIMES, 9, BaseColor.BLACK);
@@ -578,7 +580,7 @@ if(employe.getEnfants()== null) {
 
 		Paragraph p = new Paragraph();
 		p.add("\n\nJe soussigné  le service RH de la faculté de la science et de technique atteste que :" + "\n\r"
-				+ "Mr (Mme) (Melle)    :  " + employe.getFirstName() + employe.getLastName() + "\n\r" + "D.O.T.I     : "
+				+ "Mr (Mme) (Melle)    :  " + employe.getFirstName() +" "+ employe.getLastName() + "\n\r" + "D.O.T.I     : "
 				+ employe.getDoti() + "\n\r" + "CIN     : " + employe.getCin() + "\n\r" + "Date de recrutement  : "
 				+ simpleDateFormat.format(employe.getDateEntree()) + "\n\r" + "Grade: " + employe.getDernierGrade().getGrade().getLibelle()
 				+ "\n\r" + "fonction: " + employe.getFonction().getLibelle() + "\n\r"
@@ -621,13 +623,13 @@ if(employe.getEnfants()== null) {
 		// }
 		if(demaneDeDocument.getCopieEmail().equals("oui")) {
 			demaneDeDocument.setEtat("non signe");
-			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
-					"votre demande attestation de travail est en traitement vous recevez une copie scanné dans votre mail dans un durée 24 heures au maximum");
+//			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+	//				"votre demande attestation de travail est en traitement vous recevez une copie scanné dans votre mail dans un durée 24 heures au maximum");
 			
 		}else {
 			demaneDeDocument.setEtat("traité");
-			HashUtil.sendmail(employe.getEmail(), "demande en traitement",
-					"votre demande attestation de travail est en traitement vous trouverez votre document dans le guichet de etablissementl dans un durée 24 heures au maximum");
+	//		HashUtil.sendmail(employe.getEmail(), "demande en traitement",
+		//			"votre demande attestation de travail est en traitement vous trouverez votre document dans le guichet de etablissementl dans un durée 24 heures au maximum");
 		}
 		demaneDeDocumentDao.save(demaneDeDocument);
 		TypeNotification typeNotification = notificationService.findByType("imprimer");
@@ -638,15 +640,15 @@ if(employe.getEnfants()== null) {
 	}
 
 	public File convert(MultipartFile file) throws IOException {
-		System.out.println(file.getOriginalFilename());
+		String fileLocation = "C:/Users/hp/Desktop/documentScanne/";
         File convFile = new File(file.getOriginalFilename());
         convFile.createNewFile();
-        FileOutputStream fos = new FileOutputStream(convFile);
+        FileOutputStream fos = new FileOutputStream(fileLocation + convFile);
         fos.write(file.getBytes());
         fos.close();
         return convFile;
 }
-	public int sendmail(String email, String subject, String content, MultipartFile file)
+	public int sendmail(Long id,String email, String subject, String content, MultipartFile file)
 			throws AddressException, MessagingException, IOException, TransformerException {
 		Properties props = new Properties();
 		props.put("mail.smtp.auth", "true");
@@ -681,6 +683,9 @@ if(employe.getEnfants()== null) {
 
 		// attachPart.attachFile();
 		Transport.send(msg);
+		DemaneDeDocument deDocument = findByid(id);
+		deDocument.setEtat("traité");
+		demaneDeDocumentDao.save(deDocument);
 		return 1;
 	}
 

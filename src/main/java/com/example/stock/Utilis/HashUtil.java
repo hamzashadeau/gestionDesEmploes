@@ -70,8 +70,8 @@ for (int i = 0; i < byteData.length; i++) {
 		   msg.setContent(content, "text/html");
 		   msg.setSentDate(new Date());
 
-		   MimeBodyPart messageBodyPart = new MimeBodyPart();
-		   messageBodyPart.setContent(content , "text/html");
+//		   MimeBodyPart messageBodyPart = new MimeBodyPart();
+	//	   messageBodyPart.setContent(content , "text/html");
 
 		 //  Multipart multipart = new MimeMultipart();
 		   //multipart.addBodyPart(messageBodyPart);
@@ -106,7 +106,7 @@ for (int i = 0; i < byteData.length; i++) {
 		   msg.setSentDate(new Date());
 
 		   MimeBodyPart messageBodyPart = new MimeBodyPart();
-		   messageBodyPart.setContent(content + "voila votre code de verification: \n\r" + codeDeVerification , "text/html");
+		   messageBodyPart.setContent(content + " voila votre code de verification:  \n\r" + codeDeVerification , "text/html");
 
 		   Multipart multipart = new MimeMultipart();
 		   multipart.addBodyPart(messageBodyPart);
